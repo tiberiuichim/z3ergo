@@ -1,6 +1,6 @@
 #summary One-sentence summary of this page.
 
-warning: this _pseudocode_ at this moment
+warning: this is kind of _pseudocodish_, need checks and explanation
 
 
 {{{
