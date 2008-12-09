@@ -1,0 +1,12 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser" i18n_domain="learningjourney">
+
+  <adapter
+    for="learningjourney.schema.multioptchoice.interfaces.IMultiOptionalChoice
+         zope.publisher.interfaces.browser.IBrowserRequest"
+    provides=".interfaces.IAddRemoveInputWidget" factory=".AddRemoveInputWidget"
+    permission="zope.Public" />
+
+  <browser:resource file="lib.js" name="addremove.js" />
+
+</configure>

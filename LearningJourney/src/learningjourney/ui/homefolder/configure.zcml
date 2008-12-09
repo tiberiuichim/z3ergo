@@ -1,0 +1,40 @@
+<configure xmlns="http://namespaces.zope.org/browser"
+  i18n_domain="learningjourney">
+
+  <page name="dashboard.html" class=".page.DashboardRedirect"
+    for="learningjourney.app.interfaces.ILearningJourneyApplication"
+    layer="learningjourney.ui.ILearningJourneyLayer" permission="zope.View" />
+
+  <page name="index.html" class=".page.Dashboard"
+    for="learningjourney.app.interfaces.IUserHome" layer="learningjourney.ui.ILearningJourneyLayer"
+    permission="zope.View" />
+
+  <page name="add_entry.html" class=".page.EntryAddPage"
+    for="learningjourney.app.interfaces.IUserHome" layer="learningjourney.ui.ILearningJourneyLayer"
+    permission="lj.AddLearningEntry" />
+
+  <page name="index.html" class=".page.EntryViewPage"
+    for="learningjourney.app.interfaces.ILearningEntry" layer="learningjourney.ui.ILearningJourneyLayer"
+    permission="zope.View" />
+
+  <page name="edit.html" class=".page.EntryEditPage"
+    for="learningjourney.app.interfaces.ILearningEntry" layer="learningjourney.ui.ILearningJourneyLayer"
+    permission="lj.ModifyContent" />
+
+  <page name="delete" class=".page.EntryDeletePage"
+    for="learningjourney.app.interfaces.IUserHome" layer="learningjourney.ui.ILearningJourneyLayer"
+    permission="lj.ModifyContent" />
+
+  <view name="detail" class=".views.EntryDetail"
+    for="learningjourney.app.interfaces.ILearningEntry" layer="learningjourney.ui.ILearningJourneyLayer"
+    permission="zope.View" />
+
+  <view name="full_detail" class=".views.EntryFullDetail"
+    for="learningjourney.app.interfaces.ILearningEntry" layer="learningjourney.ui.ILearningJourneyLayer"
+    permission="zope.View" />
+
+  <view name="admin" class=".views.EntryAdmin"
+    for="learningjourney.app.interfaces.ILearningEntry" layer="learningjourney.ui.ILearningJourneyLayer"
+    permission="lj.ModifyContent" />
+
+</configure>

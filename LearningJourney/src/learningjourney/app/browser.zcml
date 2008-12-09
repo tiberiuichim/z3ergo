@@ -1,0 +1,11 @@
+<configure
+  xmlns="http://namespaces.zope.org/browser">
+
+  <addMenuItem
+    title="Learning Journing Site"
+    description="Host learning journeys for users"
+    class="learningjourney.app.site.Application"
+    for="*"
+    permission="zope.ManageContent" />
+
+</configure>

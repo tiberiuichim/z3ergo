@@ -1,0 +1,57 @@
+Ecosistemul Zope 3
+==================
+
+* Aproximativ 400 de pachete de extensie in svn.zope.org, neincluzand
+  namespace-urile zope.* si zope.app.*
+* Comunitatea zope este cea mai mare producatoare de egg-uri
+* Pachete de extensie:
+    * stocarea fisierelor de dimensiuni mari
+        * z3c.extfile, z3c.blobfile
+    * reutilizarea view-urilor prin customizarea template-ului
+        * z3c.template
+    * separarea continutului unui view de layout-ului lui
+        * z3c.layout, z3c.pagelet
+    * formulare avansate, extensibilile
+        * z3c.form
+    * memoizarea view-urilor
+        * lovely.responsecache
+    * headere pentru caching
+        * z3c.caching
+        * z3c.responseheaders
+        * z3ext.cacheheaders
+    * ETAG support
+        * z3c.conditionalviews
+    * diverse field-uri si widgeturi
+        * z3c.schema.*
+        * z3c.widget.*
+    * integrare "first class citizen" cu RDB-uri
+        * STORM
+        * zope.sqlalchemy, z3c.saconfig, ore.alchemist
+    * includerea automata a resurselor (css, js)
+        * zc.resourcelibrary
+        * z3c.resourceinclude
+    * concatenarea resurselor
+        * z3c.resourcecollector
+    * configurare ZCA "locala"
+        * z3c.baseregistry
+    * engine de templating mai rapid
+        * z3c.pt
+    * workflow
+        * hurry.workflow
+    * configurare negociere, internationalizare continut
+        * z3c.language.*
+    * framework pentru operatiuni de configurare, specifice unui pachet
+        * z3c.configurator
+    * dezvoltarea de aplicatii
+        * zc.buildout, pb.recipes.pydev (pt Eclipse)
+    * executarea de taskuri asincron
+        * lovely.remotetask, zc.async
+    * partajarea sesiunii intre clientii zeo
+        * lovely.session
+    * generarea flexibila de tabele si listing-uri
+        * z3c.table, zc.table
+* Compatibil WSGI
+    * zope.paste pentru integrare cu Paster
+    * repoze.profiler
+    * Deliverance
+    * repoze.squeeze

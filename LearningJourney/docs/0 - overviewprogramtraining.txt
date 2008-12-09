@@ -1,0 +1,246 @@
+Prezentare generala Zope 3
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* server de aplicatii/framework, cu precadere aplicatii "web"
+  * publicarea obiectelor, in mod tipic prin http
+  * MVC - model controversat, nu foarte clara distinctia in Zope
+    * View - template-ul
+    * controler - real: zope publisher. practic: BrowserView
+    * model - contextul paginii, in general obiectul persistent
+  * sistem de securitate aplicat view-urilor si obiectelor
+  * foloseste zope.interface si ZCA, librarii python. Trebuie intelese ca sa
+    poti intelege zopeul
+
+
+Filozofie
+~~~~~~~~~
+
+* "pythonic" - spre deosebire de z2. Cele mai multe pachete de pe Cheeseshop
+  apartin comunitatilor Zope (zc.buildout, Plone, zope3, Grok)
+* Filozofie: transformarea din programator "Zope" in programator "Python web"
+* codul netestat si nedocumentat este considerat defect
+  * Odata inteles ZCA, codul z3-ului este curat si usor de inteles
+* Filozofie: cod cat mai curat, elegant
+  * pastreaza obiectele de "continut" cat mai curate
+  * se folosesc aspecte ale obiectelor pentru tot ce nu tine cu adevarat de
+obiect
+
+
+Puncte tari, puncte slabe
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* relativ complex de invatat (S)
+* folosirea cu predominanta a ZCA-ului = un obstacol de trecut (S)
+* comunitate relativ mica, dar in crestere (influxul de dezvoltatori Plone) (S)
+* documentatia relativ complexa, nu foarte vizibila incepatorilor (S)
+* necesita dezvoltatori cu experienta (S)
+* Integrarea ORM si Paster nu fac parte din "core" (S)
+* folosirea de tehnologii noi, inovative, adecvate pentru crearea de aplicatii
+  complicate (T)
+* folosirea ZCA-ului inseamna flexibilitate (plugability) (T)
+* Ofera solutii noi, inovatoare, pentru problemele tipice dezvoltarii de 
+  aplicatii web (T)
+* numar mare de extensii open source, ce rezolva diverse probleme (T)
+* compatibilitate WSGI (T)
+* adaptabilitate la noile tehnologii (Grok, repoze.bfg) (T)
+* dezvoltatori cu experienta, lucreaza de peste 15 ani cu tehnologii Zope (T)
+* librariile zope sunt refolosibile in orice gen de aplicatii Python (T)
+
+
+Facilitati incorporate
+~~~~~~~~~~~~~~~~~~~~~~
+
+* Publicarea prin web cu sistem de tip graph de traversare
+  * obiectele sunt amplasate intr-un arbore, fiecare obiect poate publica
+    anumite pagini
+* Persistenta obiectelor:
+    * important este mecanismul de tranzactii
+    * traditional cu ZODB
+    * main nou cu RDB-uri: STORM, SQLAlchemy
+    * datorita ZCA, putem publica orice gen de obiecte prin web (gen obiecte
+      "tranziente")
+* API pentru dezvoltarea de aplicatii
+  * z3 tinde mai nou catre o filozofie gen "librarie" decat un server de
+    aplicatii la care adaugi aplicatii
+* Sistem de templating (ZPT, DTML, z3c.pt => chameleon.* - de 10x mai rapid,
+  pentru Plone cu aproape 200% mai rapid)
+  * sistemul de templating poate fi extins cu noi tipuri de expresii
+    * ex: lovely.tal, z3ext.formatter
+  * expresia path('/root/obj/@@hello')
+* zope.interface - o extensie Python pentru documentarea obiectelor
+  * provide, implements
+* Cautarea obiectelor se face cu ajutorul catalogului
+* Anotarea obiectelor
+  * IAttributeAnnotatable
+* Internationalizare interfata
+* Internationalizare continut cu z3c.language.switch
+* Nu mai exista nici o forma de dezvoltare de aplicatii prin web
+  * in baza de date sta doar continutul, nu si obiecte artifact pentru
+    programare
+* Achizitia nu mai este folosita, nu mai este implicita
+  * "Nobody expects the spamish acquisition"
+  * problemele rezolvate de achizitie sunt acum rezolvate prin:
+      * folosirea de utilitare locale cu ajutorul site-urilor locale
+      * template-urile nu mai stau in baza de date
+      * sistemul mai inteligent de layere si skinuri
+* Folosirea de aspecte ale obiectelor, folosind adaptarea
+* Exista un sistem de generare si procesare a evenimentelor
+  * obiectele au un "lifecycle": ObjectCreatedEvent, ObjectModifiedEvent,
+    ObjectAddedEvent, ObjectRemovedEvent
+* librarie pentru construirea de form-uri autogenerate din schema
+* Securitate bazata pe interactiuni, principals
+* API pentru trimiterea de mesaje email asincron
+* API pentru reprezentarea in/out a obiectelor pentru protocoale XMLRPC, 
+  ftp, webdav
+* Framework pentru test: unit-teste, teste de integrare, teste functionale
+    * doctest-urile
+
+HowTos
+~~~~~~
+* Administrarea serverului prin ZMI
+* Crearea unui pachet python si incarcarea ca si extensie Zope
+    * paster create -t zope
+    * ZCML, namespace-uri zcml
+        * dotted names, package resolution
+        * overriding zcml
+        * http://namespaces.zope.org/zope
+        * http://namespaces.zope.org/browser
+        * http://xml.zope.org/namespaces/tal
+        * Scrierea unei extensii zcml
+        * Martian (configurare fara zcml)
+* Citirea documentatiei Zope (apidoc, introspectie, README-uri)
+    * APIDOC (http://localhost:8080/++apidoc++,
+              http://apidoc.zope.org/++apidoc++/)
+* Pagini simple: obiectul request, response, form-uri manuale, formuri automate
+    * Inregistrarea de actiuni noi pentru ZMI (menuri)
+    * Error logging, debugging
+* View-uri, agregare view-uri in pagini
+* Zope Component Architecture
+    * zope.interface
+        * componentele sunt obiectele care asigura una sau mai multe interfete.
+        Pe baza interfetei putem sa identificam tipul unui obiect, indiferent de
+        clasa care l-a produs. Cu ajutorul interfetelor putem sa interogam
+        aspecte ale altor obiecte, chiar daca aparent nu au legatura cu
+        interfata noastra. Exemplul cu ISized
+        * zope.schema
+    * Adaptori, multi-adaptori
+        * Trusted adapters, locatable adapters
+    * Utilitare globale, utilitare locale
+    * Subscriberi, handlere
+        * evenimente
+    * Site-uri locale
+    * z3c.baseregistry
+* Validarea obiectelor cu FieldProperty
+* Containere, restrictionarea continutului in containere
+* Indexarea obiectelor pentru cautare rapida
+    * unique ids
+    * indexarea se face pe baza interfetei
+    * Extensiile sunt usor de scris
+    * zope.app.catalog
+    * zc.catalog
+    * lovely.catalog
+    * hurry.query
+    * textindexng
+    * integrare solr, xapian, lucene
+* Anotarea obiectelor
+    * IAttributeAnnotatable
+* IZopeDublinCore mappings
+* Crearea si folosirea de macro pages
+* Internationalizarea interfetei
+    * se foloseste standardul gettext
+    * utilitare folosite
+    * message domains in ZCML
+    * localizare
+* Internationalizarea continutului cu z3c.language.switch
+* Crearea unui layer nou, a unui skin nou
+    * z3c.layer.minimal
+    * reinregistrarea unei pagini per layer
+* Securitate, permisiuni
+    * Declararea de roluri si permisiuni
+    * Roluri si permisiuni alocate local
+* Formulare cu zope.formlib
+    * Add, Edit, generarea din interfete multiple, adaptarea contextului
+    * vocabulare
+    * editarea de obiecte tranziente
+    * crearea unui field type si a unui widget
+    * patern-uri AJAX
+    * template-uri modificate
+* Content providers, viewlet-uri, viewlet manager
+* Relatii intre obiecte cu z3c.relationfield
+* Autentificare cu PAU
+    * diferenta dintre Principal si InternalPrincipal
+* Custom traversing: z3c.traverser
+* Extinderea cu parametri a content providerilor
+* Migrarea bazei de date cu generations
+* Setari pentru apache, nginx
+* Construirea de aplicatii cu zc.buildout
+    * virtualenv
+
+
+Ecosistemul Zope 3
+~~~~~~~~~~~~~~~~~~
+* Aproximativ 400 de pachete de extensie in svn.zope.org, neincluzand
+  namespace-urile zope.* si zope.app.*
+* Comunitatea zope este cea mai mare producatoare de egg-uri
+* Pachete de extensie:
+    * stocarea fisierelor de dimensiuni mari
+        * z3c.extfile, z3c.blobfile
+    * reutilizarea view-urilor prin customizarea template-ului
+        * z3c.template
+    * separarea continutului unui view de layout-ului lui
+        * z3c.layout, z3c.pagelet
+    * formulare avansate, extensibilile
+        * z3c.form
+    * memoizarea view-urilor
+        * lovely.responsecache
+    * headere pentru caching
+        * z3c.caching
+        * z3c.responseheaders
+        * z3ext.cacheheaders
+    * ETAG support
+        * z3c.conditionalviews
+    * diverse field-uri si widgeturi
+        * z3c.schema.*
+        * z3c.widget.*
+    * integrare "first class citizen" cu RDB-uri
+        * STORM
+        * zope.sqlalchemy, z3c.saconfig, ore.alchemist
+    * includerea automata a resurselor (css, js)
+        * zc.resourcelibrary
+        * z3c.resourceinclude
+    * concatenarea resurselor
+        * z3c.resourcecollector
+    * configurare ZCA "locala"
+        * z3c.baseregistry
+    * engine de templating mai rapid
+        * z3c.pt
+    * workflow
+        * hurry.workflow
+    * configurare negociere, internationalizare continut
+        * z3c.language.*
+    * framework pentru operatiuni de configurare, specifice unui pachet
+        * z3c.configurator
+    * dezvoltarea de aplicatii
+        * zc.buildout, pb.recipes.pydev (pt Eclipse)
+    * executarea de taskuri asincron
+        * lovely.remotetask, zc.async
+    * partajarea sesiunii intre clientii zeo
+        * lovely.session
+    * generarea flexibila de tabele si listing-uri
+        * z3c.table, zc.table
+* Compatibil WSGI
+    * zope.paste pentru integrare cu Paster
+    * repoze.profiler
+    * Deliverance
+    * repoze.squeeze
+    
+
+Directii de dezvoltare a Zope-ului
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Software matur, in expansiune
+* Zope 2 inca traieste
+* Grok
+* Repoze
+* Repoze.bfg
+* WSGI

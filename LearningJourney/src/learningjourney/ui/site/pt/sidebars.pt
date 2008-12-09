@@ -1,0 +1,23 @@
+<div metal:define-macro="box_search">
+  <li id="search">
+    <div metal:use-macro="context/@@standard_macros/search_box" />
+  </li>
+</div>
+
+<div metal:define-macro="box_categories">
+  <li id="categories-1">
+    <h2>Categories</h2>
+    <ul>
+      <li>
+        <a href="#" title="View all posts">Uncategorized</a>
+        (3)
+      </li>
+    </ul>
+  </li>
+</div>
+
+<div metal:define-macro="box_login">
+  <li id="login_info">
+    <div metal:use-macro="context/@@standard_macros/login_form" />
+  </li>
+</div>

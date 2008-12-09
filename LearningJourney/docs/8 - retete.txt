@@ -1,0 +1,114 @@
+Modalitati de rezolvare a unor probleme tipice
+==============================================
+
+* Administrarea serverului prin ZMI
+* Crearea unui pachet python si incarcarea ca si extensie Zope
+    * paster create -t zope
+    * ZCML, namespace-uri zcml
+        * dotted names, package resolution
+        * overriding zcml
+        * http://namespaces.zope.org/zope
+        * http://namespaces.zope.org/browser
+        * http://xml.zope.org/namespaces/tal
+        * Scrierea unei extensii zcml
+        * Martian (configurare fara zcml)
+* Citirea documentatiei Zope (apidoc, introspectie, README-uri)
+    * APIDOC (http://localhost:8080/++apidoc++,
+              http://apidoc.zope.org/++apidoc++/)
+* Pagini simple: obiectul request, response, form-uri manuale, formuri automate
+    * Inregistrarea de actiuni noi pentru ZMI (menuri)
+    * Error logging, debugging
+* View-uri, agregare view-uri in pagini
+* Zope Component Architecture
+    * zope.interface
+        * componentele sunt obiectele care asigura una sau mai multe interfete.
+        Pe baza interfetei putem sa identificam tipul unui obiect, indiferent de
+        clasa care l-a produs. Cu ajutorul interfetelor putem sa interogam
+        aspecte ale altor obiecte, chiar daca aparent nu au legatura cu
+        interfata noastra. Exemplul cu ISized
+        * zope.schema
+    * Adaptori, multi-adaptori
+        * Trusted adapters, locatable adapters
+    * Utilitare globale, utilitare locale
+    * Subscriberi, handlere
+        * evenimente
+    * Site-uri locale
+    * z3c.baseregistry
+* Validarea obiectelor cu FieldProperty
+* Containere, restrictionarea continutului in containere
+* Indexarea obiectelor pentru cautare rapida
+    * unique ids
+    * indexarea se face pe baza interfetei
+    * Extensiile sunt usor de scris
+    * zope.app.catalog
+    * zc.catalog
+    * lovely.catalog
+    * hurry.query
+    * textindexng
+    * integrare solr, xapian, lucene
+* Anotarea obiectelor
+    * IAttributeAnnotatable
+* IZopeDublinCore mappings
+* Crearea si folosirea de macro pages
+* Internationalizarea interfetei
+    * se foloseste standardul gettext
+    * utilitare folosite
+    * message domains in ZCML
+    * localizare
+* Internationalizarea continutului cu z3c.language.switch
+* Crearea unui layer nou, a unui skin nou
+    * z3c.layer.minimal
+    * reinregistrarea unei pagini per layer
+* Securitate, permisiuni
+    * Declararea de roluri si permisiuni
+    * Roluri si permisiuni alocate local
+* Formulare cu zope.formlib
+    * Add, Edit, generarea din interfete multiple, adaptarea contextului
+    * vocabulare
+    * editarea de obiecte tranziente
+    * crearea unui field type si a unui widget
+    * patern-uri AJAX
+    * template-uri modificate
+* Content providers, viewlet-uri, viewlet manager
+* Relatii intre obiecte cu z3c.relationfield
+* Autentificare cu PAU
+    * diferenta dintre Principal si InternalPrincipal
+* Custom traversing: z3c.traverser
+* Extinderea cu parametri a content providerilor
+* Migrarea bazei de date cu generations
+* Setari pentru apache, nginx
+* Construirea de aplicatii cu zc.buildout
+    * virtualenv
+
+
+
+
+class IPicturesInfo(Interface):
+   images = List(title=u"Image",
+                 value_type=Relation(title="Relation")
+                 )
+
+class PicturesInfoAnotation(persistent):
+   images = None
+   
+from zope.annotation.factory import factory
+annotation_factory = factory(PicturesInfoAnotation, 'images_pointers')
+              
+class IHasImages(Interface):
+   """marker, objects have pointers to images"""
+
+class Pilot:
+   implements(IHasImages, IAttributeAnnotatable)
+   #e gresit sa pui IHasImage sa faca inherit la AttributeAnnotatable
+   #HasImages tine de comportament, AttributeAnnotatable tine deja de implementarea anotarilor
+
+class Team:
+   implements(IHasImages, IAttributeAnnotatable)
+
+class Stadium:
+   pass
+   
+class PicturesAlbum: 
+   contains(IImage)
+
+#apoi poti sa faci IPicturesInfo(pilot_instance) sau IPicturesInfo(team_instance) 

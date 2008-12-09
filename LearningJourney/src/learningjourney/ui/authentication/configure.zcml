@@ -1,0 +1,15 @@
+<configure xmlns="http://namespaces.zope.org/browser"
+  i18n_domain="learningjourney">
+
+  <page name="login_macros" for="*" template="pt/macros.pt"
+    layer="learningjourney.ui.ILearningJourneyLayer" permission="zope.Public" />
+
+  <page name="loginForm.html" class=".page.LoginPage"
+    for="learningjourney.app.interfaces.ILearningJourneyApplication"
+    layer="learningjourney.ui.ILearningJourneyLayer" permission="zope.View" />
+
+  <page name="logout.html" class=".page.LogoutPage"
+    for="learningjourney.app.interfaces.ILearningJourneyApplication"
+    layer="learningjourney.ui.ILearningJourneyLayer" permission="zope.View" />
+
+</configure>

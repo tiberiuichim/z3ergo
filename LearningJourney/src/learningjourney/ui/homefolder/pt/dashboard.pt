@@ -1,0 +1,18 @@
+<html metal:use-macro="context/@@standard_macros/page">
+  <body>
+    <div metal:fill-slot="body">
+      <h1>Personal dashboard</h1>
+      <p tal:condition="view/can_add_entry">
+        <a href="./@@add_entry.html">Add a new entry</a>
+        in your learning journal
+      </p>
+
+      <ul>
+        <li tal:repeat="entry context/values">
+          <div tal:replace="structure entry/@@detail" />
+          <div tal:replace="structure entry/@@admin" />
+        </li>
+      </ul>
+    </div>
+  </body>
+</html>

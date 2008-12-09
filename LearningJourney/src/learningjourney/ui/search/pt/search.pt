@@ -1,0 +1,15 @@
+<html metal:use-macro="context/@@standard_macros/page">
+  <body>
+    <div metal:fill-slot="body" tal:define="results view/results">
+      <h1>Search results</h1>
+      <p tal:condition="not: results">
+        No results
+      </p>
+      <ul>
+        <li tal:repeat="entry results">
+          <span tal:replace="structure entry/@@detail" />
+        </li>
+      </ul>
+    </div>
+  </body>
+</html>

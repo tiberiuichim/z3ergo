@@ -1,0 +1,13 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser" i18n_domain="learningjourney">
+
+  <adapter
+    for="learningjourney.schema.html.interfaces.IHtml
+         zope.publisher.interfaces.browser.IBrowserRequest"
+    provides=".interfaces.IRichTextWidget" factory=".RichTextWidget"
+    permission="zope.Public" />
+
+  <browser:resourceDirectory directory="lib"
+    name="tinymce" />
+
+</configure>

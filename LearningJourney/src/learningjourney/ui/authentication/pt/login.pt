@@ -1,0 +1,11 @@
+<html metal:use-macro="context/@@standard_macros/page">
+  <body>
+    <div metal:fill-slot="body">
+      <div metal:use-macro="context/@@standard_macros/login_form" />
+    </div>
+    <div metal:fill-slot="sidebar-left">
+    </div>
+    <div metal:fill-slot="sidebar-right">
+    </div>
+  </body>
+</html>

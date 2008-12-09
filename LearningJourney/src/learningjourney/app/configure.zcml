@@ -1,0 +1,51 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+  i18n_domain="learningjourney">
+
+  <class class=".site.Application">
+    <require permission="lj.ModifyContent"
+      interface="zope.app.container.interfaces.IWriteContainer" />
+    <require permission="zope.View"
+      interface="zope.app.container.interfaces.IReadContainer" />
+    <allow attributes="getSiteManager" />
+    <require permission="zope.ManageServices" attributes="setSiteManager" />
+  </class>
+
+  <class class=".userhome.UserHome">
+    <require permission="lj.ModifyContent"
+      interface="zope.app.container.interfaces.IWriteContainer" />
+    <require permission="zope.View"
+      interface="zope.app.container.interfaces.IReadContainer" />
+    <implements interface="zope.annotation.interfaces.IAttributeAnnotatable">
+      This will give this object its own
+      security manager
+    </implements>
+  </class>
+
+  <class class=".userhome.LearningEntry">
+    <require permission="zope.View" interface=".interfaces.ILearningEntry" />
+    <require permission="lj.ModifyContent" set_schema=".interfaces.ILearningEntry" />
+    <implements interface="zope.annotation.interfaces.IAttributeAnnotatable">
+      We need Dublin Core support for
+      this one
+    </implements>
+    <implements interface="zope.index.text.interfaces.ISearchableText" />
+  </class>
+
+  <class class=".registration.Registrations">
+    <require permission="zope.View" set_schema=".interfaces.IRegistrations" />
+    <require permission="zope.ManageContent"
+      interface="zope.app.container.interfaces.IReadContainer" />
+  </class>
+
+  <adapter factory=".registration.ConfirmationEmail" />
+  <adapter factory=".userhome.UserHomeMetadata" />
+
+  <subscriber handler=".event.configure_site" />
+  <subscriber handler=".event.send_registration_mail" />
+
+  <utility name="lj.tags" component=".vocabulary.getTagsVocabulary"
+    provides="zope.schema.interfaces.IVocabularyFactory" />
+
+  <include file="browser.zcml" />
+
+</configure>

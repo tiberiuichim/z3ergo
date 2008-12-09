@@ -1,0 +1,16 @@
+<html metal:use-macro="context/@@standard_macros/page">
+  <body>
+    <div metal:fill-slot="body">
+      <h1>Entry</h1>
+      <p>
+        (Last change:
+        <span tal:content="view/dc/modified/date" />
+        )
+        <a href="" tal:attributes="href string:${context/@@absolute_url}/@@edit.html">Edit</a>
+        <a href=""
+          tal:attributes="href string:${context/__parent__/@@absolute_url}/@@delete?name=${context/__name__}">Delete</a>
+      </p>
+      <div tal:content="structure context/text" />
+    </div>
+  </body>
+</html>

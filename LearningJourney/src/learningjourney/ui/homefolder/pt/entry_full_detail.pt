@@ -1,0 +1,7 @@
+<a tal:attributes="href context/@@absolute_url" tal:content="view/title" />
+(Author:
+<a href="" tal:attributes="href string:${context/@@absolute_url}/@@index.html"
+  tal:content="context/__parent__/__name__">somebody</a>
+Last changed:
+<span tal:content="view/dc/modified/date" />
+) 

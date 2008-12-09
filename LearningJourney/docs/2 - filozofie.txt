@@ -1,0 +1,38 @@
+Filozofia ecosistemului Zope 3
+==============================
+
+Cand Zope 2 a fost publicat, era un produs extrem de inovativ (in perioada in 
+care a aparut Zope, CGI-ul inca era considerat tehnologie de varf). Totusi 
+unele dintre alegerile si presupunerile facute in design-ul Zope 2-ului nu mai 
+sunt valabile in prezent, astfel incat Zope 3 a fost conceput in mare parte si 
+ca reactie la neajunsurile Zope 2.
+
+Astfel, in Zope 3 primeaza urmatoarele idei: 
+
+* este "pythonic". Urmeaza conventiile de structurare a codului, foloseste
+  librariile Python, pastreaza o structura simpla, usor de inteles a codului.
+* se promoveaza interoperabilitatea (se ofera sisteme de adaptare a librariilor
+  externe, este implementat standardul WSGI, se ofera flexibilitate in alegerea
+  mediului de persistenta, etc)
+* se doreste disparitia "programatorului de Zope" si inlocuirea acestuia cu 
+  "programatorul de aplicatii web Python"
+* codul se vrea a fi cat mai curat, elegant si testat, obiectele persistente nu
+  sunt incarcate cu functionalitate care nu le apartine in mod logic
+
+Un testament al flexibilitatii librariilor Zope 3 este integrarea acestora in 
+diverse aplicatii si framework-uri, printre care Plone, repoze.bfg, vudo, etc.
+De altfel, cele mai multe pachete de pe Cheeseshop (PyPI) apartin comunitatilor 
+Zope (Plone, Zope3, Grok, zc.buildout) 
+
+
+Slides
+~~~~~~
+
+* se doreste interoperarea cu librarii  
+incearca transformarea din programator "Zope" in programator "Python web"
+* codul netestat si nedocumentat este considerat defect
+    * Odata inteles ZCA, codul z3-ului este curat si usor de inteles
+* cod cat mai curat, elegant
+    * pastreaza obiectele de "continut" cat mai curate
+    * se folosesc aspecte ale obiectelor pentru tot ce nu tine cu adevarat de
+obiect

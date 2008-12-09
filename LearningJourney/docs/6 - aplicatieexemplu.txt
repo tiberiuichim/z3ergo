@@ -1,0 +1,804 @@
+O aplicatie exemplu
+===================
+
+LearningJourney este o aplicatie minimala realizata pentru a exemplifica 
+dezvoltarea unei aplicatii de gen CMS cu Zope 3. In principiu este foarte 
+similara unui sistem de blogging multi-user. Ca facilitati, ofera:
+
+* auto-inregistrarea utilizatorilor, cu un sistem de verificare a emailului
+* o zona de continut personala, protejata de roluri si permisiuni, in care
+  utilizatorul poate sa creeze continut personal
+* un tip simplu de continut ce contine un camp de text ce poate fi editat cu 
+  ajutorul editorului TinyMCE si un camp de taguri, pentru clasificarea 
+  inregistrarii
+* cautarea prin site folosind catalogul in textul inregistrarilor realizate 
+  de utilizatori
+* o pagina in care se face o clasificare simpla a inregistrarilor, pe baza 
+  tagurilor
+  
+
+Generarea skeletului aplicatiei
+-------------------------------
+Skeletul aplicatiei a fost generat folosind ZopeSkel, un proiect ce extinde 
+PasteScript cu un template (zope_app) pentru generarea unei aplicatii Zope 3.
+Aplicatia generata este o aplicatie WSGI ce poate fi configurata folosind unul
+dintre cele doua fisiere `ini` din radacina (in functie de modul in care se 
+doreste rularea aplicatiei - in mod `debug` sau pentru productie). 
+
+Pentru pornire, se foloseste
+
+`# bin/paster server debug.ini`
+
+sau 
+
+`# bin/learningjourney-ctl fg`
+
+Ambele comenzi vor porni aplicatia in modul debug.
+
+
+Structura aplicatiei
+--------------------
+Structura generata a aplicatiei este cea a unui pachet python dezvoltat folosind
+setuptools. In radacina se afla modulul setup.py ce configureaza pachetul, iar 
+codul in sine sta in namespace-ul learningjourney din directorul src. In 
+namespace-ul `learningjourney` 5 pachete, dintre care cele mai importante sunt
+`app` si `ui`. Namespace-ul `app` gazduieste modelel si logica aplicatiei ce 
+sunt independente de publicarea acestora ca si pagina web, iar pachetul `ui` 
+contine tot ceea ce tine de paginile web publicate de aplicatie (pagini, imagini
+si resurse CSS).
+
+ 
+Fisiere ZCML
+------------
+In radacina aplicatiei sta stau cateva fisiere zcml: site.zcml si apidoc.zcml. 
+Fisierele zcml sunt fisiere XML ce contin instructiuni de configurare a 
+componentelor folosite in codul aplicatiei si a librariilor Zope. Aceste 
+operatiuni de configurare au direct echivalent in cod Python si pot fi 
+realizate si prin cod, insa separarea in XML are mai multe roluri:
+
+* permite administratorilor site-ului sa configureze aplicatia fara a necesita
+  cunostinte de programare (se presupune ca XML-ul este un limbaj mai facil 
+  administratorilor)
+* sistemul de configurare ZCML nu permite suprascrieri ale unor componente prin
+  redefinirea lor. Pentru redefinere trebuie folosit un mecanism explicit de 
+  "override"
+* in general, face mai usoara programatorului identificarea mai usoara a 
+  componentelor din cadrul unui pachet, fara a fi necesara citirea codului
+  
+Un exemplu de baza al unui fisier zcml:
+
+<configure xmlns="http://namespaces.zope.org/zope" 
+           xmlns:browser="http://namespaces.zope.org/browser"
+           package="learningjourney" 
+           i18n_domain="learningjourney">
+   
+   <include file="configure.zcml" />
+   <include package=".ui" />
+   <includeOverrides file="overrides.zcml" />
+   
+   <configure package="z3c.widget.tiny">
+       <browser:resourceDirectory path="lib/resources" />
+   </configure>
+   
+</configure>
+
+Primul tag, `configure`, serveste drept directiva de grupare si specificare a 
+pachetului carui i se adreseaza directivele din interior. El defineste 
+namespaceul XML implicit drept http://namespaces.zope.org/zope si namespace-ul 
+cu prefixul browser drept http://namespaces.zope.org/browser. Acestea nu sunt
+singurele namespace-uri folosite.
+
+Directiva `include` foloseste la includerea unui nou pachet (in care este cautat
+un fisier cu numele configure.zcml si inclus in sistemul de configurare) sau
+un fisier anume, specificat cu calea completa, relativa la directorul fisierului
+curent. In cazul in care se foloseste un nume de pachet, acesta poate fi 
+indicat sub forma unui de pachet python indicat absolut (numele complet al
+pachetului) sau relativ (se poate folosi un punct la inceput pentru 
+identificarea unui pachet aflat in pachetul curent, sau doua puncte pentru 
+determinarea unui pachet aflat in pachetul parinte).
+
+Directiva `includeOverrides` serveste la identificarea unui fisier a carui
+configurare va avea intaietate in cazul in care se afla in conflict cu alte 
+directive de configurare.
+
+O referinta completa a dialectului ZCML se afla la 
+http://apidoc.zope.org/++apidoc++/. Alte directive ZCML vor fi discutate pe 
+parcurs.
+
+
+Bazele Zope Component Architecture
+----------------------------------
+Interfetele sunt unul dintre mecanismele fundamentale ale Zope 3. Ele sunt
+obiecte care specifica (documenteaza) comportamentul altor obiecte care declara
+ca le "asigura". O interfata specifica comportamentul prin: 
+
+* documentatie informala, sub forma de doc-stringuri
+* definire de atribute si metode
+* invariante, care sunt conditii pe care obiectele trebuie sa le indeplineasca
+  pentru a "indeplini" acea interfata.
+
+Astfel, o interfata descrie caracteristicile unui obiect, capacitatea lui. Ea
+descrie ceea ce face obiectul, nu si cum o face. Pentru a observa modul in care
+obiectul realizeaza ceea ce interfata declara, trebuie citita implementarea 
+obiectului, adica clasa acestuia.
+
+Folosirea interfetelor se poate spune ca apartine unui model de programare 
+(matern). De altfel, acestea sunt recomandate in "biblia paternurilor", "Design
+Patterns", ce recomanda sa se "programeze nu pentru o implementare, ci pentru o
+interfata". Definirea unei interfete ajuta in intelegerea sistemelor implicate
+si sunt primul pas pentru folosirea ZCA.
+
+Un exemplu de interfata:
+
+from zope.interface import Interface, Attribute, implements, provides
+
+class IBoardgame(Interface):
+   """Un element de invatare personala  """
+   
+   title = Attribute("title")
+   description = Attribute("description")
+   
+   def borrow(to_person):
+       """Permite modificarea proprietarului jocului prin imprumutare """
+       
+Se observa:
+* interfetele sunt clase ce mostenesc zope.interface.Interface (direct sau 
+  prin intermediari)
+* atributele sunt definite ca obiecte de tip Attribute
+* metodele nu trebuiesc implementate, ci doar definite si documentate. De aceea
+  nu este nevoie de declararea parametrului self in semnatura metodei
+
+O clasa ce va implementa interfata poate arata astfel:
+
+class Boardgame(object):
+    implements(IBoardgame)
+    
+    title = u""
+    description = u""
+    
+    def borrow(self, to_person):
+       self._location = "In acest moment cartea se afla la " + to_person 
+       
+Se remarca declaratia "implements(IBoardgame)", ce inregistreaza clasa Boardgame
+ca implementand interfata IBoardgame. La fel ca multe alte lucuri in Python, 
+aceasta declaratia are la baza un contract de tip "intelegere intre gentlemeni".
+Ea nu obliga la implementarea cu adevarat a interfetei de catre programator, 
+deci nu poate fi folosit la realizarea unui sistem de tip "static typing" in 
+Python. Ea poate fi folosita, in schimb, la determinarea capabilitatilor unui
+obiect:
+
+    >>> game = Boardgame()
+    >>> IBoardgame.providedBy(game)
+    True
+    >>> IBoardgame.implementedBy(Boardgame)
+    True
+    >>> list(providedBy(game))
+    [IBoardgame]
+    
+De retinut: o clasa implementeaza (va avea implements() in cod), un obiect
+"asigura" (provides()).
+
+zope.interface poate fi folosit si la decorarea cu interfete si a unor obiecte
+si clase care provin din librarii externe:
+
+    >>> classImplements(Boardgame, IBoardgame)
+    
+si echivalentul in zcml:
+
+    <class class=".app.Boardgame">
+        <implements=".interfaces.IBoardgame" /> 
+    </class>
+    
+    
+sau direct a obiectelor:
+
+    >>> alsoProvides(game, IBoardgame)
+
+Odata ce se cunosc interfetele, definitia componentei in intelegerea Zope este
+simpla: o componenta este un obiect care asigura cel putin o interfata. 
+Majoritatea claselor din cadrul Zope-ului sunt scrise astfel incat ele sa devina
+componente atunci cand sunt instantiate.    
+
+
+Alte facilitati oferite de ZCA
+------------------------------
+zope.component este o librarie bazata pe zope.interface care introduce cateva
+tipuri de componente, in fapt o implementare a unor modele de dezvoltare 
+(design patterns). Cele 4 componente de baza sunt:
+
+* adaptori
+* utilitare
+* subscribere
+* handlere
+
+Adaptorul este o implementare a modelului AOP (aspect oriented programming). El
+ajuta, cu ajutorul interfetelor, sa se obtina un aspect al unui obiect. In 
+procesul de adaptere sunt implicate obiectul adaptat si interfata ce determina
+aspectul care ne intereseaza asupra obiectului. Un exemplu:
+
+Sa presupunem ca avem un container in care se afla diverse obiecte. Unele sunt
+fisiere audio (mp3), altele sunt imagini, altele sunt fisiere text, etc. Ne 
+intereseaza sa afisam dimensiunea specifica fiecaruia dintre aceste obiecte. 
+Astfel, pentru fisierele audio va fi afisata marimea in timp, pentru imagini 
+marimea in pixeli, etc. 
+
+Solutiile care nu ar implica zope.component pot fi:
+* Construirea unei clase care sa cunoasca modul in care se extrage informatia 
+  din fiecare tip de obiect. Acest sistem este inflexibil: pentru a adauga
+  un nou tip de obiect in acel folder, clasa ar trebui completata in asa fel
+  incat sa stie despre acesta.
+* Implementarea, de catre fiecare obiect, a unei metode speciale care sa 
+  intoarca informatia care va fi afisata. Aceasta presupune ca acele obiecte
+  sa stie deja in ce sisteme vor fi integrate si are ca si consecinta 
+  supraincarcarea cu functionalitate a obiectelor.
+  
+Solutia oferita de adapteri este una eleganta, insa mai complexa:    
+
+Vom avea o interfata IDisplaySize care defineste modul in care se afiseaza 
+dimensiunea obiectelor:
+
+class IDisplaySize(Interface):
+    """Asigura informatii despre marimea obiectelor"""
+    
+    get_size():
+        """Afiseaza marimea, pentru utilizatori"""
+
+In codul care realizeaza afisarea marimii, aceasta va fi extrasa de pe fiecare
+obiect construind un adapter pentru fiecare obiect:
+
+    >>> size = getAdapter(IDisplaySize, obj).get_size()
+    
+Se remarca ca adaptorul ce este construit in urma apelarii getAdapter este o 
+componenta ce asigura (provides) interfata IDisplaySize. Prin constructia 
+adaptorului se poate obtine o implementare specifica fiecarui tip de context: 
+
+class Mp3DisplaySize(object):
+    zope.component.adapts(IMp3File)
+    zope.interface.implements(IDisplaySize)
+    
+    def __init__(self, context):
+        self.context = context
+            
+    def get_size(self):
+        sound_length = extract_track_size(context) 
+        return "%s seconds" % sound_length
+        
+class ImageDisplaySize(object)
+    zope.component.adapts(IImage)
+    zope.interface.implements(IDisplaySize)
+    
+    def __init__(self, context):
+        self.context = context
+    
+    def get_size(self):
+        width, height = get_image_size(context)
+        return "%s x %s px" % (width, height)
+        
+Astfel, in functie de tipul contextului (IMp3File sau IImage), va fi selectata 
+clasa care va fi folosita in constructia adapterului, obtinandu-se astfel un 
+obiect diferit ce va sti cum sa extraga informatia dorita din context.
+
+In loc de getAdapter(...) poate fi folosita ca si scurtatura constructia:
+
+    >>> IDisplaySize(obj).get_size()
+
+Exista si multiadapteri, care adapteaza mai mult de un obiect la o anumita 
+interfata. Cel mai des intalnit exemplu de multiadapter este pagina 
+(sau view-ul), ce adapteaza request-ul - informatia provenita de la utilizator,
+impreuna cu obiectul context, la un o informatie de tip IBrowserPublisher ce
+va fi intoarsa utilizatorului. Paginile sunt inregistrate ca multiadapteri cu 
+nume, asa ca nu mai trebuie sa specificam intefata la care vrem sa adaptam
+cele doua obiecte, pentru ca este una singura pentru acel nume si acel tip
+de request:
+
+    >>> view = getMultiAdapter((context, request), name='index.html')
+    >>> page_content = view()        
+
+Restul de componente (utilitare, subcribere, handlere) vor fi discutate pe 
+parcurs.
+   
+   
+Publicarea unei pagini simple
+-----------------------------
+Zope 3 ofera o varietate mare de modele de realizare si publicare a paginilor
+web. Cea mai simpla pagina nu are nevoie de cod Python, ci doar de un fisier 
+template ZPT. Paginile sunt si ele componente si trebuiesc inregistrate:
+
+<browser:page 
+    name="about.html" 
+    for="*" 
+    template="pt/about.pt" 
+    permission="zope.View" 
+    />
+    
+Se observa numele paginii ce va fi folosit pentru publicarea paginii prin web,
+calea catre template-ul care va fi folosit pentru generarea paginii, permisiunea
+pe care utilizatorul trebuie sa o aiba pentru a o accesa precum si atributul
+"for", care determina tipul contextului pentru care aceasta pagina va fi 
+disponibila.
+
+In cazul in care sunt declarate pagini cu acelasi nume se foloseste un mecanism
+de discriminare prin care este selectata clasa sau template-ul care vor fi
+folosite pentru generarea paginii. In discriminare vor fi interogate interfata
+(sau clasa) contextului precum si layer-ul (skin-ul) pe care este inregistrata
+pagina. Prin folosirea mecanismului de mosternire pot fi inregistrate pagini
+generice, care pot fi reimplementate, la nevoie, pentru tipuri de obiecte mai 
+concrete.
+
+Cand este vorba de context, acesta poate fi o cale cu puncte (dotted name)
+catre o clasa, catre o interfata sau asterixul, ce semnifica "toate tipurile
+de context" (sau zope.interface.Interface).
+
+
+Publicarea resurselor
+---------------------
+Resursele (imaginile, fisierele CSS si JS) sunt inregistrate cu ajutorul a doua
+taguri zcml aflate in namespaceul `browser`: browser:resource, ce inregistreaza
+o singura resursa, si `browser:resourceDirectory`, ce poate fi folosit pentru
+inregistrarea a unui director de resurse. Calea catre aceste resurse este 
+calculata ca fiind relativa la site-ul local (detalii mai jos), sub forma
+http://localhost/mysite/@@/styles.css
+
+Pentru calcularea acestei cai, in template, este folosita o constructie de 
+genul: <script tal:attributes="src context/++resource++myscripts/jquery.js" />
+
+Exemple se pot gasi in fisierele `src/learningjourney/ui/configure.zcml` si
+`src/learningjourney/widget/addremove/configure.zcml` si fisierele template
+`src/learningjourney/ui/site/pt/layout.pt` si 
+`src/learningjourney/widget/addremove/widget.pt`
+
+
+Obiecte persistente
+-------------------
+Pentru stocarea datelor in baza de date ZODB se folosesc clase care mostenesc
+clasa Persistent. Acestea sunt foarte simple, asa cum se poate observa luand
+ca exemplu learningjourney.app.userhome.LearningEntry: se mosteneste Persistent,
+se implementeaza interfata ILearningEntry si se implenteaza metodele si 
+atributele definite in interfata.
+
+Urmatoarea cerinta pentru integrarea cu Zope-ul este aceea de a face declaratii
+de securitate pentru obiectele generate. In cazul in care acestea nu exista,
+accesul la obiect va fi interzis (si va declansa errori de tip Forbidden). 
+Aceasta declaratie se face in zcml:
+
+    <class class=".userhome.LearningEntry">
+        <require 
+            permission="zope.View" 
+            interface=".interfaces.ILearningEntry" />
+        <require 
+            permission="zope.ManageContent" 
+            set_schema=".interfaces.ILearningEntry" />
+    </class>
+    
+In cadrul tag-ului require se foloseste attributul `interface` pentru a desemna
+o interfata ce defineste metodele accesibile si atributele disponibile pentru 
+citire, precum si permisiunea necesara. Se foloseste `set_schema` pentru a 
+desemna permisiunea care este necesara pentru a modifica atributele desemnate
+de interfata indicata. 
+
+In cazul containerelor sunt implicate doua interfete necesare pentru desemnarea
+permisiunilor: IReadContainer si IWriteContainer. Exemplu:
+
+  <class class=".site.Application">
+    <require permission="lj.ModifyContent"
+      interface="zope.app.container.interfaces.IWriteContainer" />
+    <require permission="zope.View"
+      interface="zope.app.container.interfaces.IReadContainer" />
+    <allow attributes="getSiteManager" />
+    <require permission="zope.ManageServices" attributes="setSiteManager" />
+  </class>
+
+Pentru restrictionarea tipurilor de obiecte ce pot fi adaugate intr-un 
+container, sau restrictionarea tipurilor de container in care poate fi adaugat
+un obiect se folosesc constrangerile din zope.container.constraints. Un 
+exemplu se afla in `learningjourney.app.userhome`.
+
+Alte elemente care mai pot aparea in aceasta declaratie sunt:
+
+* tag-ul <allow>, ce poate fi folosi pentru a marca accesul la anumite atribute 
+desemnate de o interfata sau direct prin numirea directa drept publice 
+(necesita permisiunea zope.Public)
+* optiunile `attributes`, `set_attributes` si `like_schema` care permit 
+  configurarea permisiunilor la nivel de atribute, precum si copierea setarilor
+  de securitate ale unei alte clase.
+* tag-ul `<implements`, descris mai sus, ce permite declararea implementarii
+  unei interfete de catre o clasa, independent de codul Python
+  
+
+Interactiunea cu utilizatorul prin obiectul request
+---------------------------------------------------
+Mai sus am vazut cum se poate realiza o pagina simpla folosind un template. In 
+mod normal este nevoie de un nivel de logica si interactiune mai mare cu 
+utilizatorul. Astfel, putem folosi o clasa pentru generarea paginii, pe care o
+inregistram astfel:
+
+class HelloWorldPage(object):
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+        
+    def __call__(self) 
+        return u"Hello world"
+        
+<browser:page 
+    name="hello.html"
+    class=".pages.HelloWorldPage"  
+    for="*" 
+    permission="zope.View" 
+    />
+    
+Se observa ca pagina publicata este obtinuta prin apelarea instantei paginii - 
+se apeleaza metoda __call__ si aceasta apare ca un multiadapter pentru context 
+si request. In realitate clasa definita aici este folosita ca `mixin` pentru 
+generarea la `runtime` a unui nou tip, astfel incat nu este necesara mostenirea 
+clasei BrowserPage sau scrierea explicita a metodei __init__.
+
+Un exemplu de utilizare a unei clase in combinatie cu un template ZPT este 
+pagina explore.html (ExplorePage), asociata obiectelor de tip 
+`learningjourney.app.interfaces.ILearningJourneyApplication`, ce este
+definita in modulul learningjourney.ui.site.page.
+
+In cadrul template-urilor asociate unei clase, instanta clasei si atributele ei 
+pot fi accesate prin intermediul obiectului `view`. Contextul paginii se afla 
+in variabila `context`, iar requestul in variabila `request`. 
+
+Deoarece obiectul request din cadrul paginii ofera acces la datele asociate
+metodei GET sau POST care a fost folosita pentru a accesa pagina, se pot 
+implementa pagini formulare simple, folosind o metoda de genul:
+
+class SampleForm(object):
+    def __call__(self):
+        if 'submit' in self.request.form:
+            return u'Hello, %s' % self.request.form.get('name', 'John Doe')
+        else:
+            return ViewPageTemplateFile('sampleform.pt')()
+
+Template-ul `sampleform.pt` ar contine:
+
+<form method="POST">
+<input type="text" name="name" />
+<input type="submit" name="submit" />
+</form>
+
+Prin obiectul response accesibil ca atribut al request-ului se pot stabili
+diversi parametri ai raspunsului intors catre vizitator (de exemplu, se pot 
+seta headere sau se poate implementa un redirect). Un exemplu simplu de astfel 
+de formular se gaseste in clasa EntryDeletePage din 
+`learningjourney.ui.homefolder.page` sau clasa `DashboardRedirect` din
+acelasi modul.
+
+O conventie folosita in Zope 3 folosita pentru a indica mecanismului de 
+traversare ca este vorba de o pagina sau un view, este aceea de a prefixa 
+numele paginii in cadrul url-ului cu doua semne `@`. Impreuna formeaza doua 
+"ochi", cu o trimitere directa la ceea ce reprezinta, un "view". 
+
+Exemplu: http://localhost/@@index.html
+
+Prin folosirea acestei conventii se scurcircuiteaza mecanismul de traversare, 
+astfel ca se incearca direct construirea unui view cu numele index.html, in loc
+sa se caute un obiect cu numele "index.html" in cadrul obiectului context 
+curent.
+
+De asemenea, in cadrul template-urilor, paginile poti fi inserate direct, prin
+apelarea de genul: <div tal:content="structure item/@@detail" />, unde item
+este un obiect persistent (ar putea fi context, sau un obiect din cadrul unui
+repeat, iar detail este numele unui view inregistrat si disponibil pentru acel
+tip de obiect. View-ul (sau pagina) `detail` va fi construita cu obiectul `item`
+ca si context.
+
+
+Augumentarea interfetelor cu date despre tipul atributelor
+----------------------------------------------------------
+O alta librarie pilon in cadrul Zope 3-ului este zope.schema, o extensie a 
+librariei zope.interface care permite specificarea mai exacta a tipului 
+atributelor din cadrul interfetelor. In acest fel interfetele se transforma in
+"schema" si pot fi folosite pentru diverse sarcini: validarea valorilor 
+obiectelor, generarea de formulare complexe, automate, generare de pagini de 
+vizualizare a obiectelor, etc. Prin folosirea extensiei zope.schema,
+atributele devin "field"-uri, iar impreuna cu 
+`zope.interface.fieldproperty.FieldProperty`, se poate implementa un mecanism
+foarte simplu de validare automata a valorilor obiectului, pe baza schemei (vezi
+modul de implementare a clasei `LearningEntry` in 
+`learningjourney.app.userhome`.
+ 
+zope.schema defineste o multitudine de tipuri de campuri, de exemplu
+o linie de text (TextLine), o data (Date), o valoare de tip adevarat/false 
+(Bool), o lista (List), etc. Bineinteles, se pot scrie si alte tipuri de 
+campuri.
+
+Un exemplu de interfata/schema este ILearningEntry, din modulul
+`learningjourney.app.interfaces`. Aceasta interfata este folosita pentru 
+implementarea automata a doua formulare:
+* un formulare de creare si adaugare a obiectelor de tip LearningEntry
+* un formular de editare a obiectelor de tip ILearningEntry
+Ambele de gasesc in modulul `learningjourney.ui.homefolder.page`
+
+
+Site-uri si registre globale
+----------------------------
+In cazul in care configurarea ZCA se face prin zcml, aceasta este inregistrata
+de catre Zope in cadrul unui registru global. Exista totusi posibilitatea de a 
+creea un registru ZCA "local", care sa existe la nivelul unui container 
+persistent din ZODB. Acest container va purta numele de "site" si la nivelul 
+lui se pot configura si inregistra setari care sunt "locale" acelui site, care
+vor avea precedenta fata de cele inregistrate la nivel global sau mai sus in
+ierarhia ZODB. Un exemplu de inregistrare a unui site local este codul aflat
+in `learningjourney.app.event.configure_site`, unde sunt create si inregistrate
+si utilitarele locale. De asemenea, caile generate pentru accesarea resurselor 
+(CSS, imagini, JS) sunt relative la locatia acestui site.
+
+
+Utilitare
+---------
+Un alt tip de componenta definit de zope.component sunt utilitare. Acestea sunt
+de doua tipuri: globale si locale. In principiu, acestea se comporta similar
+cu obiectele de tip `singleton` din alte limbaje si modele de programare. Pe
+baza unei interfete se poate obtine obiectul unic ce este inregistrat ca 
+utilitar, indiferent ca acesta este global sau local.
+
+Pentru inregistrarea unui utilitar global se foloseste tagul <utility>, in 
+care se desemneaza interfata pe care acesta o va asigura, numele pe care il 
+va avea si componenta care va fi folosita pentru construirea utilitarului.
+
+<utility 
+    provides="ILanguageNegociation" 
+    component=".app.LanguageNegociation" 
+    permission="zope.Public" />
+    
+Pentru inregistrarea locala, la nivelul site manager-ului local, se foloseste
+functia zope.component.registerUtility sau functionalitatea din interfata ZMI
+aflata in pagina "Registration".
+
+Exemple de folosire se gasesc in `learningjourney.ui.search.page.SearchPage`.
+
+
+Indexarea si cautarea obiectelor
+--------------------------------
+Deoarece cautarea prin obiecte dupa anumite atribute este o operatie relativ
+costisitoare din punct de vedere al timpului, solutia implementata in mod
+clasic de catre zope este cea a indexarii valorilor intr-un catalog.
+
+Catalogul este un obiect persistent inregistrat ca utilitar local pentru
+interfata zope.app.catalog.interfaces.ICatalog, fara nume. Astfel, el poate
+fi obtinut folosind
+
+    >>> catalog = zope.component.getUtility(ICatalog)
+
+In cadrul catalogului sunt adaugati indcsii (exemplu in 
+`learningjourney.app.event`), pentru care se configureaza interfata (aspectul)
+obiectului pe care il indexeseaza precum si atributul pe care il indexeaza. 
+Acesti indecsi stocheaza stocheaza ca referinte catre obiectul indexat un 
+intid - un numar intreg, unic in cadrul bazei de date, desemnat fiecarui 
+obiect de catre utilitarul zope.app.intid.interfaces.IIntIds. 
+
+Indexarea obiectelor se face atunci cand acestea sunt adaugate sau sterse din
+containere (pe baza evenimentelor ObjectAddedEvent, ObjectRemovedEvent), precum
+si atunci cand se declanseaza un eveniment ObjectModifiedEvent.
+Exemplu:
+
+    >>> obj.title = u"My title"
+    >>> zope.event.notify(ObjectModifiedEvent(obj))
+    
+La operatiunea de indexare a unui obiect participa fiecare index din catalog.
+Se ia interfata desemnata indexului si se verifica daca obiectul implementeaza
+acea interfata sau daca exista un adapter care sa asigure interfata pentru 
+obiectul indexat. Odata gasit adapterul, se indexeza valoarea atributului 
+inregistrat in configurarea indexului. Un exemplu de folosire a cautarii se 
+gaseste in `learningjourney.ui.search.page`. 
+
+
+Anotarea obiectelor
+-------------------
+Un alt concept introdus de Zope 3 in scopul de a mentine obiectele cat mai
+"curate" este acela de anotare. Cu ajutorul anotarii pot fi atasate date 
+suplimentare obiectelor. De exemplu, sa presupunem ca avem obiecte de tipul
+Boardgame:
+
+class IBoardgame(Interface):
+    name = zope.schema.TextLine(title=u"Numele jocului"
+
+class Boardgame(Persistent):
+    implements(IBoardgame)
+    
+    name = u""
+    
+Dorim sa atasam o lista cu toate datele cand acel joc a folosit. Aceste date 
+stau in obiecte de tip UsageInfo:
+
+class IUsage(Interface):
+    date = Date(title=u"Data folosirii")
+
+class Usage(Persistent):
+    date = None
+    
+    def __repr__(self):
+        return "Used at %s" % self.date
+
+Lista o vom implementa annotand obiectele de tip Boardgame cu informatie de tip
+IUsageInfo:
+ 
+class IUsageInfo(Interface):
+    usages = List(  title=u"Dates when used",
+                    value_type=Object(title=u"Usage",
+                                      schema=IUsage)
+                  )
+
+class UsageInfo(Persistent):
+    implements(IUsageInfo)
+    adapts(IBoardgame)
+    
+    usages = None
+    
+Obiectele de tip UsageInfo vor fi stocate in annotarea obiectelor de tip 
+IBoardgame. Anotarea in sine este un adapter ce se construieste folosind
+functia `factory` din zope.annotation.factory
+
+    >>> from zope.annotation.factory import factory
+    >>> usage_info_annotation = factory(UsageInfo)
+    >>> zope.component.provideAdapter(usage_info_annotation)
+
+De obicei configurarea ultimei linii se face in zcml astfel:
+<zope:adapter factory=".annotations.usage_info_annotation" />
+
+In final, folosirea anotarii in cod este foarte simpla:
+
+    >>> usage_info = IUsageInfo(some_boardgame)
+    >>> usage_info.usages.append(Usage(datetime.datetime.now()))
+    >>> print usage_info.usages
+
+Annotarea nu este ceva care sa fie in mod implicit asigurat tutoror obiectelor
+persistente. Pentru ca anotarea sa fie disponibila pentru un obiect, acesta
+trebuie sa fie adaptabil la interfata IAnnotations (de exemplu, ar putea sa 
+existe un adaptor care sa stocheze anotarea obiectelor intr-un RDB). In cazul
+obiectelor persistente bazate pe ZODB, acestea pot fi facute usor adaptabile
+prin marcarea claselor acestora ca implementand interfata 
+`zope.annotation.interfaces.IAttributeAnnotatable`. Exista un adapter care
+adapteaza acest tip de obiecte la interfata IAnnotations prin stocarea 
+anotarilor intr-un atribut `__annotations__`. 
+
+
+DublinCore
+----------
+Informatia de tip DublinCore este stocata de stocata de catre libraria 
+zope.dublincore implicit in annotarea obiectelor anotabile. De aceea, pentru a 
+beneficia de DublinCore pentru obiecte este suficient sa se marcheze clasa
+unui obiect ca implementand IAttributeAnnotatable.
+
+DublinCore inseamna o sumedenie de atribute si informatii. Exista doua 
+modalitati de a modifica modul in care este determinata aceasta informatie (in
+afara, bineinteles, a implementarii directe a informatiei).
+
+Primul mod, se poate declara un attribut ca fiind o proprietate DublinCore:
+
+from zope.dublincore.property import DCProperty
+class Book:
+    implements(IBook)
+    name = DCProperty("title")
+    authors = DCProperty("creators")
+    
+Al doilea mod implica crearea manuala a adaptorului DC folosind un `factory`, 
+caz in care putem specifica o mapare intre campurile DC si campurile obiectului. 
+
+dc_annotation = partialAnnotatableAdapterFactory(
+                                        {'name':'title', 'author':'creators'})
+
+Adapterul este inregistrat astfel:
+                                        
+<zope:adapter 
+    for=".interfaces.IBook" 
+    factory=".annotations.dc_annotation" 
+    provides="zope.dublincore.interfaces.IZopeDublinCore"/>
+
+
+Sistemul de layere si skinuri
+-----------------------------
+Librariile CMF din Zope 2 ofera conceptul de Layere pe care sunt inregistrate
+resursele si paginile si Skinu-uri, care grupeaza layer-ele pentru a oferi o 
+anumita infatisare si capabilitati ale unui website. Aceste concepte se regasesc
+in Zope 3 intr-o forma simplificata si usor de implementate.
+
+Un layer este determinat de o interfata ce mosteneste 
+`zope.publisher.browser.interfaces.IBrowserRequest`. Odata definit layer-ul, 
+obiectele de tip browser (gen pagini, view-uri si resurse) pot fi inregistrate
+pe acel layer folosind atributul "layer" in zcml. Un exemplu de layer se gaseste
+in modul __init__ din `learningjourney.ui`
+
+Un skin este un layer care a fost desemnat ca avand tipul IBrowserSkinType, plus
+numele care il va avea acel skin. Exemplu se gaseste in 
+`learningjourney/ui/configure.zcml`.
+
+Pentru selectarea skinului folosit se poate folosi un namespace traverser 
+special in URL, de genul:
+
+    http://localhost:8080/++skin++lj/Application/@@index.html
+
+In cadrul aplicatiei LearningJourney a fost folosit pachetul de extensie
+z3c.layer.minimal, care ofera un layer foarte simplu care nu are inregistrat
+decat paginile de erori.
+
+
+Folosirea macro-urilor in template-uri
+--------------------------------------
+Datorita faptului ca Zope 3 nu ofera publicarea directa a template-urilor si
+atasarea lor de orice tip de context, folosirea macro-urilor in Zope 3 este mai
+anevoioasa.
+
+Metoda clasica in Zope 3 de folosire a macro-urilor este inregistrarea unor
+pagini care ofera macro-uri intr-o lista dintr-o pagina denumita 
+`standard_macros`. Folosirea lor poate fi observata in cadrul pachetului
+`learningjourney.ui.site`. 
+
+Pentru a face mai usoara utilizarea acestora, comunitatea Zope a realizat un
+pachet de extensie, `z3c.macro`, ce inregistreaza un nou tip de expresie TAL,
+`macro` si care poate fi folosit pentru inregistrarea directa paginilor care
+ofera macro-uri.
+
+
+Internationalizarea interfetei
+------------------------------
+La nivelul template-urilor internationalizarea este cea "clasica", prezenta si 
+in Zope 2, folosind atributele din namespace-ul i18n. De asemenea, in cadrul
+fisierelor ZCML se poate specifica domeniul in cadrul caruia vor fi traduse
+atributele de tipul "title" sau "label" are tagurilor din acel fisier. 
+
+La nivelul codului python se foloseste un MessageIdFactory, ce construieste un
+nou id pentru mesaje. Ca exemplu, se poate observa definirea unui messageid 
+in modulul learningjourney.i18n si folosirea acestuia in 
+`learningjourney.app.interfaces`. Pentru modificarea limbii pe baza caruia ii 
+este prezentata interfata site-ului catre utilizator se poate folosi namespace
+traverserul ++lang++, de genul:
+
+    http://localhost:8080/++skin++lj/++lang++ro/Application/@@index.html
+    
+O alta modalitatea este cea de a modifica limba preferata a utilizatorului in
+cadrul requestului, folosind interfata IBrowserPreferredLanguages, putand tine
+astfel cont de setarile dintr-o sesiune sau un cookie.
+
+
+Securitate, permisiuni
+----------------------
+Sistemul de securitate al Zope-ului este unul relativ complex, dar este 
+totodata flexibil si puternic. La baza sistemului de securitate stau 
+interactiunile si principalii (obiecte reprezentand utilizatorii). Obiectele
+de tip "principal" sunt reconstruite pentru fiecare request, de obicei pe baza 
+informatiei extrase din request. Utilitarul global care genereaza obiectele
+`principal` este inregistrat pentru interfata 
+`zope.app.security.interfaces.IAuthentication`. Implementarea oferita de Zope
+se numeste Pluggable Authentication Utility si ofera un sistem de pluginuri
+prin care se poate stabili modul in care se extrage informatia despre 
+credentiile de autentificare ale utilizatorului si sursele de utilizatori cu 
+care aceste informatii sunt folosite pentru a verifica veridicitatea lor. Un 
+exemplu complet de construire a unui sistem de autentificare cu PAU se gaseste 
+in learningjourney.app.event. Obiectul de tip principal este stocat in request
+si poate fi accesat de acolo (de exemplu, pentru afisarea in interfata a 
+username-ului sau verificarea faptului ca utilizatorul este autentificat). Modul
+in care poate fi folosit se poate vedea concret in pachetul 
+`learningjourney.ui.authentication`
+
+Exista cateva directive pentru definirea tipurilor de principali (autentificati,
+neautentificati, etc). Acestea se pot observa in fisierul site.zcml din radacina 
+aplicatiei. La runtime principalii pot fi construiti si pe baza unor informatii
+stocate in baza de date (sursa de utilizatori). Zope ofera o astfel de sursa
+de utilizatori in forma unui container (PrincipalFolder), ce stocheaza obiecte
+de tipul IInternalPrincipal - atentie, acestea sunt doar informatii despre 
+principali, nu principali in sine. Sursa de utilizatori si plugin-ul de 
+extragere a secretelor de autentificare din request sunt obiecte in containerul
+PAU, iar utilitarului PAU i se specifica pluginurile de tip extragere si cele de 
+tip sursa de utilizatori, precum si si ordinea lor. Toate acestea se pot observa
+in `learningjourney.app.event`
+
+Accesul la obiecte si la proprietatile acestora se protejeaza cu permisiuni, 
+asa cum s-a putut observa in capitolul `Obiecte persistente`. Pentru usurarea
+managementului permisiunilor se foloseste conceptul de roluri: un principal,
+intr-un anumit context, poate avea un anumit rol. Acelui rol i se pot permite
+anumite permisiuni. Pentru alocarea unui rol unui principal (utilizator), se
+adapteaza contextul la interfata IPrincipalRoleManager, astfel:
+
+    >>> IPrincipalRoleManager(context).assignRoleToPrincipal('lj.Owner', 
+                                                    request.principal.id)
+                                                    
+Declararea de noi permisiuni, roluri, precum si aprobarea permisiunilor pentru
+roluri se poate observa in fisierul custom-security.zcml din radacina 
+aplicatiei.
+

@@ -1,0 +1,9 @@
+Directii de dezvoltare a Zope-ului
+==================================
+
+* Software matur, in expansiune
+* Zope 2 inca traieste
+* Grok
+* Repoze
+* Repoze.bfg
+* WSGI

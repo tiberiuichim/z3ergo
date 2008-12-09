@@ -1,0 +1,9 @@
+<html metal:use-macro="context/@@standard_macros/view">
+  <body>
+    <div metal:fill-slot="body">
+      <h1>About this site</h1>
+      <p>This website is an implementation of a learning tool: help
+        students track their learning journey.</p>
+    </div>
+  </body>
+</html>

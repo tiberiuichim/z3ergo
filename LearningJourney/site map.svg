@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   sodipodi:docname="site map.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <defs
+     id="defs4">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective10" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.35"
+     inkscape:cx="22.142857"
+     inkscape:cy="520"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1400"
+     inkscape:window-height="999"
+     inkscape:window-x="0"
+     inkscape:window-y="24" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect2393"
+       width="300"
+       height="548.57141"
+       x="197.14287"
+       y="135.21931" />
+    <g
+       id="g2397"
+       transform="translate(-80,-454.28571)">
+      <rect
+         y="476.18109"
+         x="93.4758"
+         height="100"
+         width="722.85718"
+         id="rect2395"
+         style="fill:#a0522d;fill-opacity:1;stroke:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <flowRoot
+         transform="matrix(3.6781592,0,0,3.6781592,64.177414,264.04381)"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         id="flowRoot2383"
+         xml:space="preserve"><flowRegion
+           id="flowRegion2385"><rect
+             style="fill:#ffffff"
+             y="63.790752"
+             x="45.714287"
+             height="68.571426"
+             width="654.28571"
+             id="rect2387" /></flowRegion><flowPara
+           id="flowPara2389">Header stuff</flowPara></flowRoot>    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:32.34774017px;font-style:normal;font-weight:normal;fill:#f5f5f5;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="203.71725"
+       y="190.98685"
+       id="text2404"><tspan
+         sodipodi:role="line"
+         id="tspan2406"
+         x="203.71725"
+         y="190.98685">Lista de posturi </tspan><tspan
+         sodipodi:role="line"
+         x="203.71725"
+         y="231.42152"
+         id="tspan2408">din topicul curent</tspan></text>
+    <rect
+       style="fill:#808000;fill-opacity:1;stroke:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect2410"
+       width="162.85715"
+       height="551.42859"
+       x="22.857143"
+       y="135.21931" />
+    <text
+       id="text2412"
+       y="193.84399"
+       x="40.860111"
+       style="font-size:32.34774017px;font-style:normal;font-weight:normal;fill:#f5f5f5;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       xml:space="preserve"><tspan
+         id="tspan2416"
+         y="193.84399"
+         x="40.860111"
+         sodipodi:role="line">Lista</tspan><tspan
+         y="234.27867"
+         x="40.860111"
+         sodipodi:role="line"
+         id="tspan2420">de</tspan><tspan
+         y="274.71335"
+         x="40.860111"
+         sodipodi:role="line"
+         id="tspan2422">topicuri</tspan></text>
+    <rect
+       y="135.21931"
+       x="508.57144"
+       height="551.42859"
+       width="217.14287"
+       id="rect2424"
+       style="fill:#daa520;fill-opacity:1;stroke:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <text
+       id="text2426"
+       y="176.70113"
+       x="526.5744"
+       style="font-size:32.34774017px;font-style:normal;font-weight:normal;fill:#f5f5f5;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       xml:space="preserve"><tspan
+         id="tspan2430"
+         y="176.70113"
+         x="526.5744"
+         sodipodi:role="line">Lista</tspan><tspan
+         y="217.1358"
+         x="526.5744"
+         sodipodi:role="line"
+         id="tspan2434">de</tspan><tspan
+         y="257.57047"
+         x="526.5744"
+         sodipodi:role="line"
+         id="tspan2436">taguri</tspan><tspan
+         y="298.00516"
+         x="526.5744"
+         sodipodi:role="line"
+         id="tspan2438" /><tspan
+         y="338.43982"
+         x="526.5744"
+         sodipodi:role="line"
+         id="tspan2440">Calendar</tspan><tspan
+         y="378.87451"
+         x="526.5744"
+         sodipodi:role="line"
+         id="tspan2442">de</tspan><tspan
+         y="419.30917"
+         x="526.5744"
+         sodipodi:role="line"
+         id="tspan2444">posturi</tspan></text>
+  </g>
+</svg>

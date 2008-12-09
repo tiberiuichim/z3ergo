@@ -1,0 +1,3 @@
+   
+      Desi Zope 3 este foarte usor de extins si modificat, incat nimic nu este batut
+in cuie, in principiu i se pot atribui urmatoarele aplicatii

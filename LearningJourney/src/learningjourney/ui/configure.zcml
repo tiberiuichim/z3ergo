@@ -1,0 +1,35 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser" i18n_domain="learningjourney">
+
+  <interface interface=".ILearningJourneyLayer" name="lj"
+    type="zope.publisher.interfaces.browser.IBrowserSkinType" />
+
+  <browser:view name="site_url" class=".views.SiteUrl"
+    layer=".ILearningJourneyLayer" permission="zope.Public" for="*" />
+
+  <browser:page name="pdb" class=".views.DebugPage" layer=".ILearningJourneyLayer"
+    permission="zope.Public" for="*" />
+
+  <browser:resourceDirectory name="css"
+    layer="learningjourney.ui.ILearningJourneyLayer" directory="resources/css" />
+
+  <browser:resourceDirectory name="img"
+    layer="learningjourney.ui.ILearningJourneyLayer" directory="resources/img" />
+
+  <configure package="learningjourney.widget.tinymce">
+    <browser:resourceDirectory directory="lib"
+      name="tinymce" layer="learningjourney.ui.ILearningJourneyLayer" />
+  </configure>
+
+  <configure package="learningjourney.widget.addremove">
+    <browser:resource file="lib.js" name="addremove.js"
+      layer="learningjourney.ui.ILearningJourneyLayer" />
+  </configure>
+
+  <include package=".authentication" />
+  <include package=".homefolder" />
+  <include package=".registration" />
+  <include package=".search" />
+  <include package=".site" />
+
+</configure>

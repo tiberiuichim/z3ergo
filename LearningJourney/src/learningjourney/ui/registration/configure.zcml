@@ -1,0 +1,12 @@
+<configure xmlns="http://namespaces.zope.org/browser"
+  i18n_domain="learningjourney">
+
+  <page name="register.html" class=".page.RegistrationPage"
+    for="learningjourney.app.interfaces.ILearningJourneyApplication"
+    layer="learningjourney.ui.ILearningJourneyLayer" permission="zope.View" />
+
+  <page name="confirm.html" class=".page.ConfirmationPage"
+    layer="learningjourney.ui.ILearningJourneyLayer" permission="zope.Public"
+    for="learningjourney.app.interfaces.ILearningJourneyApplication" />
+
+</configure>

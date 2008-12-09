@@ -1,0 +1,45 @@
+Prezentare generala
+===================
+
+Zope 3 este un server de aplicatii ce ofera o infrastructura pentru dezvoltarea
+de aplicatii web. O mare parte din infrastructura (framework-ul) acestuia pot 
+fi folosite si independent de Zope 3, sub forma de librarii Python.
+
+Dezvoltarea Zope 3 a inceput in 2002, ca o reactie la experienta castigata prin
+realizarea serverului de aplicatii Zope 2. Prima versiune publica (Zope 3.0) a 
+fost publicata in 2004.
+
+Designul infrastructurii pe care o reprezinta Zope 3 a fost in mare parte 
+centrat pe nevoile companiilor mari si ai clientilor Corporatiei Zope, in mod 
+special avandu-se in vedere realizarea de aplicatii cu un nivel de logica 
+complicata. Ca urmare, el poate fi folosit direct pentru dezvoltarea de 
+aplicatii pentru companii mari, folosind cele mai noi paradigme de dezvoltare. 
+
+In prezent Zope 3 reprezinta doua lucruri:
+
+* serverul de aplicatii, "clasic", ce ofera o solutie integrata pentru 
+  dezvoltarea de aplicatii web
+* dar si librariile acestuia, ce nu depind de serverul de aplicatii si pot fi 
+  folosite in orice aplicatie Python
+
+Principalele componente care fac posibile dezvoltarea de aplicatii web cu Zope 
+sunt:
+
+* publicarea unui graph de obiecte prin diverse protocoale, in mod tipic http
+* ofera o infrastructura similara celei MVC pentru publicarea paginilor
+* are un sistem de securitate ce poate fi aplicat obiectelor si paginilor
+* integreaza Zope Component Architecture (ZCA)
+
+
+Slides
+~~~~~~
+
+* server de aplicatii/framework, cu precadere aplicatii "web"
+    * publicarea obiectelor, in mod tipic prin http
+    * MVC - model controversat, nu foarte clara distinctia in Zope
+        * View - template-ul
+        * controler - real: zope publisher. practic: BrowserView
+        * model - contextul paginii, in general obiectul persistent
+    * sistem de securitate aplicat view-urilor si obiectelor
+    * foloseste zope.interface si ZCA, librarii python. Trebuie intelese ca sa
+      poti intelege Zope

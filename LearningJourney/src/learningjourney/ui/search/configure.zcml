@@ -1,0 +1,12 @@
+<configure xmlns="http://namespaces.zope.org/browser"
+  i18n_domain="learningjourney">
+
+  <page name="search_macros" for="*"
+    layer="learningjourney.ui.ILearningJourneyLayer" permission="zope.View"
+    template="pt/search_macros.pt" />
+
+  <page name="search.html" class=".page.SearchPage"
+    for="learningjourney.app.interfaces.ILearningJourneyApplication"
+    layer="learningjourney.ui.ILearningJourneyLayer" permission="zope.View" />
+
+</configure>

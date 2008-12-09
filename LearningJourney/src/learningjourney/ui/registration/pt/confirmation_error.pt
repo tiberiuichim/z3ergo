@@ -1,0 +1,8 @@
+<html metal:use-macro="context/@@standard_macros/page">
+  <body>
+    <div metal:fill-slot="body">
+      <h1>Error</h1>
+      <p>Your registration could not be confirmed.</p>
+    </div>
+  </body>
+</html>

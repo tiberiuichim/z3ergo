@@ -1,0 +1,63 @@
+<tal:defs
+  define="      fieldName view/name;
+                fromBox string:${fieldName}_unselected; 
+                toBox string:${fieldName}_selected;
+                addBox string:${fieldName}_new;
+                available_items view/choices;
+                selected_items view/_getFormValue;
+                selected_tokens python: [v.token for v in selected_items]
+                ">
+
+  <script tal:attributes="src context/++resource++addremove.js"></script>
+
+  <table border="0" class="addremovewidget">
+    <thead>
+      <tr>
+        <th>Available:</th>
+        <th>
+          &nbsp;
+        </th>
+        <th>Selected:</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <select size="10" name="widget.choices" tal:attributes="id fromBox; name fromBox">
+            <tal:rep tal:repeat="item available_items">
+              <option tal:attributes="value item/token"
+                tal:content="item/value" tal:condition="python: item.token not in selected_tokens" />
+            </tal:rep>
+          </select>
+        </td>
+        <td>
+          <div>
+            <input type="button" value="Add &rarr;"
+              tal:attributes="onClick string:addremove_addItem('${fieldName}')" />
+          </div>
+          <div>
+            <input type="button" value="&larr; Remove"
+              tal:attributes="onClick string:addremove_removeItem('${fieldName}')" />
+          </div>
+        </td>
+        <td>
+          <select size="10" name="widget.selected"
+            tal:attributes="id toBox; name toBox;
+                    onDblClick string:addremove_addItem('${fieldName}')">
+            <option tal:repeat="item selected_items"
+              tal:attributes="value item/token" tal:content="item/value" />
+          </select>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <input type="text" tal:attributes="id addBox; name addBox" />
+  <input type="button" value="&rarr; Add New &uarr;"
+    tal:attributes="onClick  string:addremove_addNewItem('${fieldName}')" />
+  <input type="hidden" name="widget.marker" tal:attributes="name string:${view/name}.marker" />
+
+  <div tal:attributes="id string:${fieldName}_container;">
+    <input type="hidden" tal:repeat="item view/_getFormValue"
+      tal:attributes="value item; name  string:${fieldName}:list" />
+  </div>
+</tal:defs>

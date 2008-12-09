@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html metal:define-macro="page" i18n:domain="zope"
+  tal:define="site_url context/@@site_url">
+  <head metal:define-macro="head">
+    <title metal:define-slot="title"
+      tal:content="options/getTitle|view/getTitle|context/getTitle|default">Zope</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <link href="style.css" tal:attributes="href context/++resource++css/style.css"
+      rel="stylesheet" type="text/css" media="screen" />
+
+    <div metal:define-slot="headers">
+    </div>
+  </head>
+
+  <body>
+    <div id="header" metal:define-macro="header">
+      <div id="logo">
+        <h1>
+          <a href="#" tal:attributes="href context/@@site_url">Learning Journey</a>
+        </h1>
+        <h2>
+          <a href="http://code.google.com/p/z3ergo/">A Zope 3 demo site</a>
+        </h2>
+      </div>
+      <div id="menu" metal:define-slot="header_links">
+        <ul>
+          <li>
+            <a tal:attributes="href string:$site_url/@@index.html">Homepage</a>
+          </li>
+          <li>
+            <a tal:attributes="href string:$site_url/@@dashboard.html">Dashboard</a>
+          </li>
+          <li>
+            <a tal:attributes="href string:$site_url/@@explore.html">Explore</a>
+          </li>
+          <li>
+            <a tal:attributes="href string:$site_url/@@about.html">About</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <metal:fullpage metal:define-slot="fullpage">
+      <div id="page">
+        <metal:sidebarleft define-slot="sidebar-left">
+          <div id="sidebar1" class="sidebar">
+            <ul>
+              <div metal:use-macro="context/@@standard_macros/box_search" />
+            </ul>
+          </div>
+        </metal:sidebarleft>
+        <div id="content">
+          <metal:status define-slot="status_message">
+            <div id="status_message" tal:content="request/form/status_message"
+              tal:condition="python: 'status_message' in request.form" />
+          </metal:status>
+          <metal:content define-slot="body">
+            Content comes here
+          </metal:content>
+        </div>
+        <metal:sidebar-right define-slot="sidebar-right">
+          <div id="sidebar2" class="sidebar">
+            <ul>
+              <div metal:use-macro="context/@@standard_macros/box_login" />
+            </ul>
+          </div>
+        </metal:sidebar-right>
+        <div style="clear: both;"><!--  -->
+        </div>
+      </div>
+    </metal:fullpage>
+
+    <metal:footer define-slot="footer">
+      <div id="footer">
+        <p class="legal">
+          Powered by Zope 3
+        </p>
+        <p class="credit">
+          Design by
+          <a href="http://www.freecsstemplates.org/">Free CSS Templates</a>
+        </p>
+      </div>
+    </metal:footer>
+
+  </body>
+</html>
+
+<html metal:define-macro="view">
+  <div metal:use-macro="context/@@standard_macros/page">
+    <div metal:fill-slot='fullpage'>
+      <div id="page">
+        <div metal:define-slot="body" />
+      </div>
+    </div>
+  </div>
+</html>

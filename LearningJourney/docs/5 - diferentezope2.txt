@@ -1,0 +1,48 @@
+Diferente fata de Zope 2
+========================
+
+Desi unele concepte popularizate de Zope 2 si CMF se pastreaza, exista totusi
+cateva diferenta majore care trebuie avute in vedere de catre programatorii cu 
+experienta in Zope 2.
+
+
+Achizitia
+---------
+
+Achizitia este limitata si este explicita (de altfel, nici nu este folosita de 
+catre comunitate. Unele dintre problemele pentru care achizitia era necesara nu
+mai sunt valabile (nu se mai ofera posibilitati de dezvoltare prin web) sau
+sunt rezolvate prin folosirea de alte paradigme: utilitare locale, inregistrate
+la nivelul site-urilor locale si un sistem inteligent de layere si skinuri 
+implementat la nivelu codului Python.
+
+Dezvoltarea prin web
+--------------------
+A fost eliminata complet. Una dintre modificarile aduse de Zope 3 este refuzul
+de a mai stoca cod sau template-uri in baza de date. Cu toate acestea, exista 
+posibilitatea de a implementa forme de dezvoltare prin web folosind librariile 
+existente in Zope.
+
+RestrictedPython
+----------------
+Odata cu dezvoltarea prin web, RPython nu a mai fost necesar. Astfel, in 
+template-urile ZPT este permis accesul nerestrictionat la obiecte (accesul este
+totusi restrictionat de catre mecanismul standard al Zope-ului, ce ingradeste
+accesul la obiecte pe baza setarile explicite de securitate care au fost 
+atribuite acelui obiect). 
+
+
+
+Slides
+------
+
+* Achizitia nu mai este folosita, nu mai este implicita
+    * "Nobody expects the spamish acquisition"
+    * problemele rezolvate de achizitie sunt acum rezolvate prin:
+        * folosirea de utilitare locale cu ajutorul site-urilor locale
+        * template-urile nu mai stau in baza de date
+        * sistemul mai inteligent de layere si skinuri
+        
+* Nu mai exista nici o forma de dezvoltare de aplicatii prin web
+    * in baza de date sta doar continutul, nu si obiecte artifact pentru
+      programare

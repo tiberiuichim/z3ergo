@@ -1,0 +1,11 @@
+<metal:macro define-macro="search_box">
+  <h2>Search</h2>
+  <form id="searchform" method="get" action=""
+    tal:attributes="action string:${context/@@site_url}/@@search.html">
+    <div>
+      <input type="text" name="s" id="s" size="15" />
+      <br />
+      <input name="submit" type="submit" value="Search" id="submit" />
+    </div>
+  </form>
+</metal:macro>

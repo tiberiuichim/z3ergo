@@ -1,0 +1,5 @@
+A Comprehensive Guide to Zope Component Architecture 
+http://www.muthukadan.net/docs/zca.html
+
+Discutie despre necesitatea tipurilor de obiecte
+http://sayspy.blogspot.com/2008/12/why-explicit-type-checking-is-mostly.html

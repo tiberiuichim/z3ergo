@@ -1,0 +1,4 @@
+<a tal:attributes="href context/@@absolute_url" tal:content="view/title" />
+(Last change:
+<span tal:content="view/dc/modified/date" />
+) 

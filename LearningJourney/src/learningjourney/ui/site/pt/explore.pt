@@ -1,0 +1,13 @@
+<html metal:use-macro="context/@@standard_macros/page">
+  <body>
+    <div metal:fill-slot="body">
+      <h1>Explore</h1>
+      <div tal:repeat="tag_entry view/tags">
+        <h3 tal:content="tag_entry" />
+        <ul tal:define="entries python:view.get_entries(tag_entry)">
+          <li tal:repeat="entry entries" tal:content="structure entry/@@full_detail" />
+        </ul>
+      </div>
+    </div>
+  </body>
+</html>

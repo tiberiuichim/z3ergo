@@ -1,0 +1,12 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+  i18n_domain="learningjourney">
+
+  <permission id="lj.ModifyContent" title="LJ: Modify Content" />
+  <permission id="lj.AddLearningEntry" title="LJ: Add Learning Entry" />
+
+  <role id="lj.Owner" title="Owner" />
+
+  <grant permission="lj.ModifyContent" role="lj.Owner" />
+  <grant permission="lj.AddLearningEntry" role="lj.Owner" />
+
+</configure>

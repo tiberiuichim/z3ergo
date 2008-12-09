@@ -1,0 +1,31 @@
+<configure xmlns="http://namespaces.zope.org/browser"
+  i18n_domain="learningjourney">
+
+  <page name="index.html"
+    for="learningjourney.app.interfaces.ILearningJourneyApplication"
+    template="pt/index.pt" layer="learningjourney.ui.ILearningJourneyLayer"
+    permission="zope.View" />
+
+  <page name="explore.html" class=".page.ExplorePage"
+    for="learningjourney.app.interfaces.ILearningJourneyApplication"
+    layer="learningjourney.ui.ILearningJourneyLayer" permission="zope.View" />
+
+  <page name="about.html"
+    for="learningjourney.app.interfaces.ILearningJourneyApplication"
+    template="pt/about.pt" layer="learningjourney.ui.ILearningJourneyLayer"
+    permission="zope.View" />
+
+  <view name="standard_macros" class=".standardmacros.StandardMacros"
+    layer="learningjourney.ui.ILearningJourneyLayer" for="*"
+    allowed_interface="zope.interface.common.mapping.IItemMapping"
+    permission="zope.View" />
+
+  <page name="view_macros" for="*"
+    layer="learningjourney.ui.ILearningJourneyLayer" permission="zope.View"
+    template="pt/layout.pt" />
+
+  <page name="sidebar_macros" for="*"
+    layer="learningjourney.ui.ILearningJourneyLayer" permission="zope.View"
+    template="pt/sidebars.pt" />
+
+</configure>

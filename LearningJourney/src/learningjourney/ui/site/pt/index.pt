@@ -1,0 +1,8 @@
+<html metal:use-macro="context/@@standard_macros/page">
+  <body>
+    <div metal:fill-slot="body">
+      <h1>Welcome to Learning Journey!</h1>
+      <p>This website helps you remember what you have learned</p>
+    </div>
+  </body>
+</html>
