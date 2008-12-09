@@ -1,13 +1,7 @@
-#!/usr/bin/env python
+#!/bin/sh
 
-buildout_url = "http://svn.zope.org/*checkout*/zc.buildout/trunk/bootstrap/bootstrap.py"
+URL="http://svn.zope.org/*checkout*/zc.buildout/trunk/bootstrap/bootstrap.py"
 
-import urllib
-import os
+wget $URL
 
-if not os.path.exists('bootstrap.py'):
-    f = urllib.urlopen(buildout_url)
-    out = open('bootstrap.py','w')
-    out.write(f.read())
-
-import bootstrap
+/usr/bin/env python ./bootstrap.py
