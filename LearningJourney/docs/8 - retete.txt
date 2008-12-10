@@ -81,19 +81,11 @@ Modalitati de rezolvare a unor probleme tipice
     * virtualenv
 
 
+Folosirea anotarilor si a relatiilor
+------------------------------------ 
+Avand un folder cu imagini de pe circuitele de curse de masini, dorim sa 
+asignam o lista de imagini unor obiecte de tipul Pilor, Echipa sau Stadion.
 
-
-class IPicturesInfo(Interface):
-   images = List(title=u"Image",
-                 value_type=Relation(title="Relation")
-                 )
-
-class PicturesInfoAnotation(persistent):
-   images = None
-   
-from zope.annotation.factory import factory
-annotation_factory = factory(PicturesInfoAnotation, 'images_pointers')
-              
 class IHasImages(Interface):
    """marker, objects have pointers to images"""
 
@@ -102,13 +94,142 @@ class Pilot:
    #e gresit sa pui IHasImage sa faca inherit la AttributeAnnotatable
    #HasImages tine de comportament, AttributeAnnotatable tine deja de implementarea anotarilor
 
-class Team:
+class Team(Persistent):
    implements(IHasImages, IAttributeAnnotatable)
 
-class Stadium:
-   pass
+class Stadium(Persistent):
+   implements(IHasImages, IAttributeAnnotatable)
    
-class PicturesAlbum: 
+class PicturesAlbum(BTreeContainer): 
    contains(IImage)
 
-#apoi poti sa faci IPicturesInfo(pilot_instance) sau IPicturesInfo(team_instance) 
+class IPicturesInfo(Interface):
+   images = List(title=u"Image",
+                 value_type=Relation(title="Relation")
+                 )
+
+class PicturesInfoAnotation(Persistent):
+   images = None
+   
+from zope.annotation.factory import factory
+annotation_factory = factory(PicturesInfoAnotation, 'images_pointers')
+
+Exemple de folosire a relatiilor folosind anotarea:
+             
+IPicturesInfo(pilot_instance).images.append(img) 
+del IPicturesInfo(team_instance).images[1] 
+
+
+Internationalizarea continutului cu z3c.language.switch
+-------------------------------------------------------
+class BusinessI18NInfo(Persistent):
+    """The business content object"""
+
+    name = FieldProperty(IBusiness['name'])
+    address = FieldProperty(IBusiness['address'])
+    description = FieldProperty(IBusiness['description'])
+    promo_message = FieldProperty(IBusiness['promo_message'])
+
+
+class Business(I18n, BTreeContainer, Contained):
+    """ """
+    _factory = BusinessI18NInfo
+    _defaultLanguage = 'en'
+
+    implements(IBusiness)
+
+    name = I18nFieldProperty(IBusiness['name'])
+    address = I18nFieldProperty(IBusiness['address'])
+    description = I18nFieldProperty(IBusiness['description'])
+    promo_message = I18nFieldProperty(IBusiness['promo_message'])
+
+    def queryAttribute(self, name, language=None, default=None):
+        #override so that we never return empty stuff
+        value = super(Business, self).queryAttribute(name, language, default=None)
+        if value is None:
+            negotiator = getUtility(INegotiator, context=self)
+            lang = negotiator.serverLanguage
+            try:
+                value = self.getAttribute(name, language=lang)
+            except KeyError:
+                pass
+        if value is None:
+            #try to return something meaningful
+            langs = self.getAvailableLanguages()
+            if langs:
+                lang = langs[0]
+            try:
+                value = self.getAttribute(name, language=lang)
+            except KeyError:
+                pass
+        if value is not None:
+            return value
+        else:
+            return default
+            
+            
+Modificarea traversarii cu z3c.traverser
+----------------------------------------
+Traversing to business/images will return the annotation of BusinessImagesAlbum 
+for the Business
+
+  <subscriber
+    for="lovely.reviewportal.app.interfaces.IBusiness
+         zope.publisher.interfaces.browser.IBrowserRequest"
+    provides="z3c.traverser.interfaces.ITraverserPlugin"
+    factory=".traversing.BussinesTraverserPlugin" />
+
+    
+class BussinesTraverserPlugin(ContainerTraverserPlugin):
+    """Traverser that returns the images album at business/images/ for a Business
+    """
+
+    def publishTraverse(self, request, name):
+        if name == "images":
+            images = IBusinessImagesAlbum(self.context)
+            proxied_images = LocationProxy(images, container=self.context,
+                                           name="images")
+            return proxied_images
+        if name == "promotions":
+            promotions = IPromotions(self.context)
+            proxied_promotions = LocationProxy(promotions,
+                                               container=self.context,
+                                               name=name)
+            return proxied_promotions
+
+        subob = self.context.get(name)
+        if subob is None:
+            raise NotFound(self.context, name, request)
+        return subob
+
+
+Viewlet-uri, content providers
+------------------------------
+Folosirea content provider-ilor permite "componentizarea" paginilor web, prin
+dezvoltarea de componente ce pot fi refolosite in mai multe locatii si tipuri
+de obiecte context. Content provider-ii sunt implementati ca multiadapteri 
+pentru context, request si view. In acest fel ei pot fi modificati per tipul 
+contextului, layer-ul (sau skin-ul) asigurat de request si pagina (view-ul)
+pe care se gasesc. Folosind inregistrarea acestui multiadaptor cu un nume,
+el poate fi inserat in template-uri folosind expresia `provider`:
+
+<div tal:content="structure provider:lj.MyProvider" />
+
+Pentru a genera continutul content provider-ilor se foloseste un proces numit
+"two phase rendering". Prima data se apeleaza metoda `update` al CP-ului, apoi
+metoda `render` ce genereaza continutul ce va fi inserat in pagina. 
+
+O extensie a content providerilor sunt viewlet-urile si viewlet managerii. 
+Viewlet managerii sunt content provideri ce insereaza continut in pagini. 
+Diferenta fata de content providerii clasici este ca acestia, pentru generarea
+continutului, folosesc niste 'mini-view-uri', viewleturile. Acestea sunt 
+inregistrate ca multiadapteri ce tin cont de interfata viewlet manager-ului,
+a layer-ului, a contextului si a paginii in care se doreste aparitia lor. 
+Folosind aceste elemente de "discriminare" se poate controla aparitia lor.
+
+Pachetul zope.viewlet ofera doua noi tag-uri ZCML: browser:viewletManager si
+browser:viewlet. Atunci cand se inregistreaza un viewlet manager poate fi 
+specificata atat clasa care il genereaza cat si un template, astfel incat 
+sortarea viewlet-urilor si modul in care sunt ele inserate in pagina pot fi
+modificate dupa necesitati.
+

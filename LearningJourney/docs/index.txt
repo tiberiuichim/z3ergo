@@ -16,8 +16,9 @@ Contents:
    4 - facilitatiincorporate
    5 - diferentezope2
    6 - aplicatieexemplu
-   ecosistem
-   viitorzope3
+   7 - ecosistem
+   8 - retete
+   9 - viitorzope3
 
 Indices and tables
 ==================

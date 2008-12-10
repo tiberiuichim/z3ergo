@@ -1,6 +1,41 @@
 Directii de dezvoltare a Zope-ului
 ==================================
 
+Zope 3 este constituit din librarii mature, intarite de anii de folosinta in 
+diverse aplicatii online, care nu mai necesita modificari majore. Cu toate
+acestea, se bucura de prezenta unui grup de dezvoltatori cu experienta, implicati
+in proiecte care solicita dezvoltarea platformei de baza si a noi librarii 
+conexe. Numarul de dezvoltatori pe platforma Zope este in crestere, datorita:
+
+* migrarii spre platforma Zope 3 a unor sisteme populare precum Plone
+* aparitia initiativei Repoze, cu multitudinea de librarii Zope reimpachetate 
+  si gata de a fi folosite in alte medii (precum Turbogears)
+* au aparut noi proiecte de tip CMS (z3ext, vudo, hivurt, etc) care ruleaza 
+  folosind librariile Zope
+
+Printre directiile noi de dezvoltare a Zope-ului se numara:
+
+* Se urmareste micsorarea interdependentelor dintre pachetele Zope. Aceasta va
+  avea ca efect imbunatatirea performantelor (utilizare RAM mai mica, etc) si 
+  scaderea complexitatii vizibila dezvoltatorilor. 
+* Promovarea de solutii alternative la cele oferite de Zope in mod clasic, gen
+  librarii compatibile WSGI si integrarea cu RDB-uri folosind sisteme ORM
+* Coborirea nivelului de intrare ale noilor dezvoltatori prin platforma Grok, 
+  ce se doreste a fi o solutie simpla si puternica de dezvoltare de aplicatii 
+  web, dar complet compatibila cu Zope 3
+* Repoze.bfg, o noua platforma de dezvoltare de aplicatii web, bazata pe 
+  librariile Zope, WebOb si WSGI, cu o integrare destul de puternica a 
+  conceptelor din Zope 3, dar cu intentia de a reduce interdependenta dintre 
+  componente si de a fi cat mai agnostic in alegerile facute, oferind 
+  multiple cai pentru rezolvarea unor probleme (gen persistenta datelor, 
+  motorul de templating, etc).
+* Integrarea pachetelor chameleon ce ofera o mai buna performanta pentru 
+  template-uri precum si suport pentru sintaxe alternative, gen genshi
+
+
+Slides
+------
+
 * Software matur, in expansiune
 * Zope 2 inca traieste
 * Grok
