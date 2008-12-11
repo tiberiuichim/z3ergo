@@ -1,0 +1,29 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser">
+
+  <class class=".book.Book">
+    <require attributes="title author publisher" permission="zope.ManageContent" />
+    <implements interface=".book.IBook" />	<!-- necessary for browser:defaultView -->
+  </class>
+
+  <browser:page name="addbook.html" for="*"
+    class=".book.BookCreation" permission="zope.ManageContent"
+    allowed_attributes="addBook getBooks" />
+
+  <browser:page name="add" for="*" template="add.pt"
+    permission="zope.ManageContent" />
+
+  <browser:page name="view" for=".book.IBook" class=".book.BookView"
+    permission="zope.ManageContent" menu="zmi_views" title="View"
+    template="book_view.pt" />
+
+  <browser:page name="view2" for=".book.IBook" class=".book.BookView"
+    permission="zope.ManageContent" menu="zmi_views" title="View2"
+    template="book_view2.pt" />
+
+  <browser:page name="view3" for=".book.IBook" class=".book.BookView"
+    permission="zope.ManageContent" attribute="showBookInfo" />
+
+  <browser:defaultView name="view" for=".book.IBook" />
+
+</configure>

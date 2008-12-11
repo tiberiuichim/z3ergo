@@ -1,0 +1,15 @@
+<html metal:use-macro="context/@@standard_macros/view">
+	<div metal:fill-slot="body" tal:define="results view/getResults; locale request/locale; dateformatter python: locale.dates.getFormatter('dateTime', length='full')">
+
+		<h1>Search results</h1>
+
+		<div tal:condition="python: len(results) == 0">
+			No results
+		</div>
+		<ul tal:condition="python: len(results) > 0" >
+			<li tal:repeat="ob results">
+				<a href="" tal:attributes="href ob/@@absolute_url" tal:content="python: '%s modified at %s' % (ob.title, dateformatter.format(view.getObjectModified(ob)))" />
+			</li>
+		</ul>
+	</div>
+</html>

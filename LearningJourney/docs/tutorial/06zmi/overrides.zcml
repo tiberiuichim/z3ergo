@@ -1,0 +1,10 @@
+<configure
+	xmlns="http://namespaces.zope.org/zope"
+	>
+
+	<adapter
+    		for="zope.app.container.interfaces.IReadContainer"
+		provides="zope.size.interfaces.ISized"
+		factory="zope3tutorial.stage7.book.mySize"
+		/>
+</configure>

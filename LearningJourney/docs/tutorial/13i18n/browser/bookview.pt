@@ -1,0 +1,48 @@
+<div
+    xmlns:tal="http://namespaces.zope.org/tal"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    i18n:domain="zope3tutorial">
+<html metal:use-macro="context/@@standard_macros/view">
+
+<div metal:fill-slot="body">
+
+<div metal:define-macro="formbody" i18n:domain="zope3tutorial">
+
+	<h3 tal:condition="view/label"
+		tal:content="view/label"
+		metal:define-slot="heading"
+		>Display something</h3>
+
+	<div metal:define-slot="extra_info">
+		Rating: <span tal:content="context/@@show_rating" /> <br/>
+
+		<form method="GET" action="@@set_rating">
+			Set rating: <input type="submit" name="rating_value" value="0"/>
+			<input type="submit" name="rating_value" value="1"/>
+			<input type="submit" name="rating_value" value="2"/>
+			<input type="submit" name="rating_value" value="3"/>
+			<input type="submit" name="rating_value" value="4"/>
+			<input type="submit" name="rating_value" value="5"/>
+
+		</form>
+	</div>
+
+	<div class="row"
+		 metal:define-slot="extra_top" tal:replace="nothing">
+		<div class="label">Extra top</div>
+		<div class="field"><input type="text" style="width:100%" /></div>
+	</div>
+
+	<div metal:use-macro="context/@@form_macros/widget_rows" />
+
+	<div class="row"
+		 metal:define-slot="extra_bottom" tal:replace="nothing">
+		<div class="label" i18n:translate="extra_bottom">Extra bottom</div>
+		<div class="field"><input type="text" style="width:100%" /></div>
+	</div>
+
+  </div>
+
+</div>
+
+</html>

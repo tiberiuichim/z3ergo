@@ -1,0 +1,3 @@
+<div tal:define="view context/@@addbook.html">
+   <div tal:content="python: view.addBook('Prima carte', 'Tiberiu', 'Waterhouse')"></div>
+</div>

@@ -1,0 +1,42 @@
+<configure
+	xmlns="http://namespaces.zope.org/zope"
+	xmlns:browser="http://namespaces.zope.org/browser"
+	>
+
+	<utility
+		component=".fortune.fortuneteller"
+		permission="zope.View"
+		provides=".interfaces.IFortuneTeller"
+		/>
+
+	<browser:page
+		for="*"
+		name="get_fortune"
+		permission="zope.View"
+		class=".browser.FortuneView"
+		/>
+
+	<!-- SKIN DECLARATION -->
+	<interface
+		name="DemoSkin"
+		interface=".demoskin.IMySkin"
+		type="zope.publisher.interfaces.browser.IBrowserSkinType"
+		/>
+
+	<browser:page
+		name="skin_macros"
+		layer=".demoskin.IMySkinLayer"
+		for="*"
+		template="template_tablelayout.pt"
+		permission="zope.View"
+		/>
+
+	<!-- CONTENT PROVIDER -->
+
+	<adapter
+		factory=".browser.FortuneProvider"
+		name="stage17.FortuneTeller"
+		permission="zope.View"
+		/>	<!-- because .browser.FortuneProvider has implements + adapts, only factory is needed here -->
+
+</configure>

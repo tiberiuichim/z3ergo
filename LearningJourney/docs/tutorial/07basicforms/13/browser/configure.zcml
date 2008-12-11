@@ -1,0 +1,55 @@
+<configure
+	xmlns="http://namespaces.zope.org/zope"
+	xmlns:browser="http://namespaces.zope.org/browser"
+	>
+
+	<!-- BOOKS -->
+	<browser:schemadisplay
+		name="bookview.html"
+		permission="zope.Public"
+		schema="..interfaces.IBook"
+		menu="zmi_views" title="View"
+		/>
+
+	<browser:defaultView
+		name="bookview.html"
+		for="..interfaces.IBook"
+		/> <!-- make the bookview default view for IBook -->
+
+	<browser:addMenuItem
+		title="Add Book"
+		class="..book.Book"
+		description="A book item"
+		permission="zope.ManageContent"
+		view="addbook.html"
+		/>
+
+	<browser:addform
+		name="addbook.html"
+		permission="zope.ManageContent"
+		schema="..interfaces.IBook"
+		content_factory="..book.Book"
+		label="Add a new book"
+		/>
+
+	<browser:editform
+		name="editbook.html"
+		permission="zope.ManageContent"
+		schema="..interfaces.IBook"
+		menu="zmi_views" title="Edit"
+		/>
+
+	<!-- RATINGS -->
+
+	<browser:form
+		for="..interfaces.IBook"
+		name="editrating.html"
+		class="..rating.RatingEdit"
+		permission="zope.ManageContent"
+		schema='..interfaces.IRating'
+		title="Rating" menu="zmi_views"
+		/>
+
+
+
+</configure>

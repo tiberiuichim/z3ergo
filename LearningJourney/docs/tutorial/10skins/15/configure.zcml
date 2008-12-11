@@ -1,0 +1,26 @@
+<configure
+	xmlns="http://namespaces.zope.org/zope"
+	xmlns:browser="http://namespaces.zope.org/browser"
+	>
+
+	<interface
+		name="DemoSkin"
+		interface=".demoskin.IMySkin"
+		type="zope.publisher.interfaces.browser.IBrowserSkinType"
+		/>
+
+	<browser:resource
+		name="zope3_tablelayout.css"
+		file="zope3_tablelayout.css"
+		layer=".demoskin.IMySkinLayer"
+		/>
+
+	<browser:page
+		name="skin_macros"
+		layer=".demoskin.IMySkinLayer"
+		for="*"
+		template="template_tablelayout.pt"
+		permission="zope.View"
+		/>
+
+</configure>

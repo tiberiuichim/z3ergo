@@ -1,0 +1,74 @@
+<configure
+	xmlns="http://namespaces.zope.org/zope"
+	xmlns:i18n="http://namespaces.zope.org/i18n"
+	i18n_domain="zope3tutorial"
+	>
+
+	<i18n:registerTranslations directory="locales" />
+
+	<class class=".book.Book">	<!-- content class declaration -->
+		<require
+			attributes="title author publisher"
+			permission="zope.Public"
+			/> <!-- read attributes -->
+		<require
+			set_attributes="title author publisher"
+			permission="zope.ManageContent"
+			/> <!-- write attributes -->
+		<implements
+			interface="	.interfaces.IBook
+						.interfaces.IBookContained
+						zope.annotation.interfaces.IAttributeAnnotatable"
+			/>	<!-- necessary for browser:defaultView -->
+		<factory
+			id="tutorial.Book"
+			title="Create a new book"
+			description="This factory creates new books"
+			/> 	<!-- replaced the <utility /> declaration -->
+	</class>
+
+	<adapter
+		for=".interfaces.IBook"
+		provides="zope.size.interfaces.ISized"
+		factory=".book.BookSize"
+		/>	<!-- adapter to ISized -->
+
+	<adapter
+		for=".interfaces.IBook"
+		provides="zope.dublincore.interfaces.IZopeDublinCore"
+		factory=".book.BookDCImplementation"
+		trusted="True"
+		permission="zope.Public"
+		/>
+
+	<adapter
+		for=".interfaces.IBook"
+		provides=".interfaces.IRating"
+		factory=".rating.Rating"
+		permission="zope.Public"
+		trusted="True"
+		/>
+
+
+	<!-- CONTAINER -->
+
+	<class class=".bookdatabase.BookDatabase">
+		<implements
+			interface="	zope.app.container.interfaces.IContainerNamesContainer
+					zope.annotation.interfaces.IAttributeAnnotatable"
+			/>	<!-- necessary for browser:defaultView -->
+		<require
+			interface="zope.app.container.interfaces.IReadContainer"
+			permission="zope.Public"
+			/> <!-- read attributes -->
+		<require
+			interface="zope.app.container.interfaces.IWriteContainer"
+			permission="zope.ManageContent"
+			/> <!-- write attributes -->
+	</class>
+
+	<!-- views -->
+
+	<include package=".browser" />
+
+</configure>

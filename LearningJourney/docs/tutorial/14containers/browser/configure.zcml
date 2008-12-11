@@ -1,0 +1,88 @@
+<configure
+	xmlns="http://namespaces.zope.org/zope"
+	xmlns:browser="http://namespaces.zope.org/browser"
+	>
+
+	<!-- BOOKS -->
+	<browser:schemadisplay
+		name="bookview.html"
+		permission="zope.Public"
+		schema="..interfaces.IBook"
+		menu="zmi_views" title="View"
+		template="bookview.pt"
+		/>	<!-- added a template declaration here -->
+
+	<browser:defaultView
+		name="bookview.html"
+		for="..interfaces.IBook"
+		/> <!-- make the bookview default view for IBook -->
+
+	<browser:addMenuItem
+		title="Add Book"
+		class="..book.Book"
+		description="A book item"
+		permission="zope.ManageContent"
+		view="zope3tutorial.Book"
+		/>	<!-- entry in the Add menu -->
+
+	<browser:page
+		for = 'zope.app.container.interfaces.IAdding'
+		name = 'zope3tutorial.Book'
+		class = '.bookviews.BookAddForm'
+		permission = 'zope.ManageContent'
+		/>
+
+	<browser:page
+		for = "..interfaces.IBook"
+		name="edit.html"
+		class=".bookviews.BookEditForm"
+		permission="zope.ManageContent"
+		menu="zmi_views" title="Edit"
+		/>	<!-- edit form based on formlib -->
+
+	<!-- BookDATABASE -->
+
+	<browser:addMenuItem
+		title="Add a book database"
+		class="..bookdatabase.BookDatabase"
+		description = "A book database"
+		permission="zope.ManageContent"
+		/>
+
+	<browser:containerViews
+		for="..interfaces.IBookDatabase"
+		contents="zope.ManageContent"
+		index="zope.View"
+		add='zope.ManageContent'
+		/>
+
+	<!-- RATINGS -->
+
+	<browser:form
+		for="..interfaces.IBook"
+		name="editrating.html"
+		class="..rating.RatingEdit"
+		permission="zope.ManageContent"
+		schema='..interfaces.IRating'
+		title="Rating" menu="zmi_views"
+		/>	<!-- won't be needed anymore -->
+
+	<browser:page
+		for="..interfaces.IBook"
+		name="show_rating"
+		class=".ratingviews.RatingViews"
+		permission="zope.Public"
+		allowed_attributes="show_rating"
+		attribute="show_rating"
+		/>  <!-- retrieve a rating -->
+
+	<browser:page
+		for="..interfaces.IBook"
+		name="set_rating"
+		class=".ratingviews.RatingViews"
+		permission="zope.ManageContent"
+		allowed_attributes="set_rating"
+		attribute="set_rating"
+		/>  <!-- set a rating -->
+
+</configure>

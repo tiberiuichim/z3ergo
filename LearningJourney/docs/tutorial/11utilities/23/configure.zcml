@@ -1,0 +1,107 @@
+<configure
+	xmlns="http://namespaces.zope.org/zope"
+	xmlns:browser="http://namespaces.zope.org/browser"
+	>
+
+	<utility
+		component=".fortune.fortuneteller"
+		permission="zope.View"
+		provides=".interfaces.IFortuneTeller"
+		/>  	<!-- GLOBAL UTILITY -->
+
+	<class class=".fortune.LocalFortuneTeller">
+		<factory
+			id="zope3tutorial.FortuneTeller"
+			/>
+		<require
+			permission="zope.Public"
+			interface=".interfaces.IFortuneTeller"
+			/>
+		<require
+			permission='zope.ManageContent'
+			set_schema=".interfaces.ILocalFortuneTeller"
+			interface=".interfaces.ILocalFortuneTeller"
+			/>
+	</class>	<!-- LOCAL UTILITY -->
+
+	<browser:addMenuItem
+		title="Add Fortune Teller"
+		class=".fortune.LocalFortuneTeller"
+		description="A local fortune teller"
+		permission="zope.ManageContent"
+	/>
+
+	<browser:page
+		for="*"
+		name="get_fortune"
+		permission="zope.View"
+		class=".browser.FortuneView"
+		/>
+
+	<browser:page
+		for=".interfaces.ILocalFortuneTeller"
+		name="edit.html"
+		permission="zope.ManageContent"
+		menu="zmi_views" title="Settings"
+		class=".browser.EditFortuneTeller"
+		/>
+
+	<!-- SKIN DECLARATION -->
+	<interface
+		name="DemoSkin"
+		interface=".demoskin.IMySkin"
+		type="zope.publisher.interfaces.browser.IBrowserSkinType"
+		/>
+
+	<browser:page
+		name="skin_macros"
+		layer=".demoskin.IMySkinLayer"
+		for="*"
+		template="template_tablelayout.pt"
+		permission="zope.View"
+		/>
+
+	<!-- CONTENT PROVIDERS -->
+
+	<adapter
+		factory=".browser.FortuneProvider"
+		name="stage17.FortuneTeller"
+		permission="zope.View"
+		/>	<!-- because .browser.FortuneProvider has implements + adapts, only factory is needed here -->
+
+	<adapter
+		factory=".browser.DateProvider"
+		name="stage17.DateProvider"
+		permission="zope.View"
+		/>
+
+
+	<!-- VIEWLET MANAGER -->
+
+	<browser:viewletManager
+		name='zope3tutorial.ExtraStuffBox'
+		provides='.interfaces.IExtraStuffBox'
+		permission='zope.View'
+		layer='.demoskin.IMySkin'
+		/>
+
+	<browser:viewlet
+		name="date"
+		for="*"
+		manager='.interfaces.IExtraStuffBox'
+		layer='.demoskin.IMySkin'
+		permission='zope.View'
+		template="dateproviderviewlet.pt"
+		/>
+
+	<browser:viewlet
+		name="fortune"
+		for="*"
+		manager='.interfaces.IExtraStuffBox'
+		template='fortune.pt'
+		layer='.demoskin.IMySkin'
+		permission='zope.View'
+
+		/>
+
+</configure>

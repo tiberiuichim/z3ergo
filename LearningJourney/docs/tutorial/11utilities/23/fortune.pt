@@ -1,0 +1,5 @@
+<div style="background-color:lightblue; width:10em; float:left; z-index:10; padding:1em;">
+
+	<span tal:replace="provider:stage17.FortuneTeller">Your daily fortune here</span>
+
+</div>
