@@ -1,1 +1,0 @@
-<span tal:content="python: view.greet(name='Mr. X')"/>

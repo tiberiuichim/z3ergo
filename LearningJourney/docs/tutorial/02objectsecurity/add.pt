@@ -1,9 +1,0 @@
-<form method="POST" action=".">
-  Author:
-  <input type="text" name="author" />
-  Title:
-  <input type="text" name="title" />
-  Publisher:
-  <input type="text" name="publisher" />
-  <input type="submit" name="submit" />
-</form>

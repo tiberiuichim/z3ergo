@@ -1,5 +1,0 @@
-<div style="clear:both;">
-	<div style="background-color:pink; width:10em; z-index:10; padding:1em; ">
-		<span tal:replace="structure provider:stage17.DateProvider">The datetime here</span>
-	</div>
-</div>
