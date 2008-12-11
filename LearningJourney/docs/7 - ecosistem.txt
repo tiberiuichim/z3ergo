@@ -223,10 +223,26 @@ Pachetele din namespace-ul zope.app
       editor extern
 * zope.app.file
     * doua noi tipuri de continut: File si Image precum si integrarea acestora
-      cu infrastructura de reprezentare externa (FileRepresentation)
-* zope.app
-* zope.app
-* zope.app
+      cu infrastructura de reprezentare externa (IFileRepresentation)
+* zope.app.folder
+    * ofera un content type de tip folder, integrat cu interfata de management 
+      si reprezentarea ca obiect extern (IFileRepresentation)
+* zope.app.form
+    * libraria "clasica" de formuri a zope-ului, este considerata depasita 
+      datorita dependentei de zcml si a inflexibilitatii. Cu toate acestea,
+      modelul de widget-uri este folosit de catre zope.formlib si de aceea 
+      ramane o librarie importanta. 
+* zope.app.ftp
+    * ofera un model de view pentru protocolul ftp
+* zope.app.generations
+    * face posibila migrarea bazei de date atunci cand schema obiectelor 
+      persistente se modifica
+* zope.app.homefolder
+    * ofera o implementare a unui homefolder pentru utilizatori
+* zope.app.http
+    * integrare a protocolului http: exceptii, metode, definirea modului de 
+      traversare si rezolvare a view-ului
+    * 
 * zope.app
 
 
