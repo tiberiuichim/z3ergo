@@ -1,0 +1,7 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser">
+
+  <browser:page name="hello.html" for="*" class=".hello.Hello"
+    permission="zope.Public" template="hello.pt" />
+
+</configure>

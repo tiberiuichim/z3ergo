@@ -8,9 +8,8 @@ experienta in Zope 2.
 
 Achizitia
 ---------
-
 Achizitia este limitata si este explicita (de altfel, nici nu este folosita de 
-catre comunitate. Unele dintre problemele pentru care achizitia era necesara nu
+catre comunitate). Unele dintre problemele pentru care achizitia era necesara nu
 mai sunt valabile (nu se mai ofera posibilitati de dezvoltare prin web) sau
 sunt rezolvate prin folosirea de alte paradigme: utilitare locale, inregistrate
 la nivelul site-urilor locale si un sistem inteligent de layere si skinuri 
@@ -30,7 +29,6 @@ template-urile ZPT este permis accesul nerestrictionat la obiecte (accesul este
 totusi restrictionat de catre mecanismul standard al Zope-ului, ce ingradeste
 accesul la obiecte pe baza setarile explicite de securitate care au fost 
 atribuite acelui obiect). 
-
 
 
 Slides

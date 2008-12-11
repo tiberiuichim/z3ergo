@@ -51,6 +51,7 @@ setup(name='LearningJourney',
                         #custom dependencies
                         "zope.sendmail",
                         "z3c.layer.minimal",
+                        "zope.server"
                         ],
       entry_points = """
       [console_scripts]

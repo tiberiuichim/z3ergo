@@ -199,6 +199,7 @@ simpla: o componenta este un obiect care asigura cel putin o interfata.
 Majoritatea claselor din cadrul Zope-ului sunt scrise astfel incat ele sa devina
 componente atunci cand sunt instantiate.    
 
+Invariantele reprezinta o metoda de verificare a obiectului fata de interfata. 
 
 Alte facilitati oferite de ZCA
 ------------------------------
