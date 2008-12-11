@@ -802,4 +802,3 @@ adapteaza contextul la interfata IPrincipalRoleManager, astfel:
 Declararea de noi permisiuni, roluri, precum si aprobarea permisiunilor pentru
 roluri se poate observa in fisierul custom-security.zcml din radacina 
 aplicatiei.
-

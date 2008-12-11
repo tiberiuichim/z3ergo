@@ -1,0 +1,14 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser">
+
+  <class class=".book.Book">
+    <require attributes="title author publisher" permission="zope.ManageContent" />
+  </class>
+
+  <browser:page name="addbook.html" for="*"
+    class=".browser.BookAddPage" permission="zope.ManageContent" />
+
+  <browser:page name="index.html" for=".book.Book" class=".book.BookView"
+    permission="zope.ManageContent" attribute="bookinfo" />
+
+</configure>
