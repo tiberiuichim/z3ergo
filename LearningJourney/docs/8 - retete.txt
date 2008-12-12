@@ -1,6 +1,37 @@
 Modalitati de rezolvare a unor probleme tipice
 ==============================================
 
+Sfaturi generale
+----------------
+* codul sursa al Zope-ului este simplu si usor de interpretat. Daca nu exista
+  documentatie, citeste codul sursa, incepand cu interfetele si apoi fisierul
+  configure.zcml, pentru a intelege ce ofera acel pachet. 
+* Foloseste namespace-urile
+* Separa partea de "backend" de cea de "frontend" in sub-pachete-uri diferite:
+  `app` si una din variantele: `browser`, `skin`, `ui`.
+* Pastreaza o balanta intre necesitatea de a separa in pachete si un numar prea
+  mare de pachete, cu interdependinte ridicate
+* Foloseste pachetele comunitatii Zope (z3c), acestea sunt cel mai adesea mai 
+  noi si mai flexibile decat cele cu care vine zope. Exemplu: z3c.form, 
+  z3c.pagelet, z3c.table, etc.
+* Atunci cand faci design-ul unei librarii sau componente reutilizabile, este
+  foarte usor sa se creeze o infrastructura bazata pe ZCA, cu multe puncte de 
+  insertie. O balanta trebuie mentinuta, pentru a nu face ca folosirea acelui
+  pachet sa impuna necesitati ridicate (gen: implementeaza un adaptor pentru
+  interfata asta, am nevoie de un utility pentru interfata asta, etc). Se poate
+  intampla ca atunci cand dezvoltatorul sa vrea sa foloseasca componenta 
+  respectiva sa ii fie mai usor sa o inlocuiasca cu totul, asa ca fii sigur ca
+  asiguri cel putin un punct unic de "override", care sa faca posibila 
+  inlocuirea intregului mecanism. Cu toate acestea:
+* Incearca sa faci componentele general valabile, pentru a fi reutilizabile.
+  Pe termen lung acesta este unul dintre avantajele folosirii Zope 3: 
+  componentele sunt usor de dezvoltat astfel incat ele sa fie refolosibile
+* Viewlet-urile si pageleturile sunt o idee buna, insa nu trebuiesc abuzate, 
+  pentru ca necesita mai multa munca din partea dezvoltatorului.
+* Nu e nevoie de o integrare foarte mare cu ZMI.   
+* Nu e recomandabil designul unei aplicatii complexe fara experienta.
+
+
 Folosirea interfetelor de tip marker pentru definirea capabilitatilor
 ---------------------------------------------------------------------
 O interfata de tip marker este o interfata "goala, ce mosteneste direct 

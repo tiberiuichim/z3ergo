@@ -14,5 +14,11 @@ http://wiki.zope.org/zope3/Zope3PackageGuide
 
 Zope 3 Book
 -----------
-Desi pare invechita, o mare parte din ceea ce exista in aceasta carte este inca
+Desi pare invechita, o buna parte din ceea ce exista in aceasta carte este inca
 valabil http://wiki.zope.org/zope3/Zope3Book
+
+Worldcookery
+------------
+Sectiunea Downloads contine codul sursa sub licenta GPL, si reprezinta o foarte
+buna resursa pentru intelegerea Zope.
+http://worldcookery.com/Downloads
