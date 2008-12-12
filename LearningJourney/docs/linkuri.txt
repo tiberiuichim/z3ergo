@@ -7,7 +7,12 @@ Python, nu doar Zope.
 Locatie: http://www.muthukadan.net/docs/zca.html
 
 
-Discutie despre necesitatea tipurilor de obiecte
-------------------------------------------------
-http://sayspy.blogspot.com/2008/12/why-explicit-type-checking-is-mostly.html
+Ghid al pachetelor 3rd party Zope
+---------------------------------
+http://wiki.zope.org/zope3/Zope3PackageGuide
 
+
+Zope 3 Book
+-----------
+Desi pare invechita, o mare parte din ceea ce exista in aceasta carte este inca
+valabil http://wiki.zope.org/zope3/Zope3Book
