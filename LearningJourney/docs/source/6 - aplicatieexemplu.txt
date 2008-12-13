@@ -608,7 +608,7 @@ gaseste in ``learningjourney.ui.search.page``.
 
 
 Adnotarea obiectelor
--------------------
+--------------------
 Un alt concept introdus de Zope 3 in scopul de a mentine obiectele cat mai
 "curate" este acela de adnotare. Cu ajutorul adnotarii pot fi atasate date 
 suplimentare obiectelor. De exemplu, sa presupunem ca avem obiecte de tipul

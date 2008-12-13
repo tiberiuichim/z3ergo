@@ -1,3 +1,4 @@
+=======================================
 LearningJourney - introducere in Zope 3
 =======================================
 
@@ -17,7 +18,7 @@ Contents:
    9 - viitorzope3
 
 Indices and tables
-==================
+~~~~~~~~~~~~~~~~~~
 
 * :ref:`genindex`
 * :ref:`modindex`
