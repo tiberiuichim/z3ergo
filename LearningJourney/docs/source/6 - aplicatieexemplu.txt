@@ -325,7 +325,7 @@ template ZPT. Paginile sunt si ele componente si trebuiesc inregistrate:
 Se observa numele paginii ce va fi folosit pentru publicarea paginii prin web,
 calea catre template-ul care va fi folosit pentru generarea paginii, permisiunea
 pe care utilizatorul trebuie sa o aiba pentru a o accesa precum si atributul
-"for", care determina tipul contextului pentru care aceasta pagina va fi 
+``for``, care determina tipul contextului pentru care aceasta pagina va fi 
 disponibila.
 
 In cazul in care sunt declarate pagini cu acelasi nume se foloseste un mecanism
@@ -338,20 +338,20 @@ concrete.
 
 Cand este vorba de context, acesta poate fi o cale cu puncte (dotted name)
 catre o clasa, catre o interfata sau asterixul, ce semnifica "toate tipurile
-de context" (sau zope.interface.Interface).
+de context" (sau ``zope.interface.Interface``).
 
 
 Publicarea resurselor
 ---------------------
 Resursele (imaginile, fisierele CSS si JS) sunt inregistrate cu ajutorul a doua
-taguri zcml aflate in namespaceul `browser`: browser:resource, ce inregistreaza
-o singura resursa, si `browser:resourceDirectory`, ce poate fi folosit pentru
+taguri zcml aflate in namespaceul **browser**: ``browser:resource``, ce inregistreaza
+o singura resursa, si ``browser:resourceDirectory``, ce poate fi folosit pentru
 inregistrarea a unui director de resurse. Calea catre aceste resurse este 
 calculata ca fiind relativa la site-ul local (detalii mai jos), sub forma
-http://localhost/mysite/@@/styles.css
+``http://localhost/mysite/@@/styles.css``
 
 Pentru calcularea acestei cai, in template, este folosita o constructie de 
-genul: <script tal:attributes="src context/++resource++myscripts/jquery.js" />
+genul: ``<script tal:attributes="src context/++resource++myscripts/jquery.js" />``
 
 Exemple se pot gasi in fisierele ``src/learningjourney/ui/configure.zcml`` si
 ``src/learningjourney/widget/addremove/configure.zcml`` si fisierele template
@@ -363,13 +363,13 @@ Obiecte persistente
 -------------------
 Pentru stocarea datelor in baza de date ZODB se folosesc clase care mostenesc
 clasa Persistent. Acestea sunt foarte simple, asa cum se poate observa luand
-ca exemplu learningjourney.app.userhome.LearningEntry: se mosteneste Persistent,
-se implementeaza interfata ILearningEntry si se implenteaza metodele si 
+ca exemplu ``learningjourney.app.userhome.LearningEntry``: se mosteneste ``Persistent``,
+se implementeaza interfata ``ILearningEntry`` si se implenteaza metodele si 
 atributele definite in interfata.
 
 Urmatoarea cerinta pentru integrarea cu Zope-ul este aceea de a face declaratii
 de securitate pentru obiectele generate. In cazul in care acestea nu exista,
-accesul la obiect va fi interzis (si va declansa errori de tip Forbidden). 
+accesul la obiect va fi interzis (si va declansa errori de tip ``Forbidden``). 
 Aceasta declaratie se face in zcml:
 
 .. code-block:: xml
@@ -383,7 +383,7 @@ Aceasta declaratie se face in zcml:
             set_schema=".interfaces.ILearningEntry" />
     </class>
     
-In cadrul tag-ului require se foloseste attributul `interface` pentru a desemna
+In cadrul tag-ului require se foloseste attributul ``interface`` pentru a desemna
 o interfata ce defineste metodele accesibile si atributele disponibile pentru 
 citire, precum si permisiunea necesara. Se foloseste `set_schema` pentru a 
 desemna permisiunea care este necesara pentru a modifica atributele desemnate
@@ -721,7 +721,7 @@ anumita infatisare si capabilitati ale unui website. Aceste concepte se regasesc
 in Zope 3 intr-o forma simplificata si usor de implementate.
 
 Un layer este determinat de o interfata ce mosteneste 
-`zope.publisher.browser.interfaces.IBrowserRequest`. Odata definit layer-ul, 
+``zope.publisher.browser.interfaces.IBrowserRequest``. Odata definit layer-ul, 
 obiectele de tip browser (gen pagini, view-uri si resurse) pot fi inregistrate
 pe acel layer folosind atributul "layer" in zcml. Un exemplu de layer se gaseste
 in modul __init__ din `learningjourney.ui`
@@ -764,17 +764,17 @@ in Zope 2, folosind atributele din namespace-ul i18n. De asemenea, in cadrul
 fisierelor ZCML se poate specifica domeniul in cadrul caruia vor fi traduse
 atributele de tipul "title" sau "label" are tagurilor din acel fisier. 
 
-La nivelul codului python se foloseste un MessageIdFactory, ce construieste un
+La nivelul codului python se foloseste un ``MessageIdFactory``, ce construieste un
 nou id pentru mesaje. Ca exemplu, se poate observa definirea unui messageid 
-in modulul learningjourney.i18n si folosirea acestuia in 
-`learningjourney.app.interfaces`. Pentru modificarea limbii pe baza caruia ii 
+in modulul ``learningjourney.i18n`` si folosirea acestuia in 
+``learningjourney.app.interfaces``. Pentru modificarea limbii pe baza caruia ii 
 este prezentata interfata site-ului catre utilizator se poate folosi namespace
-traverserul ++lang++, de genul:
+traverserul ``++lang++``, de genul:
 
     ``http://localhost:8080/++skin++lj/++lang++ro/Application/@@index.html``
     
-O alta modalitatea este cea de a modifica limba preferata a utilizatorului in
-cadrul requestului, folosind interfata IBrowserPreferredLanguages, putand tine
+O alta modalitate este cea de a modifica limba preferata a utilizatorului in
+cadrul requestului, folosind interfata ``IBrowserPreferredLanguages``, putand tine
 astfel cont de setarile dintr-o sesiune sau un cookie.
 
 
@@ -783,16 +783,16 @@ Securitate, permisiuni
 Sistemul de securitate al Zope-ului este unul relativ complex, dar este 
 totodata flexibil si puternic. La baza sistemului de securitate stau 
 interactiunile si principalii (obiecte reprezentand utilizatorii). Obiectele
-de tip "principal" sunt reconstruite pentru fiecare request, de obicei pe baza 
+de tip **principal** sunt reconstruite pentru fiecare request, de obicei pe baza 
 informatiei extrase din request. Utilitarul global care genereaza obiectele
 `principal` este inregistrat pentru interfata 
-`zope.app.security.interfaces.IAuthentication`. Implementarea oferita de Zope
-se numeste Pluggable Authentication Utility si ofera un sistem de pluginuri
+``zope.app.security.interfaces.IAuthentication``. Implementarea oferita de Zope
+se numeste **Pluggable Authentication Utility** (PAU) si ofera un sistem de pluginuri
 prin care se poate stabili modul in care se extrage informatia despre 
 credentiile de autentificare ale utilizatorului si sursele de utilizatori cu 
 care aceste informatii sunt folosite pentru a verifica veridicitatea lor. Un 
 exemplu complet de construire a unui sistem de autentificare cu PAU se gaseste 
-in learningjourney.app.event. Obiectul de tip principal este stocat in request
+in ``learningjourney.app.event``. Obiectul de tip principal este stocat in request
 si poate fi accesat de acolo (de exemplu, pentru afisarea in interfata a 
 username-ului sau verificarea faptului ca utilizatorul este autentificat). Modul
 in care poate fi folosit se poate vedea concret in pachetul 
@@ -802,13 +802,13 @@ Exista cateva directive pentru definirea tipurilor de principali (autentificati,
 neautentificati, etc). Acestea se pot observa in fisierul site.zcml din radacina 
 aplicatiei. La runtime principalii pot fi construiti si pe baza unor informatii
 stocate in baza de date (sursa de utilizatori). Zope ofera o astfel de sursa
-de utilizatori in forma unui container (PrincipalFolder), ce stocheaza obiecte
-de tipul IInternalPrincipal - atentie, acestea sunt doar informatii despre 
+de utilizatori in forma unui container (``PrincipalFolder``), ce stocheaza obiecte
+de tipul ``IInternalPrincipal`` - atentie, acestea sunt doar informatii despre 
 principali, nu principali in sine. Sursa de utilizatori si plugin-ul de 
 extragere a secretelor de autentificare din request sunt obiecte in containerul
 PAU, iar utilitarului PAU i se specifica pluginurile de tip extragere si cele de 
 tip sursa de utilizatori, precum si si ordinea lor. Toate acestea se pot observa
-in `learningjourney.app.event`
+in ``learningjourney.app.event``
 
 Accesul la obiecte si la proprietatile acestora se protejeaza cu permisiuni, 
 asa cum s-a putut observa in capitolul `Obiecte persistente`. Pentru usurarea
