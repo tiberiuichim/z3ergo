@@ -1,3 +1,6 @@
+Programul de training
+=====================
+
 Prezentare generala Zope 3
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
