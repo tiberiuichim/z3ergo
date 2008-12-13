@@ -59,5 +59,7 @@ setup(name='LearningJourney',
       learningjourney-ctl = learningjourney.startup:zdaemon_controller
       [paste.app_factory]
       main = learningjourney.startup:application_factory
-      """
+      [colective.recipe.sphinxbuilder]
+      default = learningjourney.docs
+      """,
       )

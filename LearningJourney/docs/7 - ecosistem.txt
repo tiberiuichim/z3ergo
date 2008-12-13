@@ -6,6 +6,8 @@ Pachetele Zope
 * zope.annotation
     * face posibila atasarea de date pentru obiecte. Ofera o implementare ce 
       stocheaza aceste date intr-un atribut pe obiecte
+* zope.browser
+    * contine cateva interfete folosite in cadrul altor pachete
 * zope.cachedescriptors
     * ofera memoizarea atributelor
 * zope.component
