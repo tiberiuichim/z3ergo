@@ -492,7 +492,7 @@ traversare ca este vorba de o pagina sau un view, este aceea de a prefixa
 numele paginii in cadrul url-ului cu doua semne **@**. Impreuna formeaza doi 
 "ochi", cu o trimitere directa la ceea ce reprezinta, un "view". 
 
-Exemplu: http://localhost/@@index.html
+Exemplu: ``http://localhost/@@index.html``
 
 Prin folosirea acestei conventii se scurcircuiteaza mecanismul de traversare, 
 astfel ca se incearca direct construirea unui view cu numele index.html, in loc
@@ -500,10 +500,10 @@ sa se caute un obiect cu numele "index.html" in cadrul obiectului context
 curent.
 
 De asemenea, in cadrul template-urilor, paginile poti fi inserate direct, prin
-apelarea de genul: <div tal:content="structure item/@@detail" />, unde item
+apelarea de genul: ``<div tal:content="structure item/@@detail" />``, unde item
 este un obiect persistent (ar putea fi context, sau un obiect din cadrul unui
 repeat, iar detail este numele unui view inregistrat si disponibil pentru acel
-tip de obiect. View-ul (sau pagina) `detail` va fi construita cu obiectul `item`
+tip de obiect. View-ul (sau pagina) ``detail`` va fi construita cu obiectul ``item``
 ca si context.
 
 
@@ -516,22 +516,22 @@ atributelor din cadrul interfetelor. In acest fel interfetele se transforma in
 obiectelor, generarea de formulare complexe, automate, generare de pagini de 
 vizualizare a obiectelor, etc. Prin folosirea extensiei zope.schema,
 atributele devin "field"-uri, iar impreuna cu 
-`zope.interface.fieldproperty.FieldProperty`, se poate implementa un mecanism
+``zope.interface.fieldproperty.FieldProperty``, se poate implementa un mecanism
 foarte simplu de validare automata a valorilor obiectului, pe baza schemei (vezi
-modul de implementare a clasei `LearningEntry` in 
+modul de implementare a clasei ``LearningEntry`` in 
 `learningjourney.app.userhome`.
  
 zope.schema defineste o multitudine de tipuri de campuri, de exemplu
-o linie de text (TextLine), o data (Date), o valoare de tip adevarat/false 
-(Bool), o lista (List), etc. Bineinteles, se pot scrie si alte tipuri de 
+o linie de text (``TextLine``), o data (``Date``), o valoare de tip adevarat/false 
+(``Bool``), o lista (``List``), etc. Bineinteles, se pot scrie si alte tipuri de 
 campuri.
 
-Un exemplu de interfata/schema este ILearningEntry, din modulul
-`learningjourney.app.interfaces`. Aceasta interfata este folosita pentru 
+Un exemplu de interfata/schema este ``ILearningEntry``, din modulul
+``learningjourney.app.interfaces``. Aceasta interfata este folosita pentru 
 implementarea automata a doua formulare:
-* un formulare de creare si adaugare a obiectelor de tip LearningEntry
-* un formular de editare a obiectelor de tip ILearningEntry
-Ambele de gasesc in modulul `learningjourney.ui.homefolder.page`
+* un formulare de creare si adaugare a obiectelor de tip ``LearningEntry``
+* un formular de editare a obiectelor de tip ``ILearningEntry``
+Ambele de gasesc in modulul ``learningjourney.ui.homefolder.page``
 
 
 Site-uri si registre globale
@@ -543,7 +543,7 @@ persistent din ZODB. Acest container va purta numele de "site" si la nivelul
 lui se pot configura si inregistra setari care sunt "locale" acelui site, care
 vor avea precedenta fata de cele inregistrate la nivel global sau mai sus in
 ierarhia ZODB. Un exemplu de inregistrare a unui site local este codul aflat
-in `learningjourney.app.event.configure_site`, unde sunt create si inregistrate
+in ``learningjourney.app.event.configure_site``, unde sunt create si inregistrate
 si utilitarele locale. De asemenea, caile generate pentru accesarea resurselor 
 (CSS, imagini, JS) sunt relative la locatia acestui site.
 
@@ -552,11 +552,11 @@ Utilitare
 ---------
 Un alt tip de componenta definit de zope.component sunt utilitare. Acestea sunt
 de doua tipuri: globale si locale. In principiu, acestea se comporta similar
-cu obiectele de tip `singleton` din alte limbaje si modele de programare. Pe
+cu obiectele de tip **singleton** din alte limbaje si modele de programare. Pe
 baza unei interfete se poate obtine obiectul unic ce este inregistrat ca 
 utilitar, indiferent ca acesta este global sau local.
 
-Pentru inregistrarea unui utilitar global se foloseste tagul <utility>, in 
+Pentru inregistrarea unui utilitar global se foloseste tagul ``<utility>``, in 
 care se desemneaza interfata pe care acesta o va asigura, numele pe care il 
 va avea si componenta care va fi folosita pentru construirea utilitarului.
 
@@ -566,10 +566,10 @@ va avea si componenta care va fi folosita pentru construirea utilitarului.
     permission="zope.Public" />
     
 Pentru inregistrarea locala, la nivelul site manager-ului local, se foloseste
-functia zope.component.registerUtility sau functionalitatea din interfata ZMI
+functia ``zope.component.registerUtility`` sau functionalitatea din interfata ZMI
 aflata in pagina "Registration".
 
-Exemple de folosire se gasesc in `learningjourney.ui.search.page.SearchPage`.
+Exemple de folosire se gasesc in ``learningjourney.ui.search.page.SearchPage``.
 
 
 Indexarea si cautarea obiectelor
@@ -579,21 +579,21 @@ costisitoare din punct de vedere al timpului, solutia implementata in mod
 clasic de catre zope este cea a indexarii valorilor intr-un catalog.
 
 Catalogul este un obiect persistent inregistrat ca utilitar local pentru
-interfata zope.app.catalog.interfaces.ICatalog, fara nume. Astfel, el poate
+interfata ``zope.app.catalog.interfaces.ICatalog``, fara nume. Astfel, el poate
 fi obtinut folosind
 
     >>> catalog = zope.component.getUtility(ICatalog)
 
 In cadrul catalogului sunt adaugati indcsii (exemplu in 
-`learningjourney.app.event`), pentru care se configureaza interfata (aspectul)
+``learningjourney.app.event``), pentru care se configureaza interfata (aspectul)
 obiectului pe care il indexeseaza precum si atributul pe care il indexeaza. 
 Acesti indecsi stocheaza stocheaza ca referinte catre obiectul indexat un 
 intid - un numar intreg, unic in cadrul bazei de date, desemnat fiecarui 
-obiect de catre utilitarul zope.app.intid.interfaces.IIntIds. 
+obiect de catre utilitarul ``zope.app.intid.interfaces.IIntIds``. 
 
 Indexarea obiectelor se face atunci cand acestea sunt adaugate sau sterse din
-containere (pe baza evenimentelor ObjectAddedEvent, ObjectRemovedEvent), precum
-si atunci cand se declanseaza un eveniment ObjectModifiedEvent.
+containere (pe baza evenimentelor ``ObjectAddedEvent``, ``ObjectRemovedEvent``), precum
+si atunci cand se declanseaza un eveniment ``ObjectModifiedEvent``.
 Exemplu:
 
     >>> obj.title = u"My title"
@@ -604,7 +604,7 @@ Se ia interfata desemnata indexului si se verifica daca obiectul implementeaza
 acea interfata sau daca exista un adapter care sa asigure interfata pentru 
 obiectul indexat. Odata gasit adapterul, se indexeza valoarea atributului 
 inregistrat in configurarea indexului. Un exemplu de folosire a cautarii se 
-gaseste in `learningjourney.ui.search.page`. 
+gaseste in ``learningjourney.ui.search.page``. 
 
 
 Anotarea obiectelor
@@ -612,30 +612,30 @@ Anotarea obiectelor
 Un alt concept introdus de Zope 3 in scopul de a mentine obiectele cat mai
 "curate" este acela de anotare. Cu ajutorul anotarii pot fi atasate date 
 suplimentare obiectelor. De exemplu, sa presupunem ca avem obiecte de tipul
-Boardgame:
+``Boardgame``::
 
-class IBoardgame(Interface):
-    name = zope.schema.TextLine(title=u"Numele jocului"
-
-class Boardgame(Persistent):
-    implements(IBoardgame)
+    class IBoardgame(Interface):
+        name = zope.schema.TextLine(title=u"Numele jocului"
     
-    name = u""
+    class Boardgame(Persistent):
+        implements(IBoardgame)
+        
+        name = u""
     
 Dorim sa atasam o lista cu toate datele cand acel joc a folosit. Aceste date 
-stau in obiecte de tip UsageInfo:
+stau in obiecte de tip ``UsageInfo``::
 
-class IUsage(Interface):
-    date = Date(title=u"Data folosirii")
-
-class Usage(Persistent):
-    date = None
+    class IUsage(Interface):
+        date = Date(title=u"Data folosirii")
     
-    def __repr__(self):
-        return "Used at %s" % self.date
+    class Usage(Persistent):
+        date = None
+        
+        def __repr__(self):
+            return "Used at %s" % self.date
 
-Lista o vom implementa annotand obiectele de tip Boardgame cu informatie de tip
-IUsageInfo::
+Lista o vom implementa annotand obiectele de tip ``Boardgame`` cu informatie de tip
+``IUsageInfo``::
  
     class IUsageInfo(Interface):
         usages = List(  title=u"Dates when used",
@@ -650,8 +650,8 @@ IUsageInfo::
         usages = None
     
 Obiectele de tip UsageInfo vor fi stocate in annotarea obiectelor de tip 
-IBoardgame. Anotarea in sine este un adapter ce se construieste folosind
-functia ``factory`` din zope.annotation.factory
+``IBoardgame``. Anotarea in sine este un adapter ce se construieste folosind
+functia ``factory`` ``din zope.annotation.factory``
 
     >>> from zope.annotation.factory import factory
     >>> usage_info_annotation = factory(UsageInfo)
@@ -671,27 +671,27 @@ In final, folosirea anotarii in cod este foarte simpla:
 
 Annotarea nu este ceva care sa fie in mod implicit asigurat tutoror obiectelor
 persistente. Pentru ca anotarea sa fie disponibila pentru un obiect, acesta
-trebuie sa fie adaptabil la interfata IAnnotations (de exemplu, ar putea sa 
+trebuie sa fie adaptabil la interfata ``IAnnotations`` (de exemplu, ar putea sa 
 existe un adaptor care sa stocheze anotarea obiectelor intr-un RDB). In cazul
 obiectelor persistente bazate pe ZODB, acestea pot fi facute usor adaptabile
 prin marcarea claselor acestora ca implementand interfata 
-`zope.annotation.interfaces.IAttributeAnnotatable`. Exista un adapter care
+``zope.annotation.interfaces.IAttributeAnnotatable``. Exista un adapter care
 adapteaza acest tip de obiecte la interfata IAnnotations prin stocarea 
-anotarilor intr-un atribut `__annotations__`. 
+anotarilor intr-un atribut ``__annotations__``. 
 
 
 DublinCore
 ----------
-Informatia de tip DublinCore este stocata de stocata de catre libraria 
-zope.dublincore implicit in annotarea obiectelor anotabile. De aceea, pentru a 
-beneficia de DublinCore pentru obiecte este suficient sa se marcheze clasa
-unui obiect ca implementand IAttributeAnnotatable.
+Informatia de tip ``DublinCore`` este stocata de stocata de catre libraria 
+``zope.dublincore`` implicit in annotarea obiectelor anotabile. De aceea, pentru a 
+beneficia de ``DublinCore`` pentru obiecte este suficient sa se marcheze clasa
+unui obiect ca implementand ``IAttributeAnnotatable``.
 
 DublinCore inseamna o sumedenie de atribute si informatii. Exista doua 
 modalitati de a modifica modul in care este determinata aceasta informatie (in
 afara, bineinteles, a implementarii directe a informatiei).
 
-Primul mod, se poate declara un attribut ca fiind o proprietate DublinCore::
+Primul mod, se poate declara un attribut ca fiind o proprietate ``DublinCore``::
 
     from zope.dublincore.property import DCProperty
     class Book:
@@ -701,22 +701,27 @@ Primul mod, se poate declara un attribut ca fiind o proprietate DublinCore::
     
 Al doilea mod implica crearea manuala a adaptorului DC folosind un `factory`, 
 caz in care putem specifica o mapare intre campurile DC si campurile obiectului. 
+::
 
-dc_annotation = partialAnnotatableAdapterFactory(
-                                        {'name':'title', 'author':'creators'})
+    dc_annotation = partialAnnotatableAdapterFactory({
+                                    'name':'title', 
+                                    'author':'creators'
+                                    })
 
 Adapterul este inregistrat astfel:
+
+.. code-block:: xml
                                         
-<zope:adapter 
-    for=".interfaces.IBook" 
-    factory=".annotations.dc_annotation" 
-    provides="zope.dublincore.interfaces.IZopeDublinCore"/>
+    <zope:adapter 
+        for=".interfaces.IBook" 
+        factory=".annotations.dc_annotation" 
+        provides="zope.dublincore.interfaces.IZopeDublinCore"/>
 
 
 Sistemul de layere si skinuri
 -----------------------------
 Librariile CMF din Zope 2 ofera conceptul de Layere pe care sunt inregistrate
-resursele si paginile si Skinu-uri, care grupeaza layer-ele pentru a oferi o 
+resursele, paginile si skin-uri, care grupeaza layer-ele pentru a oferi o 
 anumita infatisare si capabilitati ale unui website. Aceste concepte se regasesc
 in Zope 3 intr-o forma simplificata si usor de implementate.
 
@@ -724,7 +729,7 @@ Un layer este determinat de o interfata ce mosteneste
 ``zope.publisher.browser.interfaces.IBrowserRequest``. Odata definit layer-ul, 
 obiectele de tip browser (gen pagini, view-uri si resurse) pot fi inregistrate
 pe acel layer folosind atributul "layer" in zcml. Un exemplu de layer se gaseste
-in modul __init__ din `learningjourney.ui`
+in modul ``__init__`` din `learningjourney.ui`
 
 Un skin este un layer care a fost desemnat ca avand tipul ``IBrowserSkinType``, plus
 numele care il va avea acel skin. Exemplu se gaseste in 
