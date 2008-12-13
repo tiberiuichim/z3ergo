@@ -60,6 +60,6 @@ setup(name='LearningJourney',
       [paste.app_factory]
       main = learningjourney.startup:application_factory
       [colective.recipe.sphinxbuilder]
-      default = learningjourney.docs
+      default = LearningJourney
       """,
       )
