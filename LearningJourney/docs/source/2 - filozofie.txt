@@ -28,8 +28,8 @@ Zope (Plone, Zope3, Grok, zc.buildout)
 Slides
 ~~~~~~
 
-* se doreste interoperarea cu librarii  
-incearca transformarea din programator "Zope" in programator "Python web"
+* se doreste interoperarea cu alte librarii python pentru dezvoltarea web  
+* se incearca transformarea din programator Zope in programator Python
 * codul netestat si nedocumentat este considerat defect
     * Odata inteles ZCA, codul z3-ului este curat si usor de inteles
 * cod cat mai curat, elegant

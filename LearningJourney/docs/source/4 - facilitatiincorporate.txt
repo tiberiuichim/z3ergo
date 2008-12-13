@@ -112,7 +112,7 @@ Slides
 
 * Publicarea prin web cu sistem de tip graph de traversare
     * obiectele sunt amplasate intr-un arbore, fiecare obiect poate publica
-    anumite pagini
+      anumite pagini
 * Persistenta obiectelor:
     * important este mecanismul de tranzactii
     * traditional cu ZODB

@@ -46,31 +46,31 @@ aceste comentarii vor fi stocate in anotarile obiectelor. Intr-un sistem de tip
 CMS, pentru care tip de obiecte va fi afisat butonul "Add comment"? A lua ca 
 indiciu faptul ca un obiect este anotabil nu este de ajuns: nu toate obiectele
 anotabile trebuiesc sa fie comentabile. Solutia este simpla: vom crea o 
-interfata marker:
+interfata marker::
 
-class IHasComments(Interface):
-    """Pe acest tip de obiecte pot fi adaugate comentarii"""
+    class IHasComments(Interface):
+        """Pe acest tip de obiecte pot fi adaugate comentarii"""
 
-Adapterul folosit pentru factory-ul ce genereaza anotarea obiectelor poate fi:
+Adapterul folosit pentru factory-ul ce genereaza anotarea obiectelor poate fi::
 
-class IComments(Interface):
-    """Comentariile obiectului"""
-
-class Coments(BTreeContainer):
-    implements(IComments)
-    adapts(IHasComments)
+    class IComments(Interface):
+        """Comentariile obiectului"""
     
-    def add_comment(self, *args, **kwds):
-        self[u"Comment %s" % len(self)] = Comment(*args, **kwds)
+    class Coments(BTreeContainer):
+        implements(IComments)
+        adapts(IHasComments)
+        
+        def add_comment(self, *args, **kwds):
+            self[u"Comment %s" % len(self)] = Comment(*args, **kwds)
         
 Daca avem un obiect de tip BlogEntry, este suficient sa il marcam ca fiind
-"comentabil"
+"comentabil"::
 
-class BlogEntry(Persistent):
-    implements(IBlogEntry, IHasComments)
+    class BlogEntry(Persistent):
+        implements(IBlogEntry, IHasComments)
     
 Un viewlet care prezinta un fragment cu comentariile pe obiectul curent, plus
-butonul de "Adauga comentarii" ar putea arata astfel:
+butonul de "Adauga comentarii" ar putea arata astfel::
 
     class CommentsViewlet(BaseViewlet):
 
@@ -78,7 +78,8 @@ butonul de "Adauga comentarii" ar putea arata astfel:
         def available(self):
             return IHasComments.providedBy(self.context)
         
-Iar codul care adauga comentarii poate fi pur si simplu:
+Iar codul care adauga comentarii poate fi pur si simplu::
+
     IComments(some_blog_entry).add_comment(...)
     IComments(some_other_object_type).add_comment(...)
     
@@ -86,98 +87,102 @@ Iar codul care adauga comentarii poate fi pur si simplu:
 Folosirea anotarilor si a relatiilor
 ------------------------------------ 
 Avand un folder cu imagini de pe circuitele de curse de masini, dorim sa 
-asignam o lista de imagini unor obiecte de tipul Pilot, Echipa sau Stadion.
+asignam o lista de imagini unor obiecte de tipul Pilot, Echipa sau Stadion.::
 
-class IHasImages(Interface):
-   """marker, objects have pointers to images"""
-
-class Pilot:
-   implements(IHasImages, IAttributeAnnotatable)
-   #e gresit sa pui IHasImage sa faca inherit la AttributeAnnotatable
-   #HasImages tine de comportament, AttributeAnnotatable tine deja de 
-   #implementarea anotarilor
-
-class Team(Persistent):
-   implements(IHasImages, IAttributeAnnotatable)
-
-class Stadium(Persistent):
-   implements(IHasImages, IAttributeAnnotatable)
-   
-class PicturesAlbum(BTreeContainer): 
-   contains(IImage)
-
-class IPicturesInfo(Interface):
-   images = List(title=u"Image",
-                 value_type=Relation(title="Relation")
-                 )
-
-class PicturesInfoAnotation(Persistent):
-    implements(IPicturesInfo)
-    adapts(IHasImages)
+    class IHasImages(Interface):
+       """marker, objects have pointers to images"""
     
-    images = None
-   
-from zope.annotation.factory import factory
-annotation_factory = factory(PicturesInfoAnotation, 'images_pointers')
+    class Pilot:
+       implements(IHasImages, IAttributeAnnotatable)
+       #e gresit sa pui IHasImage sa faca inherit la AttributeAnnotatable
+       #HasImages tine de comportament, AttributeAnnotatable tine deja de 
+       #implementarea anotarilor
+    
+    class Team(Persistent):
+       implements(IHasImages, IAttributeAnnotatable)
+    
+    class Stadium(Persistent):
+       implements(IHasImages, IAttributeAnnotatable)
+       
+    class PicturesAlbum(BTreeContainer): 
+       contains(IImage)
+    
+    class IPicturesInfo(Interface):
+       images = List(title=u"Image",
+                     value_type=Relation(title="Relation")
+                     )
+    
+    class PicturesInfoAnotation(Persistent):
+        implements(IPicturesInfo)
+        adapts(IHasImages)
+        
+        images = None
+       
+    from zope.annotation.factory import factory
+    annotation_factory = factory(PicturesInfoAnotation, 'images_pointers')
 
-Exemple de folosire a relatiilor folosind anotarea:
+Astfel, codul ce foloseste aceasta anotare este simplu::
              
-IPicturesInfo(pilot_instance).images.append(img) 
-del IPicturesInfo(team_instance).images[1] 
+    IPicturesInfo(pilot_instance).images.append(img) 
+    del IPicturesInfo(team_instance).images[1] 
 
 
 Internationalizarea continutului cu z3c.language.switch
 -------------------------------------------------------
-class BusinessI18NInfo(Persistent):
-    """The business content object"""
+::
 
-    name = FieldProperty(IBusiness['name'])
-    address = FieldProperty(IBusiness['address'])
-    description = FieldProperty(IBusiness['description'])
-    promo_message = FieldProperty(IBusiness['promo_message'])
-
-
-class Business(I18n, BTreeContainer, Contained):
-    """ """
-    _factory = BusinessI18NInfo
-    _defaultLanguage = 'en'
-
-    implements(IBusiness)
-
-    name = I18nFieldProperty(IBusiness['name'])
-    address = I18nFieldProperty(IBusiness['address'])
-    description = I18nFieldProperty(IBusiness['description'])
-    promo_message = I18nFieldProperty(IBusiness['promo_message'])
-
-    def queryAttribute(self, name, language=None, default=None):
-        #override so that we never return empty stuff
-        value = super(Business, self).queryAttribute(name, language, default=None)
-        if value is None:
-            negotiator = getUtility(INegotiator, context=self)
-            lang = negotiator.serverLanguage
-            try:
-                value = self.getAttribute(name, language=lang)
-            except KeyError:
-                pass
-        if value is None:
-            #try to return something meaningful
-            langs = self.getAvailableLanguages()
-            if langs:
-                lang = langs[0]
-            try:
-                value = self.getAttribute(name, language=lang)
-            except KeyError:
-                pass
-        if value is not None:
-            return value
-        else:
-            return default
+    class BusinessI18NInfo(Persistent):
+        """The business content object"""
+    
+        name = FieldProperty(IBusiness['name'])
+        address = FieldProperty(IBusiness['address'])
+        description = FieldProperty(IBusiness['description'])
+        promo_message = FieldProperty(IBusiness['promo_message'])
+    
+    
+    class Business(I18n, BTreeContainer, Contained):
+        """ """
+        _factory = BusinessI18NInfo
+        _defaultLanguage = 'en'
+    
+        implements(IBusiness)
+    
+        name = I18nFieldProperty(IBusiness['name'])
+        address = I18nFieldProperty(IBusiness['address'])
+        description = I18nFieldProperty(IBusiness['description'])
+        promo_message = I18nFieldProperty(IBusiness['promo_message'])
+    
+        def queryAttribute(self, name, language=None, default=None):
+            #override so that we never return empty stuff
+            value = super(Business, self).queryAttribute(name, language, default=None)
+            if value is None:
+                negotiator = getUtility(INegotiator, context=self)
+                lang = negotiator.serverLanguage
+                try:
+                    value = self.getAttribute(name, language=lang)
+                except KeyError:
+                    pass
+            if value is None:
+                #try to return something meaningful
+                langs = self.getAvailableLanguages()
+                if langs:
+                    lang = langs[0]
+                try:
+                    value = self.getAttribute(name, language=lang)
+                except KeyError:
+                    pass
+            if value is not None:
+                return value
+            else:
+                return default
             
             
 Modificarea traversarii cu z3c.traverser
 ----------------------------------------
 Traversing to business/images will return the annotation of BusinessImagesAlbum 
-for the Business
+for the Business:
+
+.. code-block:: xml
 
   <subscriber
     for="lovely.reviewportal.app.interfaces.IBusiness
@@ -185,28 +190,29 @@ for the Business
     provides="z3c.traverser.interfaces.ITraverserPlugin"
     factory=".traversing.BussinesTraverserPlugin" />
 
+.. code-block:: python
+
+    class BussinesTraverserPlugin(ContainerTraverserPlugin):
+        """Traverser that returns the images album at business/images/ for a Business
+        """
     
-class BussinesTraverserPlugin(ContainerTraverserPlugin):
-    """Traverser that returns the images album at business/images/ for a Business
-    """
-
-    def publishTraverse(self, request, name):
-        if name == "images":
-            images = IBusinessImagesAlbum(self.context)
-            proxied_images = LocationProxy(images, container=self.context,
-                                           name="images")
-            return proxied_images
-        if name == "promotions":
-            promotions = IPromotions(self.context)
-            proxied_promotions = LocationProxy(promotions,
-                                               container=self.context,
-                                               name=name)
-            return proxied_promotions
-
-        subob = self.context.get(name)
-        if subob is None:
-            raise NotFound(self.context, name, request)
-        return subob
+        def publishTraverse(self, request, name):
+            if name == "images":
+                images = IBusinessImagesAlbum(self.context)
+                proxied_images = LocationProxy(images, container=self.context,
+                                               name="images")
+                return proxied_images
+            if name == "promotions":
+                promotions = IPromotions(self.context)
+                proxied_promotions = LocationProxy(promotions,
+                                                   container=self.context,
+                                                   name=name)
+                return proxied_promotions
+    
+            subob = self.context.get(name)
+            if subob is None:
+                raise NotFound(self.context, name, request)
+            return subob
 
 
 Viewlet-uri, content providers
@@ -217,9 +223,9 @@ de obiecte context. Content provider-ii sunt implementati ca multiadapteri
 pentru context, request si view. In acest fel ei pot fi modificati per tipul 
 contextului, layer-ul (sau skin-ul) asigurat de request si pagina (view-ul)
 pe care se gasesc. Folosind inregistrarea acestui multiadaptor cu un nume,
-el poate fi inserat in template-uri folosind expresia `provider`:
+el poate fi inserat in template-uri folosind expresia `provider`::
 
-<div tal:content="structure provider:lj.MyProvider" />
+    <div tal:content="structure provider:lj.MyProvider" />
 
 Pentru a genera continutul content provider-ilor se foloseste un proces numit
 "two phase rendering". Prima data se apeleaza metoda `update` al CP-ului, apoi
@@ -736,3 +742,29 @@ Slides
 * Setari pentru apache, nginx
 * Construirea de aplicatii cu zc.buildout
     * virtualenv
+
+    
+A Comprehensive Guide to Zope Component Architecture
+----------------------------------------------------
+Un document bogat in exemple si explicatii despre Zope Component Architecture,
+configurarea cu zcml si modul in care poate fi folosita in orice aplicatie
+Python, nu doar Zope.
+ 
+Locatie: http://www.muthukadan.net/docs/zca.html
+
+
+Ghid al pachetelor 3rd party Zope
+---------------------------------
+http://wiki.zope.org/zope3/Zope3PackageGuide
+
+
+Zope 3 Book
+-----------
+Desi pare invechita, o buna parte din ceea ce exista in aceasta carte este inca
+valabil http://wiki.zope.org/zope3/Zope3Book
+
+Worldcookery
+------------
+Sectiunea Downloads contine codul sursa sub licenta GPL, si reprezinta o foarte
+buna resursa pentru intelegerea Zope.
+http://worldcookery.com/Downloads
