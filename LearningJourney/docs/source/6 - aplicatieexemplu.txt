@@ -607,10 +607,10 @@ inregistrat in configurarea indexului. Un exemplu de folosire a cautarii se
 gaseste in ``learningjourney.ui.search.page``. 
 
 
-Anotarea obiectelor
+Adnotarea obiectelor
 -------------------
 Un alt concept introdus de Zope 3 in scopul de a mentine obiectele cat mai
-"curate" este acela de anotare. Cu ajutorul anotarii pot fi atasate date 
+"curate" este acela de adnotare. Cu ajutorul adnotarii pot fi atasate date 
 suplimentare obiectelor. De exemplu, sa presupunem ca avem obiecte de tipul
 ``Boardgame``::
 
@@ -650,7 +650,7 @@ Lista o vom implementa annotand obiectele de tip ``Boardgame`` cu informatie de 
         usages = None
     
 Obiectele de tip UsageInfo vor fi stocate in annotarea obiectelor de tip 
-``IBoardgame``. Anotarea in sine este un adapter ce se construieste folosind
+``IBoardgame``. Adnotarea in sine este un adapter ce se construieste folosind
 functia ``factory`` ``din zope.annotation.factory``
 
     >>> from zope.annotation.factory import factory
@@ -663,27 +663,27 @@ De obicei configurarea ultimei linii se face in zcml astfel:
 
     <zope:adapter factory=".annotations.usage_info_annotation" />
 
-In final, folosirea anotarii in cod este foarte simpla:
+In final, folosirea adnotarii in cod este foarte simpla:
 
     >>> usage_info = IUsageInfo(some_boardgame)
     >>> usage_info.usages.append(Usage(datetime.datetime.now()))
     >>> print usage_info.usages
 
 Annotarea nu este ceva care sa fie in mod implicit asigurat tutoror obiectelor
-persistente. Pentru ca anotarea sa fie disponibila pentru un obiect, acesta
+persistente. Pentru ca adnotarea sa fie disponibila pentru un obiect, acesta
 trebuie sa fie adaptabil la interfata ``IAnnotations`` (de exemplu, ar putea sa 
-existe un adaptor care sa stocheze anotarea obiectelor intr-un RDB). In cazul
+existe un adaptor care sa stocheze adnotarea obiectelor intr-un RDB). In cazul
 obiectelor persistente bazate pe ZODB, acestea pot fi facute usor adaptabile
 prin marcarea claselor acestora ca implementand interfata 
 ``zope.annotation.interfaces.IAttributeAnnotatable``. Exista un adapter care
 adapteaza acest tip de obiecte la interfata IAnnotations prin stocarea 
-anotarilor intr-un atribut ``__annotations__``. 
+adnotarilor intr-un atribut ``__annotations__``. 
 
 
 DublinCore
 ----------
 Informatia de tip ``DublinCore`` este stocata de stocata de catre libraria 
-``zope.dublincore`` implicit in annotarea obiectelor anotabile. De aceea, pentru a 
+``zope.dublincore`` implicit in annotarea obiectelor adnotabile. De aceea, pentru a 
 beneficia de ``DublinCore`` pentru obiecte este suficient sa se marcheze clasa
 unui obiect ca implementand ``IAttributeAnnotatable``.
 
