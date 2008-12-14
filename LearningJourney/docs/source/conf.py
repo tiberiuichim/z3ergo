@@ -185,3 +185,8 @@ latex_preamble = open('/home/tibi/workspace_g/LearningJourney/docs/source/.stati
 
 # If false, no module index is generated.
 #latex_use_modindex = True
+
+#tibi
+latext_elements = {
+    'fncychap':'\\usepackage[Lenny]{fncychap}'
+}
