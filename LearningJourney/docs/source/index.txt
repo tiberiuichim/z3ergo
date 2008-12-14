@@ -16,8 +16,3 @@ Contents:
    7 - retete
    8 - ecosistem
    9 - viitorzope3
-
-Indices and tables
-~~~~~~~~~~~~~~~~~~
-
-* :ref:`search`

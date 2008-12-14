@@ -28,9 +28,7 @@ In mod tipic o aplicatie Zope include:
 
 * integrare cu zc.buildout pentru construirea aplicatiei
 * fisiere de configurare a serverului, eventual si integrare cu PasteScript
-* un modul pentru pornirea aplicatiei (startup.py)
-* fisiere de configurare ZCML pentru configurarea serverului, a aplicatiei si a
-  librariilor 
+* un modul pentru pornirea aplicatiei (startup.py) 
 * pachete de cod si ZCML ce implementeaza aplicatia dorita
 
 

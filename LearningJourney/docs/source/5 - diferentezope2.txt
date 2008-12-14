@@ -1,19 +1,15 @@
 Diferente fata de Zope 2
 ========================
+Programatorii familiarizati cu dezvoltarea pe platforma Zope 2 trebuie sa aiba
+in vedere urmatoarele:
 
-Desi unele concepte popularizate de Zope 2 si CMF se pastreaza, exista totusi
-cateva diferenta majore care trebuie avute in vedere de catre programatorii cu 
-experienta in Zope 2.
-
-
-Achizitia
----------
-Achizitia este limitata si este explicita (de altfel, nici nu este folosita de 
-catre comunitate). Unele dintre problemele pentru care achizitia era necesara nu
-mai sunt valabile (nu se mai ofera posibilitati de dezvoltare prin web) sau
-sunt rezolvate prin folosirea de alte paradigme: utilitare locale, inregistrate
-la nivelul site-urilor locale si un sistem inteligent de layere si skinuri 
-implementat la nivelu codului Python.
+Modificarea radicala a conceptelor folosite
+-------------------------------------------
+Desi unele concepte din Zope si CMF se pastreaza, exista suficient de multe 
+modificari incat sa se considere cele doua sisteme ca fiind total diferite. Cu
+toate acestea, un programator Zope 2 are nevoie de o perioada mai mica de 
+invatare si acomodare (in special datorita mentinerii ZODB ca solutie pentru 
+persistenta obiectelor)
 
 Dezvoltarea prin web
 --------------------
@@ -22,9 +18,18 @@ de a mai stoca cod sau template-uri in baza de date. Cu toate acestea, exista
 posibilitatea de a implementa forme de dezvoltare prin web folosind librariile 
 existente in Zope.
 
+Achizitia
+---------
+Achizitia este limitata si este explicita (de altfel, nici nu este folosita de 
+catre comunitate). Unele dintre problemele pentru care achizitia era necesara nu
+mai sunt valabile (dezvoltarea prin web) sau
+sunt rezolvate prin folosirea de alte paradigme: utilitare locale, inregistrate
+la nivelul site-urilor locale si un sistem inteligent de layere si skinuri 
+implementat la nivelu codului Python.
+
 RestrictedPython
 ----------------
-Odata cu dezvoltarea prin web, RPython nu a mai fost necesar. Astfel, in 
+Odata cu eliminarea dezvoltarii prin web, RPython nu a mai fost necesar. Astfel, in 
 template-urile ZPT este permis accesul nerestrictionat la obiecte (accesul este
 totusi restrictionat de catre mecanismul standard al Zope-ului, ce ingradeste
 accesul la obiecte pe baza setarile explicite de securitate care au fost 

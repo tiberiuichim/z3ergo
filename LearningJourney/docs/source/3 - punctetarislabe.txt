@@ -5,7 +5,7 @@ Pentru a intelege cat mai bine Zope 3, este benefic sa se cunoasca avantajele
 si dezavantajele lui. Acestea sunt:
 
 Puncte tari
------------
+***********
 
 Face posibila realizarea de aplicatii complexe
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -14,7 +14,7 @@ complexitatii. Una dintre solutiile gasite de industrie pentru realizarea de
 aplicatii complexe este acela de a baza aplicatiile pe o arhitectura bazata pe
 componente. Exemple includ XPCOM (Mozilla), Java Beans (Sun), COM (Microsoft) si
 Gumbo Flex (Adobe). Solutia oferita de catre Zope 3 este integrarea librariilor
-zope.interface si zope.component, adica ZCA - Zope Component Architecture. 
+``zope.interface`` si ``zope.component``, adica **ZCA - Zope Component Architecture**. 
 
 
 Folosirea ZCA-ului inseamna flexibilitate (plugability)
@@ -22,7 +22,7 @@ Folosirea ZCA-ului inseamna flexibilitate (plugability)
 Cea mai mare parte a librariilor Zope 3 folosesc ZCA, astfel se asigura 
 o flexibilitate foarte mare in modificarea comportamentului librariilor:
 puncte de injectie si de modificare a functionalitatii acopera intreaga gama
-de operatiuni pe care o face Zope.
+de operatiuni a Zope-ului.
 
 Ofera solutii noi si inovatoare pentru dezvoltarea de aplicatii web
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -45,14 +45,14 @@ Una dintre tendintele curente este dezvoltarea de proiecte relativ mici, formate
 din echipe putin numeroase. In acest context sunt preferate solutiile "agile" si
 conventiile in defavoare explicitatii, astfel incat sa se asigure o 
 productivitate cat mai mare cu cat mai putin cod scris. Pentru acoperirea 
-acestui segment exista Grok, un framework care ofera un nivel de conventie peste
+acestui segment exista **Grok**, un framework care ofera un nivel de conventie peste
 explicitatea preferata de Zope 3. Pentru cei care prefera minimalismul exista
-repoze.bfg, un framework similar cu Pylons, dar care integreaza librariile Zope.
+**repoze.bfg**, un framework similar cu Pylons dar care integreaza librariile Zope.
 
 Dezvoltatori cu experienta
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 Unii dintre dezvoltatorii Zope lucreaza de aproximativ 12 ani cu componentele
-Zope si precursoarele acestora (bobo, principia, etc). Unul dintre avantajele
+Zope si precursoarele acestora (Bobo, Principia, etc). Unul dintre avantajele
 oferite de tenacitatea si persistenta in comunitate a acestora oameni este 
 experienta pe care acestia o ofera in dezvoltarea de noi versiuni a librarii si
 concepte, care sa ofere solutii pentru problemele sau dificultatile intalnite
@@ -66,45 +66,14 @@ aplicate oricarei aplicatii Python.
 
 
 Puncte slabe
-------------
+************
 
-Relativ greu de invatat
-~~~~~~~~~~~~~~~~~~~~~~~
-Datorita folosirii arhitecturii pe componente si a unor concepte OOP avansate, 
-Zope este destul greu de invatat. Un programator care nu a mai avut de-a face 
-cu tehnologiile Zope trebuie sa invete limbajul de templating, arhitectura 
-sistemului, modul de functionare al ZCA, dialectul ZCML XML, concepte precum
-viewlet-uri, librariile de formulare, etc. Cu toate acestea, pentru a fi 
-productiv, nu este nevoie de o cunoastere aprofundata a tuturor componentelor,
-ci doar acelea care se doresc a fi folosite.
-
-Folosirea cu predominanta a ZCA
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Desi nu reprezinta concepte foarte straine sau dificil de invatat pentru un
-programator cunoscator al sistemului OOP, ZCA necesita totusi un timp de 
-acomodare pentru a putea intelege modul in care este folosita in avantajul 
-programatorului in Zope si modul in care trebuie limitata folosirea acesteia
-
- 
 Comunitatea de dezvoltatori/utilizatori
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Desi comunitatea de dezvoltatori Zope 3 este una relativ mare si in puternica
 expansiune datorita adoptarii de catre Plone, in general Zope se bucura de o 
 expunere si un marketing mai slab decat alte framework-uri web, gen Django sau
 Ruby on Rails.
-
-Probleme cu documentatia
-~~~~~~~~~~~~~~~~~~~~~~~~
-Aceasta este o problema de perceptie si marketing. Zope 3 nu are in acest 
-moment un site atractiv care sa atraga si sa centralizeze o documentatie 
-exhaustiva, asa cum are, de exemplu, Django. Cu toate acestea, exista carti
-de Zope 3, la curent cu noile modificari. Fiecare dintre pachetele ce constituie
-Zope 3 este bine documentat la nivel de cod, iar prin folosirea pachetului 
-zope.interface se asigura o buna documentare la nivel de cod a librariilor.
-Astfel, API-ul Zope-ului este chiar foarte bine documentat si poate fi accesat
-in orice instalare de Zope 3 sau pe site-ul http://apidoc.zope.org. Fisierele
-de documentare a librariilor Zope 3 sunt adunate intr-o carte disponibila in 
-acelasi loc.  
 
 Necesita dezvoltatori cu experienta
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -113,6 +82,36 @@ pentru multitudinea de probleme des intalnite in dezvoltarea de aplicatii web,
 Zope 3 este relativ dificil de folosit de catre programatorii incepatori. Cu
 siguranta, unui incepator i-ar fi mult mai usor sa inteleaga PHP decat sa 
 foloseasca in mod eficient infrastructura Zope 3.
+
+Relativ greu de invatat
+~~~~~~~~~~~~~~~~~~~~~~~
+Datorita folosirii arhitecturii pe componente si a unor concepte OOP avansate, 
+Zope este destul greu de invatat. Un programator care nu a mai avut de-a face 
+cu tehnologiile Zope trebuie sa invete limbajul de templating, arhitectura 
+sistemului, modul de functionare al ZCA, dialectul ZCML XML, concepte precum
+viewlet-uri, librariile de formulare, etc. Cu toate acestea, pentru a fi 
+productiv nu este nevoie de o cunoastere aprofundata a tuturor componentelor,
+ci doar acelea care se doresc a fi folosite.
+
+Folosirea cu predominanta a ZCA
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Desi nu reprezinta concepte foarte straine sau dificil de invatat pentru un
+programator cunoscator al sistemului OOP, ZCA necesita totusi un timp de 
+acomodare pentru a putea intelege modul in care este trebuie folosita in avantajul 
+programatorului.
+
+Probleme cu documentatia
+~~~~~~~~~~~~~~~~~~~~~~~~
+Aceasta este o problema de perceptie si marketing. Zope 3 nu are in acest 
+moment un site atractiv care sa atraga si sa centralizeze o documentatie 
+exhaustiva, asa cum are, de exemplu, Django. Cu toate acestea, exista carti
+pentru Zope 3 la curent cu noile modificari. Fiecare dintre pachetele ce constituie
+Zope 3 este bine documentat la nivel de cod, iar prin folosirea pachetului 
+``zope.interface`` se asigura o buna documentare la nivel de cod a librariilor.
+Astfel, API-ul Zope-ului este foarte bine documentat si poate fi accesat
+direct din aplicatia Zope 3 sau pe site-ul http://apidoc.zope.org. Fisierele
+de documentare a librariilor Zope 3 sunt adunate intr-o carte disponibila in 
+acelasi loc.
 
 Integrarea cu baze de date relationale
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

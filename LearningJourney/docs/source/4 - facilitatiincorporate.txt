@@ -39,6 +39,14 @@ noua librarie compatibila cu sintaxa ZPT si integrata cu Zope, dar care ofera
 o viteza de cel putin 10 ori mai mare. In Zope sistemul de templating ZPT poate
 fi extins cu noi tipuri de expresii.
 
+Modele de templating
+--------------------
+Zope ofera cateva modele de nivel inalt de integrare a continutului cu 
+template-urile: **content providere-le**, ce insereaza continut in template in 
+functie de tipul contextului, **viewlet-urile**, o forma extensibila de management
+al content providerelor si **pagelet-urile**, care separa continutul unui fragment
+html (pagina sau view) de layout-ul aceastuia.
+
 Sistem de indexare si cautare
 -----------------------------
 Zope ofera un sistem integrat de indexare a obiectelor, oferind in mod implicit
@@ -47,27 +55,24 @@ nu este o sarcina foarte complicata, in mod special datorita API-ului simplu,
 ceea ce face foarte usoara integrarea cu sisteme de cautare specializate precum
 Lucene sau Xapian.
 
-Anotarea obiectelor
+Adnotarea obiectelor
 -------------------
-Unul dintre conceptele inovatoare integrate in Zope 3 este cel al anotarii 
-obiectelor. Acest mecanism, facilitat de ZCA, permite anotarea cu date a 
+Unul dintre conceptele inovatoare integrate in Zope 3 este cel al adnotarii 
+obiectelor. Acest mecanism, facilitat de ZCA, permite adnotarea cu date a 
 oricarui obiect (fie el persistent sau tranzient), astfel incat sa poata fi 
 extinsa functionalitatea acestora.
 
 Internationalizare
 ------------------
-Zope 3 ofera un mecanism de internationalizare compatibil cu gettext. Acest 
-mecanism are extensii pentru ZPT si se ofera si un API foarte usor de folosit
-din Python. De asemenea se ofera mecanisme pentru localizare (formatarea 
-numerelor, a datelor si a timpului) precum si o baza de date ce contine 
-diferente regionale ce implica mecanismul de localizare. Exista de asemenea
-si unelte pentru dezvoltatori, ce faciliteaza extractia mesajelor 
+Zope 3 ofera un mecanism de internationalizare compatibil cu standardul 
+**gettext**. Acest mecanism are extensii pentru ZPT si se ofera si un API foarte 
+usor de folosit din Python. De asemenea se ofera mecanisme pentru localizare 
+(formatarea numerelor, a datelor si a timpului) precum si o baza de date ce 
+contine diferentele regionale ce implica mecanismul de localizare. Exista de 
+asemenea si unelte pentru dezvoltatori ce faciliteaza extragerea mesajelor 
 internationalizabile si integrarea in fisiere de traducere deja existente.
-
-Internationalizarea continutului
---------------------------------
-Pentru internationalizarea continutului exista cateva extensii oferite de 
-comunitatea Zope. 
+Este, de asemenea, posibila internationalizarea continutului prin folosirea
+a cateva extensii create de comunitatea Zope.
 
 Evenimente
 ----------
@@ -75,15 +80,14 @@ O modalitate foarte eleganta de asigurare a unor puncte de insertie pentru
 extinderea functionalitatii, evenimentele sunt prezente si in Zope 3. Astfel,
 exista o gama larga de evenimente definite si declansate de catre Zope in timpul
 functionarii. Printre cele mai importante sunt cele legate de ciclul de viata
-al obiectelor (evenimente declansate pentru crearea, adaugarea, modificarea sau
-stergerea obiectelor).
+al obiectelor (crearea, adaugarea, modificarea sau stergerea obiectelor).
 
 Formulare web
 -------------
 Zope ofera doua librarii pentru generarea, validarea si procesarea automata a 
 formularelor web, iar comunitatea Zope a dezvoltat un nou pachet (z3c.form) 
 care reprezinta o solutie similara celei integrate in Zope, dar mai avansata si 
-mai flexibila. 
+mai flexibila.
 
 Securitate
 ----------
