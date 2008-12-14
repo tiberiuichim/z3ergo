@@ -30,17 +30,3 @@ In mod tipic o aplicatie Zope include:
 * fisiere de configurare a serverului, eventual si integrare cu PasteScript
 * un modul pentru pornirea aplicatiei (startup.py) 
 * pachete de cod si ZCML ce implementeaza aplicatia dorita
-
-
-Slides
-~~~~~~
-
-* server de aplicatii/framework, cu precadere aplicatii "web"
-    * publicarea obiectelor, in mod tipic prin http
-    * MVC - model controversat, nu foarte clara distinctia in Zope
-        * View - template-ul
-        * controler - real: zope publisher. practic: BrowserView
-        * model - contextul paginii, in general obiectul persistent
-    * sistem de securitate aplicat view-urilor si obiectelor
-    * foloseste zope.interface si ZCA, librarii python. Trebuie intelese ca sa
-      poti intelege Zope

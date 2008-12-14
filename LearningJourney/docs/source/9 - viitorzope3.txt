@@ -31,14 +31,3 @@ Directii noi de dezvoltare
   motorul de templating, etc).
 * Integrarea pachetelor chameleon ce ofera o mai buna performanta pentru 
   template-uri precum si suport pentru sintaxe alternative, gen genshi
-
-
-Slides
-------
-
-* Software matur, in expansiune
-* Zope 2 inca traieste
-* Grok
-* Repoze
-* Repoze.bfg
-* WSGI

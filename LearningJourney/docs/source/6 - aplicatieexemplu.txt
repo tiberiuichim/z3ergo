@@ -15,7 +15,6 @@ similara unui sistem de blogging multi-user. Ca facilitati, ofera:
   de utilizatori
 * o pagina in care se face o clasificare simpla a inregistrarilor, pe baza 
   tagurilor
-  
 
 Generarea skeletului aplicatiei
 -------------------------------
@@ -35,7 +34,6 @@ sau
 
 Ambele comenzi vor porni aplicatia in modul debug.
 
-
 Structura aplicatiei
 --------------------
 Structura generata a aplicatiei este cea a unui pachet python dezvoltat folosind
@@ -48,7 +46,6 @@ contine tot ceea ce tine de paginile web publicate de aplicatie (pagini, imagini
 si resurse CSS). Fisierul `startup.py` este cel care defineste serverul de 
 aplicatii si este folosit de catre scripturile din folderul ``bin`` pentru 
 pornire.
-
  
 Fisiere ZCML
 ------------
@@ -110,7 +107,6 @@ O referinta completa a dialectului ZCML se afla pe site-ul **zope.org** la
 http://apidoc.zope.org/++apidoc++/. Alte directive ZCML vor fi discutate pe 
 parcurs.
 
-
 Bazele Zope Component Architecture
 ----------------------------------
 Interfetele sunt unul dintre mecanismele fundamentale ale Zope 3. Ele sunt
@@ -132,7 +128,6 @@ Folosirea interfetelor se poate spune ca apartine unui model de programare
 Patterns** este "sa se programeze nu pentru o implementare, ci pentru o
 interfata". Definirea unei interfete ajuta in intelegerea sistemelor implicate
 si sunt primul pas pentru folosirea ZCA.
-
 
 Un exemplu de interfata::
 
@@ -311,7 +306,6 @@ de request:
 Restul de componente (utilitare, subcribere, handlere) vor fi discutate pe 
 parcurs.
    
-   
 Publicarea unei pagini simple
 -----------------------------
 Zope 3 ofera o varietate mare de modele de realizare si publicare a paginilor
@@ -346,7 +340,6 @@ Cand este vorba de context, acesta poate fi o cale cu puncte (dotted name)
 catre o clasa, catre o interfata sau asterixul, ce semnifica "toate tipurile
 de context" (sau ``zope.interface.Interface``).
 
-
 Publicarea resurselor
 ---------------------
 Resursele (imaginile, fisierele CSS si JS) sunt inregistrate cu ajutorul a doua
@@ -367,8 +360,6 @@ Exemple se pot gasi in fisierele ``src/learningjourney/ui/configure.zcml`` si
 ``src/learningjourney/widget/addremove/configure.zcml`` si fisierele template
 ``src/learningjourney/ui/site/pt/layout.pt`` si 
 ``src/learningjourney/widget/addremove/widget.pt``
-
-
 
 Obiecte persistente
 -------------------
@@ -429,7 +420,6 @@ Alte elemente care mai pot aparea in aceasta declaratie sunt:
   de securitate ale unei alte clase.
 * tag-ul `<implements`, descris mai sus, ce permite declararea implementarii
   unei interfete de catre o clasa, independent de codul Python
-  
 
 Interactiunea cu utilizatorul prin obiectul request
 ---------------------------------------------------
@@ -517,7 +507,6 @@ repeat, iar detail este numele unui view inregistrat si disponibil pentru acel
 tip de obiect. View-ul (sau pagina) ``detail`` va fi construita cu obiectul ``item``
 ca si context.
 
-
 Augumentarea interfetelor cu date despre tipul atributelor
 ----------------------------------------------------------
 O alta librarie pilon in cadrul Zope 3-ului este zope.schema, o extensie a 
@@ -544,7 +533,6 @@ implementarea automata a doua formulare:
 * un formular de editare a obiectelor de tip ``ILearningEntry``
 Ambele de gasesc in modulul ``learningjourney.ui.homefolder.page``
 
-
 Site-uri si registre globale
 ----------------------------
 In cazul in care configurarea ZCA se face prin zcml, aceasta este inregistrata
@@ -557,7 +545,6 @@ ierarhia ZODB. Un exemplu de inregistrare a unui site local este codul aflat
 in ``learningjourney.app.event.configure_site``, unde sunt create si inregistrate
 si utilitarele locale. De asemenea, caile generate pentru accesarea resurselor 
 (CSS, imagini, JS) sunt relative la locatia acestui site.
-
 
 Utilitare
 ---------
@@ -583,7 +570,6 @@ functia ``zope.component.registerUtility`` sau functionalitatea din interfata ZM
 aflata in pagina "Registration".
 
 Exemple de folosire se gasesc in ``learningjourney.ui.search.page.SearchPage``.
-
 
 Indexarea si cautarea obiectelor
 --------------------------------
@@ -645,7 +631,6 @@ In cadrul aplicatiei LearningJourney a fost folosit pachetul de extensie
 ``z3c.layer.minimal``, care ofera un layer foarte simplu care nu are inregistrat
 decat paginile de erori.
 
-
 Folosirea macro-urilor in template-uri
 --------------------------------------
 Datorita faptului ca Zope 3 nu ofera publicarea directa a template-urilor si
@@ -661,7 +646,6 @@ Pentru a face mai usoara utilizarea acestora, comunitatea Zope a realizat un
 pachet de extensie, ``z3c.macro``, ce inregistreaza un nou tip de expresie TAL,
 `macro` si care poate fi folosit pentru inregistrarea directa paginilor care
 ofera macro-uri.
-
 
 Internationalizarea interfetei
 ------------------------------
@@ -682,7 +666,6 @@ traverserul ``++lang++``, de genul:
 O alta modalitate este cea de a modifica limba preferata a utilizatorului in
 cadrul requestului, folosind interfata ``IBrowserPreferredLanguages``, putand tine
 astfel cont de setarile dintr-o sesiune sau un cookie.
-
 
 Securitate, permisiuni
 ----------------------

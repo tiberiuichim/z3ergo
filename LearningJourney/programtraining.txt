@@ -3,7 +3,6 @@ Programul de training
 
 Prezentare generala Zope 3
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 * server de aplicatii/framework, cu precadere aplicatii "web"
   * publicarea obiectelor, in mod tipic prin http
   * MVC - model controversat, nu foarte clara distinctia in Zope
@@ -14,10 +13,8 @@ Prezentare generala Zope 3
   * foloseste zope.interface si ZCA, librarii python. Trebuie intelese ca sa
     poti intelege zopeul
 
-
 Filozofie
 ~~~~~~~~~
-
 * "pythonic" - spre deosebire de z2. Cele mai multe pachete de pe Cheeseshop
   apartin comunitatilor Zope (zc.buildout, Plone, zope3, Grok)
 * Filozofie: transformarea din programator "Zope" in programator "Python web"
@@ -28,10 +25,8 @@ Filozofie
   * se folosesc aspecte ale obiectelor pentru tot ce nu tine cu adevarat de
 obiect
 
-
 Puncte tari, puncte slabe
 ~~~~~~~~~~~~~~~~~~~~~~~~~
-
 * relativ complex de invatat (S)
 * folosirea cu predominanta a ZCA-ului = un obstacol de trecut (S)
 * comunitate relativ mica, dar in crestere (influxul de dezvoltatori Plone) (S)
@@ -49,10 +44,8 @@ Puncte tari, puncte slabe
 * dezvoltatori cu experienta, lucreaza de peste 15 ani cu tehnologii Zope (T)
 * librariile zope sunt refolosibile in orice gen de aplicatii Python (T)
 
-
 Facilitati incorporate
 ~~~~~~~~~~~~~~~~~~~~~~
-
 * Publicarea prin web cu sistem de tip graph de traversare
   * obiectele sunt amplasate intr-un arbore, fiecare obiect poate publica
     anumite pagini
@@ -179,7 +172,6 @@ HowTos
 * Construirea de aplicatii cu zc.buildout
     * virtualenv
 
-
 Ecosistemul Zope 3
 ~~~~~~~~~~~~~~~~~~
 * Aproximativ 400 de pachete de extensie in svn.zope.org, neincluzand
@@ -240,7 +232,6 @@ Ecosistemul Zope 3
 
 Directii de dezvoltare a Zope-ului
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 * Software matur, in expansiune
 * Zope 2 inca traieste
 * Grok

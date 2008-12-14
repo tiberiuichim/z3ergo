@@ -29,437 +29,569 @@ Librariile cele mai folosite pentru implementarea de aplicatii Zope 3 sunt:
 Pachetele din namespace-ul zope.*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* zope.annotation
-    * face posibila atasarea de date pentru obiecte. Ofera o implementare ce 
-      stocheaza aceste date intr-un atribut pe obiecte
-* zope.browser
-    * contine cateva interfete folosite in cadrul altor pachete
-* zope.cachedescriptors
-    * ofera memoizarea atributelor
-* zope.component
-    * implementeaza ZCA. Ofera adapter, utilities, subscribers, handlers. 
-      In implementare sunt folositi registri pentru inregistrarea componentelor,
-      oferind totodata si posibilitatea de a crea registri locali, care sa aiba
-      intaietate fata de cei globali (prin mecanismul de site-uri)
-* zope.configuration
-    * defineste un sistem de configurare extensibil. Implementeaza bazele ZCML
-* zope.contentprovider
-    * asigura posibilitatea de a componentiza structura paginii cu fragmente 
-      dinamice de continut, ce pot fi refolosite si legate de tipul contextului,
-      al request-ului si al paginii in care sunt inserate
-* zope.contenttype
-    * utilitare pentru determinarea continutului fisierelor, extinde modulul 
-      standard mimetypes
-* zope.copypastemove
-    * ofera suport pentru operatiuni de copiere, pastare si mutare a obiectelor.
-      Genereaza evenimente atunci cand se executa operatiunile de mai sus
-* zope.datetime
-    * definitii si utilitare pentru manipularea de obiecte de timp si data
-* zope.deferredimport
-    * Asigura suport pentru optimizarea operatiunilor de import, ce ajuta in 
-      pornirea mai rapida a aplicatiilor
-* zope.deprecation
-    * defineste un API util in marcarea unor module sau functii ca fiind 
-      depreciate
-* zope.documenttemplate
-    * un motor de templating folosind standardul DTML
-* zope.dottedname
-    * permite rezolvarea definitiilor de obiecte folosind nume cu puncte
-* zope.dublinecore
-    * implementare generala a standardului DublinCore, ofera si o implementare
-      ce stocheaza aceste informatii in anotare
-* zope.error
-    * implementeaza utilitare globale si locale de inregistrare si raportare a 
-      exceptiilor
-* zope.event
-    * implementeaza un sistem de notificare folosind sistemul de subscriberi cu 
-      care se definesc handler-ele pentru acele evenimente
-* zope.exception
-    * contine definitii pentru cateva exceptii de baza precum si utilitare 
-      pentru formatarea exceptiilor
-* zope.filereprezentation
-    * defineste interfete folosite pentru reprezentarea obiectelor prin 
-      protocoale de comunicare de gen WebDav sau FTP
-* zope.formlib
-    * o librarie generala de generare, validare si procesare automata a 
-      formularelor pentru pagini web
-* zope.hookable
-    * asigura posibilitatea unui monkey-patching la runtime, global, insa 
-      explicit
-* zope.i18n
-    * implementarea de baza a suportului pentru internationalizare in zope, 
-      implementeaza domeniile de traducere, cataloagele de mesaje, implementeaza
-      o extensie zcml pentru inregistrarea cataloagelor de mesaje si contine
-      utilitare pentru formatarea internationalizata a unor mesaje precum 
-      numere, date, bani, etc.
-* zope.i18nmessage
-    * implementeaza mesajele internationalizate
-* zope.index
-    * implementeaza indecsi ca si structuri de BTree-uri, optimizate pentru 
-      indexarea unor diverse tipuri de date: campuri de valori, text si  
-      liste de valori. Acesti indecsi sunt folositi in implementarea catalogului
-* zope.interface
-    * librarie de baza in implementarea Zope 3, implementeaza definirea, 
-      folosirea si interogarea obiectelor si a interfetelor pe care le asigura.
-      Reprezinta o piesa de baza in implementarea ZCA 
-* zope.lifecycleevent
-    * defineste o serie de evenimente in care poate fi implicat un obiect
-      (crearea, stergere, modificare, adaugare intr-un container)
-* zope.location
-    * defineste un model de localizare fizica a obiectelor folosind numele 
-      si parintele acestora, precum si diverse utilitare pentru localizare.
-      Defineste de asemenea utilitare pentru plasarea obiectelor intr-un graph
-      folosind LocationProxy, simuland astfel localizarea lor fizica. 
-      LocationProxy este important pentru ca se poate folosi pentru publicarea
-      prin web a obiectelor nepersistente si astfel se pot realiza modele de 
-      traversare si URL-uri care nu reprezinta neaparat structura fizica a bazei
-      de date
-* zope.minmax
-    * Defineste un model de rezolvare a conflictelor din infrastructura MVC 
-      folosind valorile printr-o politica ce favorizeaza valorile minime sau
-      maxime ale obiectelor implicate in conflict
-* zope.pagetemplate
-    *  implementeaza pagini ce folosesc template-uri cu sintaxa TAL
-* zope.proxy
-    * o implementare optimizata in C a conceputului de proxy. Este folosit
-      in celelalte librarii in implementarea un proxiuri de locatie si 
-      securitate
-* zope.publisher
-    * implementeaza mecanismele de publicare a continutului prin protocoalele
-      http, ftp si xmlrpc, defineste componentele implicate (request, response, 
-      skinuri, internationalizare, etc) si totodata asigura implementarea 
-      suportului WSGI
-* zope.rdb
-    * integrare cu baze de date relationale prin realizarea si mentinerea unor
-      conexiuni globale cu acestea
-* zope.schema
-    * extinde zope.interface pentru a implementa tipuri specifice de atribute
-      (gen numar, o linie de text, o lista de valori, etc). Tot aici sunt 
-      definite si vocabularele, utilitare ce intorc o sursa de valori pentru
-      afisarea de optiuni in interfetele cu utilizatorii. Unul dintre 
-      pachetele de baza a Zope-ului atunci cand vine vorba de implementarea de 
-      interfate cu utilizatorii. 
-* zope.security
-    * defineste un sistem de securitate ce foloseste principali si permisiuni
-      pentru a restrictiona accesul la obiecte si atributele acestora. Contine
-      integrarea cu ZCML a definitiei de permisiuni si politici de securitate.
-* zope.securitypolicy
-    * defineste politica de securitate a zope-ului, ce extinde infrastructura
-      de securitate cu roluri si grupuri pentru a atinge o flexibilitate mai 
-      mare. Defineste modul in care se stocheaza rolurile si permisiunile
-      pe obiecte folosind maparile si managerii de securitate. 
-      Contine integrarea cu ZCML a definitie de roluri si de acordare de
-      permisiuni rolurilor si principalilor.  
-* zope.sendmail
-    * defineste utilitare globale folosite pentru sisteme directe sau optimizate
-      pentru trimiterea de emailuri si integrarea in zcml a acestora
-* zope.sequencesort
-    * utilitare pentru sortarea de liste
-* zope.server
-    * contine implementari de servere pentru ftp si http. ZServer (aceasta 
-      implementare) reprezinta una dintre cele mai rapide variante de server 
-      http implementat in python
-* zope.session
-    * implementeaza sesiuni si utilitare pentru identificarea clientilor
-* zope.size
-    * defineste modul in care se obtine informatia despre marimea unui obiect,
-      precum si o implementare de baza
-* zope.structuredtext
-    * un motor de transformare a formatului Structured Text in html
-* zope.tal
-    * o implementare a sintaxei de templating TAL
-* zope.tales
-    * contine extensii ale sintaxei tal ce introduce expresii noi pentru 
-      traversarea obiectelor
-* zope.testbrowser
-    * contine un browser ce poate fi programat, putand fi folosit in definirea 
-      de teste functionale
-* zope.testing
-    * contine utilitare ce pot fi folosite in construirea de teste pentru 
-      aplicatii si pachete Zope. Contine suport pentru teste unitare si teste
-      de integrare. 
-* zope.testrecorder
-    * contine un proxy web ce poate fi folosit pentru inregistrarea comunicatiei
-      http in scopul definirii de teste de integrare
-* zope.thread
-    * defineste modul in care pot fi create si administrate obiecte locale per
-      thread. O simpla extensie a modulului standard thread
-* zope.traversing
-    * defineste utilitare si namespace-uri pentru traversare, precum si 
-      utilitare pentru calcularea URL-ului absolut al unui obiect contextul
-      hosting-ului virtual al aplicatiei
-* zope.viewlet
-    * extinde conceptul de content providere cu cel de viewleturi si viewlet 
-      managere, ce permit definirea de zone in care vor fi inserate 
-      viewlet-urile, view-uri dependente de context si zona in care vor fi
-      inserate. Defineste, de asemenea, cateva viewlet managere standard
-* zope.xmlpickle
-    * pickle based serialization to and from xml
+zope.annotation
+    face posibila atasarea de date pentru obiecte. Ofera o implementare ce
+    stocheaza aceste date intr-un atribut pe obiecte
+      
+zope.browser
+    contine cateva interfete folosite in cadrul altor pachete
+    
+zope.cachedescriptors
+    ofera memoizarea atributelor
+    
+zope.component
+    implementeaza ZCA. Ofera adapter, utilities, subscribers, handlers. 
+    In implementare sunt folositi registri pentru inregistrarea componentelor,
+    oferind totodata si posibilitatea de a crea registri locali, care sa aiba
+    intaietate fata de cei globali (prin mecanismul de site-uri)
+      
+zope.configuration
+    defineste un sistem de configurare extensibil. Implementeaza bazele ZCML
 
+zope.contentprovider
+    asigura posibilitatea de a componentiza structura paginii cu fragmente 
+    dinamice de continut, ce pot fi refolosite si legate de tipul contextului,
+    al request-ului si al paginii in care sunt inserate
+
+zope.contenttype
+    utilitare pentru determinarea continutului fisierelor, extinde modulul 
+    standard mimetypes
+
+zope.copypastemove
+    ofera suport pentru operatiuni de copiere, pastare si mutare a obiectelor.
+    Genereaza evenimente atunci cand se executa operatiunile de mai sus
+
+zope.datetime
+    definitii si utilitare pentru manipularea de obiecte de timp si data
+
+zope.deferredimport
+    Asigura suport pentru optimizarea operatiunilor de import, ce ajuta in 
+    pornirea mai rapida a aplicatiilor
+
+zope.deprecation
+    defineste un API util in marcarea unor module sau functii ca fiind 
+    depreciate
+
+zope.documenttemplate
+    un motor de templating folosind standardul DTML
+
+zope.dottedname
+    permite rezolvarea definitiilor de obiecte folosind nume cu puncte
+
+zope.dublinecore
+    implementare generala a standardului DublinCore, ofera si o implementare
+    ce stocheaza aceste informatii in anotare
+
+zope.error
+    implementeaza utilitare globale si locale de inregistrare si raportare a 
+    exceptiilor
+
+zope.event
+    implementeaza un sistem de notificare folosind sistemul de subscriberi cu 
+    care se definesc handler-ele pentru acele evenimente
+
+zope.exception
+    contine definitii pentru cateva exceptii de baza precum si utilitare 
+    pentru formatarea exceptiilor
+
+zope.filereprezentation
+    defineste interfete folosite pentru reprezentarea obiectelor prin 
+    protocoale de comunicare de gen WebDav sau FTP
+
+zope.formlib
+    o librarie generala de generare, validare si procesare automata a 
+    formularelor pentru pagini web
+
+zope.hookable
+    asigura posibilitatea unui monkey-patching la runtime, global, insa 
+    explicit
+
+zope.i18n
+    implementarea de baza a suportului pentru internationalizare in zope, 
+    implementeaza domeniile de traducere, cataloagele de mesaje, implementeaza
+    o extensie zcml pentru inregistrarea cataloagelor de mesaje si contine
+    utilitare pentru formatarea internationalizata a unor mesaje precum 
+    numere, date, bani, etc.
+
+zope.i18nmessage
+    implementeaza mesajele internationalizate
+
+zope.index
+    implementeaza indecsi ca si structuri de BTree-uri, optimizate pentru 
+    indexarea unor diverse tipuri de date: campuri de valori, text si  
+    liste de valori. Acesti indecsi sunt folositi in implementarea catalogului
+
+zope.interface
+    librarie de baza in implementarea Zope 3, implementeaza definirea, 
+    folosirea si interogarea obiectelor si a interfetelor pe care le asigura.
+    Reprezinta o piesa de baza in implementarea ZCA 
+
+zope.lifecycleevent
+    defineste o serie de evenimente in care poate fi implicat un obiect
+    (crearea, stergere, modificare, adaugare intr-un container)
+
+zope.location
+    defineste un model de localizare fizica a obiectelor folosind numele 
+    si parintele acestora, precum si diverse utilitare pentru localizare.
+    Defineste de asemenea utilitare pentru plasarea obiectelor intr-un graph
+    folosind LocationProxy, simuland astfel localizarea lor fizica. 
+    LocationProxy este important pentru ca se poate folosi pentru publicarea
+    prin web a obiectelor nepersistente si astfel se pot realiza modele de 
+    traversare si URL-uri care nu reprezinta neaparat structura fizica a bazei
+    de date
+
+zope.minmax
+    Defineste un model de rezolvare a conflictelor din infrastructura MVC 
+    folosind valorile printr-o politica ce favorizeaza valorile minime sau
+    maxime ale obiectelor implicate in conflict
+
+zope.pagetemplate
+    implementeaza pagini ce folosesc template-uri cu sintaxa TAL
+
+zope.proxy
+    o implementare optimizata in C a conceputului de proxy. Este folosit
+    in celelalte librarii in implementarea un proxiuri de locatie si 
+    securitate
+
+zope.publisher
+    implementeaza mecanismele de publicare a continutului prin protocoalele
+    http, ftp si xmlrpc, defineste componentele implicate (request, response, 
+    skinuri, internationalizare, etc) si totodata asigura implementarea 
+    suportului WSGI
+
+zope.rdb
+    integrare cu baze de date relationale prin realizarea si mentinerea unor
+    conexiuni globale cu acestea
+
+zope.schema
+    extinde zope.interface pentru a implementa tipuri specifice de atribute
+    (gen numar, o linie de text, o lista de valori, etc). Tot aici sunt 
+    definite si vocabularele, utilitare ce intorc o sursa de valori pentru
+    afisarea de optiuni in interfetele cu utilizatorii. Unul dintre 
+    pachetele de baza a Zope-ului atunci cand vine vorba de implementarea de 
+    interfate cu utilizatorii. 
+
+zope.security
+    defineste un sistem de securitate ce foloseste principali si permisiuni
+    pentru a restrictiona accesul la obiecte si atributele acestora. Contine
+    integrarea cu ZCML a definitiei de permisiuni si politici de securitate.
+
+zope.securitypolicy
+    defineste politica de securitate a zope-ului, ce extinde infrastructura
+    de securitate cu roluri si grupuri pentru a atinge o flexibilitate mai 
+    mare. Defineste modul in care se stocheaza rolurile si permisiunile
+    pe obiecte folosind maparile si managerii de securitate. 
+    Contine integrarea cu ZCML a definitie de roluri si de acordare de
+    permisiuni rolurilor si principalilor.  
+
+zope.sendmail
+    defineste utilitare globale folosite pentru sisteme directe sau optimizate
+    pentru trimiterea de emailuri si integrarea in zcml a acestora
+
+zope.sequencesort
+    utilitare pentru sortarea de liste
+
+zope.server
+    contine implementari de servere pentru ftp si http. ZServer (aceasta 
+    implementare) reprezinta una dintre cele mai rapide variante de server 
+    http implementat in python
+
+zope.session
+    implementeaza sesiuni si utilitare pentru identificarea clientilor
+
+zope.size
+    defineste modul in care se obtine informatia despre marimea unui obiect,
+    precum si o implementare de baza
+
+zope.structuredtext
+    un motor de transformare a formatului Structured Text in html
+
+zope.tal
+    o implementare a sintaxei de templating TAL
+
+zope.tales
+    contine extensii ale sintaxei tal ce introduce expresii noi pentru 
+    traversarea obiectelor
+
+zope.testbrowser
+    contine un browser ce poate fi programat, putand fi folosit in definirea 
+    de teste functionale
+
+zope.testing
+    contine utilitare ce pot fi folosite in construirea de teste pentru 
+    aplicatii si pachete Zope. Contine suport pentru teste unitare si teste
+    de integrare. 
+
+zope.testrecorder
+    contine un proxy web ce poate fi folosit pentru inregistrarea comunicatiei
+    http in scopul definirii de teste de integrare
+
+zope.thread
+    defineste modul in care pot fi create si administrate obiecte locale per
+    thread. O simpla extensie a modulului standard thread
+
+zope.traversing
+    defineste utilitare si namespace-uri pentru traversare, precum si 
+    utilitare pentru calcularea URL-ului absolut al unui obiect contextul
+    hosting-ului virtual al aplicatiei
+    
+zope.viewlet
+    extinde conceptul de content providere cu cel de viewleturi si viewlet 
+    managere, ce permit definirea de zone in care vor fi inserate 
+    viewlet-urile, view-uri dependente de context si zona in care vor fi
+    inserate. Defineste, de asemenea, cateva viewlet managere standard
+
+zope.xmlpickle
+    pickle based serialization to and from xml
 
 Pachetele din namespace-ul zope.app
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-* zope.app.apidoc
-    * face posibila introspectarea obiectelor pentru prezentarea unei pagini
-      autogenerate de documentatie. Ofera o extensie ZCML pentru inregistrarea
-      documentatiei intr-o asa numita "Zope Book". 
-* zope.app.aplicationcontrol
-    * ofera posibilitatea controlului aplicatiei de catre utilizator (oprire/
-      repornire/impachetarea bazei de date, etc)
-* zope.app.appsetup
-    * ofera o modalitate de configurare si construire a aplicatiei Zope
-* zope.app.authentication
-    * ofera un sistem complex, bazat pe plugin-uri de extragere a datelor de 
-      autentificare si autentificarea utilizatorilor (inclusiv sursa de 
-      utilizatori)
-* zope.app.basicskin
-    * ofera un skin simplu, cu intentia de a servi ca skelet
-* zope.app.boston
-    * un skin complet, similar cu Rotterdam, bazat pe viewlet-uri
-* zope.app.broken
-    * integreaza obiectele stricate din baza de date in asa fel incat ele sa 
-      fie vizualizate si diagnosticate
-* zope.app.cache
-    * ofera un utilitar global in care pot fi stocate date in scopul cachingului
-* zope.app.catalog
-    * o solutie completa de indexare si cautare a obiectelor. Ofera doua tipuri 
-      de indexi, bazati pe zope.index: text si camp
-* zope.app.component
-    * Extensii ale zope.component. Integreaza diversele componente ale zope-ului
-      (view-urile, layerele, securitatea, utilitare, etc) si defineste extensii
-      zcml pentru acestea.
-* zope.app.container
-    * Ofera o implementare bazata pe BTrees a containerelor, defineste modul
-      de traversare a acestora precum si suport pentru preconditii (ce tipuri 
-      de obiecte pot fi adaugate, etc).
-* zope.app.content
-    * Defineste interfata IContentType cu care pot fi marcate alte tipuri de 
-      interfete. Defineste un vocabular ce listeaza aceste tipuri de interfete.
-* zope.app.dav
-    * Ofera un server webdav integrat cu restul infrastructurii Zope, ofera si
-      integrare cu ZCML
-* zope.app.debug
-    * ofera un debugger care poate fi pornit din scriptul controler al 
-      aplicatiei
-* zope.app.dependent
-    * ofera o cale de a marca dependente intre obiectele din graph
-* zope.app.dtmlpage
-    * ofera un content type bazat pe template-uri DTML
-* zope.app.exception
-    * ofera pagini pentru exceptii, generand echivalentul in exceptii http 
-* zope.app.external
-    * o integrara minimala ce ofera infrastructura necesara integrarii unui
-      editor extern
-* zope.app.file
-    * doua noi tipuri de continut: File si Image precum si integrarea acestora
-      cu infrastructura de reprezentare externa (IFileRepresentation)
-* zope.app.folder
-    * ofera un content type de tip folder, integrat cu interfata de management 
-      si reprezentarea ca obiect extern (IFileRepresentation)
-* zope.app.form
-    * libraria "clasica" de formuri a zope-ului, este considerata depasita 
-      datorita dependentei de zcml si a inflexibilitatii. Cu toate acestea,
-      modelul de widget-uri este folosit de catre zope.formlib si de aceea 
-      ramane o librarie importanta. 
-* zope.app.ftp
-    * ofera un model de view pentru protocolul ftp
-* zope.app.generations
-    * face posibila migrarea bazei de date atunci cand schema obiectelor 
-      persistente se modifica
-* zope.app.homefolder
-    * ofera o implementare a unui homefolder pentru utilizatori
-* zope.app.http
-    * integrare a protocolului http: exceptii, metode, definirea modului de 
-      traversare si rezolvare a view-ului
-* zope.app.i18n
-    * contine implementarea unui message catalog persistent precum si extensii
-      ZCML pentru inregistrarea unui director ce contine traduceri
-* zope.app.i18nfile
-    * contine implementarea internationalizabila a fisierelor si imaginilor
-      stocate in baza de date
-* zope.app.interface
-    * ofera un vocabular pentru interfetele oferite de un obiect
-* zope.app.interpretor
-    * contine un interpretor pentru cod python in care nu se poate avea 
-      incredere
-* zope.app.intid
-    * un utilitar ce asociaza id-uri unice obiectelor din baza de date
-* zope.app.keyreference
-    * un adapter pentru obiectele persistente care extrage pozitia lor din
-      baza de date pe baza caruia i se poate asocia un intid
-* zope.app.locales
-    * contine traduceri si utilitare pentru software-ul Zope 3
-* zope.app.locking
-    * o implementare pentru blocarea accesului la obiecte, de exemplu pentru 
-      integrarea cu protocolul Webdav
-* zope.app.module
-    * o implementare de module python persistente (cod python in ZODB)
-* zope.app.onlinehelp
-    * ofera o infrastructura de documentatie si help precum si o extensie ZCML
-      ce face posibila asocierea de catre orice pachet de sectiuni de help
-* zope.app.pagetemplate
-    * face posibila integrarea template-urilor ZPT cu clasele de view, ofera
-      o expresie ZCML ce face posibila inregistrarea de noi tipuri de expresii
-      ZCML.
-* zope.app.preference
-    * implementeaza o modalitate de stocare a preferintelor pentru fiecare 
-      utilizator si contine integrare cu ZCML pentru inregistrarea grupurilor
-      de preferinte
-* zope.app.preview
-    * ofera o modalitate simpla de a previzualiza site-ul intr-un iframe
-* zope.app.principalannotation
-    * ofera o modalitate de asociere de date pentru principali, prin anotarea
-      persistenta a acestora
-* zope.app.publication
-    * integreaza metodele de publicare a continutului, ofera o extensie ZCML
-      pentru dezvoltarea de noi moduri de publicare, per tip de verb http 
-      folosit.
-* zope.app.publisher
-    * implementeaza obiecte - pagini, ce pot fi folosite in publicarea de 
-      continut. Implementeaza extensii zcml pentru inregistrarea paginilor si
-      a menurilor din ZMI
-* zope.app.pythonpage
-    * implementeaza un tip de continut ce poate interpreta continut python
-* zope.app.renderer
-    * infrastructura pentru transformarea unui tip de continut intr-un alt tip
-      de continut (de exemplu din rest sau stx in html)
-* zope.app.rotterdam
-    * cel mai folosit skin Zope, implementeaza o interfata completa pentru 
-      managementul zope-ului
-* zope.app.schema
-    * integreaza zope.schema cu infrastructura de securitate, ofera un registru
-      pentru vocabulare
-* zope.app.security
-    * implementeaza infrastructura de securitate a Zope-ului, ofera metode de 
-      baza pentru autentificarea utilizatorilor si generarea de principaluri,
-      ofera extensii zcml pentru declararea de principaluri si grupuri globale
-* zope.app.securitypolicy
-    * ofera pagini prin care se pot modifica local, in baza de date, per obiect,
-      setarile de securitate
-* zope.app.server
-    * implementeaza si face posibila configurarea de servere http si wsgi, 
-      implementeaza o infrastructura pentru controlul acestora
-* zope.app.session
-    * ofera suport pentru sesiuni pentru asocierea de date cu un client
-* zope.app.sqlscript
-    * implementeaza obiecte de continut care pot executa comenzi sql
-* zope.app.testing
-    * ofera utilitare pentru crearea de teste
-* zope.app.tree
-    * implementeaza un widget arbore ce poate fi folosit in interfetele cu 
-      utilizatorii pentru reprezentarea graph-ului de obiecte 
-* zope.app.twisted
-    * implementeaza un server bazat pe Twisted precum si infrastructura necesara
-      pentru controlul si configurarea acestuia
-* zope.app.undo
-    * implementeaza pagini pentru controlul si executarea pasilor de undo
-* zope.app.winservice
-    * ofera un serviciu integrat in sistemele de operare bazate pe WinNT
-* zope.app.workflow
-    * ofera un motod de workflow si suport pentru crearea de definitii 
-      persistente, in baza de date, a acestora
-* zope.app.wsgi
-    * ofera un obiect aplicatie WSGI pentru integrarea cu protocolul WSGI
-* zope.app.xmlrpcintrospection
-    * ofera introspectie protocolului XMLRPC, prin implementarea unor noi metode
-* zope.app.zapi
-    * grupeaza o serie de functii des folosit pentru convenienta dezvoltatorilor
-* zope.app.zcmlfiles
-    * ofera cateva fisiere zcml care grupeaza tematic pachetele zope, permitand
-      astfel incarcarea selectiva a acestora
-* zope.app.zopeappgenerations
-    * migreaza baza de date de la versiuni mai vechi ale zope-ului
-* zope.app.zopetop
-    * un skin Zope, nu este foarte popular, fiind o versiune mai veche
-* zope.app.zptpage
-    * implementeaza template-uri persistente in baza de date
+zope.app.apidoc
+    face posibila introspectarea obiectelor pentru prezentarea unei pagini
+    autogenerate de documentatie. Ofera o extensie ZCML pentru inregistrarea
+    documentatiei intr-o asa numita "Zope Book". 
 
+zope.app.aplicationcontrol
+    ofera posibilitatea controlului aplicatiei de catre utilizator (oprire/
+    repornire/impachetarea bazei de date, etc)
 
+zope.app.appsetup
+    ofera o modalitate de configurare si construire a aplicatiei Zope
+
+zope.app.authentication
+    ofera un sistem complex, bazat pe plugin-uri de extragere a datelor de 
+    autentificare si autentificarea utilizatorilor (inclusiv sursa de 
+    utilizatori)
+
+zope.app.basicskin
+    ofera un skin simplu, cu intentia de a servi ca skelet
+
+zope.app.boston
+    un skin complet, similar cu Rotterdam, bazat pe viewlet-uri
+
+zope.app.broken
+    integreaza obiectele stricate din baza de date in asa fel incat ele sa 
+    fie vizualizate si diagnosticate
+
+zope.app.cache
+    ofera un utilitar global in care pot fi stocate date in scopul cachingului
+
+zope.app.catalog
+    o solutie completa de indexare si cautare a obiectelor. Ofera doua tipuri 
+    de indexi, bazati pe zope.index: text si camp
+
+zope.app.component
+    Extensii ale zope.component. Integreaza diversele componente ale zope-ului
+    (view-urile, layerele, securitatea, utilitare, etc) si defineste extensii
+    zcml pentru acestea.
+
+zope.app.container
+    Ofera o implementare bazata pe BTrees a containerelor, defineste modul
+    de traversare a acestora precum si suport pentru preconditii (ce tipuri 
+    de obiecte pot fi adaugate, etc).
+
+zope.app.content
+    Defineste interfata IContentType cu care pot fi marcate alte tipuri de 
+    interfete. Defineste un vocabular ce listeaza aceste tipuri de interfete.
+
+zope.app.dav
+    Ofera un server webdav integrat cu restul infrastructurii Zope, ofera si
+    integrare cu ZCML
+
+zope.app.debug
+    ofera un debugger care poate fi pornit din scriptul controler al 
+    aplicatiei
+
+zope.app.dependent
+    ofera o cale de a marca dependente intre obiectele din graph
+
+zope.app.dtmlpage
+    ofera un content type bazat pe template-uri DTML
+
+zope.app.exception
+    ofera pagini pentru exceptii, generand echivalentul in exceptii http 
+
+zope.app.external
+    o integrara minimala ce ofera infrastructura necesara integrarii unui
+    editor extern
+
+zope.app.file
+    doua noi tipuri de continut: File si Image precum si integrarea acestora
+    cu infrastructura de reprezentare externa (IFileRepresentation)
+
+zope.app.folder
+    ofera un content type de tip folder, integrat cu interfata de management 
+    si reprezentarea ca obiect extern (IFileRepresentation)
+
+zope.app.form
+    libraria "clasica" de formuri a zope-ului, este considerata depasita 
+    datorita dependentei de zcml si a inflexibilitatii. Cu toate acestea,
+    modelul de widget-uri este folosit de catre zope.formlib si de aceea 
+    ramane o librarie importanta. 
+
+zope.app.ftp
+    ofera un model de view pentru protocolul ftp
+
+zope.app.generations
+    face posibila migrarea bazei de date atunci cand schema obiectelor 
+    persistente se modifica
+
+zope.app.homefolder
+    ofera o implementare a unui homefolder pentru utilizatori
+
+zope.app.http
+    integrare a protocolului http: exceptii, metode, definirea modului de 
+    traversare si rezolvare a view-ului
+
+zope.app.i18n
+    contine implementarea unui message catalog persistent precum si extensii
+    ZCML pentru inregistrarea unui director ce contine traduceri
+
+zope.app.i18nfile
+    contine implementarea internationalizabila a fisierelor si imaginilor
+    stocate in baza de date
+
+zope.app.interface
+    ofera un vocabular pentru interfetele oferite de un obiect
+
+zope.app.interpretor
+    contine un interpretor pentru cod python in care nu se poate avea 
+    incredere
+
+zope.app.intid
+    un utilitar ce asociaza id-uri unice obiectelor din baza de date
+
+zope.app.keyreference
+    un adapter pentru obiectele persistente care extrage pozitia lor din
+    baza de date pe baza caruia i se poate asocia un intid
+
+zope.app.locales
+    contine traduceri si utilitare pentru software-ul Zope 3
+
+zope.app.locking
+    o implementare pentru blocarea accesului la obiecte, de exemplu pentru 
+    integrarea cu protocolul Webdav
+
+zope.app.module
+    o implementare de module python persistente (cod python in ZODB)
+
+zope.app.onlinehelp
+    ofera o infrastructura de documentatie si help precum si o extensie ZCML
+    ce face posibila asocierea de catre orice pachet de sectiuni de help
+
+zope.app.pagetemplate
+    face posibila integrarea template-urilor ZPT cu clasele de view, ofera
+    o expresie ZCML ce face posibila inregistrarea de noi tipuri de expresii
+    ZCML.
+
+zope.app.preference
+    implementeaza o modalitate de stocare a preferintelor pentru fiecare 
+    utilizator si contine integrare cu ZCML pentru inregistrarea grupurilor
+    de preferinte
+
+zope.app.preview
+    ofera o modalitate simpla de a previzualiza site-ul intr-un iframe
+
+zope.app.principalannotation
+    ofera o modalitate de asociere de date pentru principali, prin anotarea
+    persistenta a acestora
+
+zope.app.publication
+    integreaza metodele de publicare a continutului, ofera o extensie ZCML
+    pentru dezvoltarea de noi moduri de publicare, per tip de verb http 
+    folosit.
+
+zope.app.publisher
+    implementeaza obiecte/pagini, ce pot fi folosite in publicarea de 
+    continut. Implementeaza extensii zcml pentru inregistrarea paginilor si
+    a menurilor din ZMI
+
+zope.app.pythonpage
+    implementeaza un tip de continut ce poate interpreta continut python
+
+zope.app.renderer
+    infrastructura pentru transformarea unui tip de continut intr-un alt tip
+    de continut (de exemplu din rest sau stx in html)
+
+zope.app.rotterdam
+    cel mai folosit skin Zope, implementeaza o interfata completa pentru 
+    managementul zope-ului
+
+zope.app.schema
+    integreaza zope.schema cu infrastructura de securitate, ofera un registru
+    pentru vocabulare
+
+zope.app.security
+    implementeaza infrastructura de securitate a Zope-ului, ofera metode de 
+    baza pentru autentificarea utilizatorilor si generarea de principaluri,
+    ofera extensii zcml pentru declararea de principaluri si grupuri globale
+
+zope.app.securitypolicy
+    ofera pagini prin care se pot modifica local, in baza de date, per obiect,
+    setarile de securitate
+
+zope.app.server
+    implementeaza si face posibila configurarea de servere http si wsgi, 
+    implementeaza o infrastructura pentru controlul acestora
+
+zope.app.session
+    ofera suport pentru sesiuni pentru asocierea de date cu un client
+
+zope.app.sqlscript
+    implementeaza obiecte de continut care pot executa comenzi sql
+
+zope.app.testing
+    ofera utilitare pentru crearea de teste
+
+zope.app.tree
+    implementeaza un widget arbore ce poate fi folosit in interfetele cu 
+    utilizatorii pentru reprezentarea graph-ului de obiecte 
+
+zope.app.twisted
+    implementeaza un server bazat pe Twisted precum si infrastructura necesara
+    pentru controlul si configurarea acestuia
+
+zope.app.undo
+    implementeaza pagini pentru controlul si executarea pasilor de undo
+
+zope.app.winservice
+    ofera un serviciu integrat in sistemele de operare bazate pe WinNT
+
+zope.app.workflow
+    ofera un motod de workflow si suport pentru crearea de definitii 
+    persistente, in baza de date, a acestora
+
+zope.app.wsgi
+    ofera un obiect aplicatie WSGI pentru integrarea cu protocolul WSGI
+
+zope.app.xmlrpcintrospection
+    ofera introspectie protocolului XMLRPC, prin implementarea unor noi metode
+
+zope.app.zapi
+    grupeaza o serie de functii des folosit pentru convenienta dezvoltatorilor
+
+zope.app.zcmlfiles
+    ofera cateva fisiere zcml care grupeaza tematic pachetele zope, permitand
+    astfel incarcarea selectiva a acestora
+
+zope.app.zopeappgenerations
+    migreaza baza de date de la versiuni mai vechi ale zope-ului
+
+zope.app.zopetop
+    un skin Zope, nu este foarte popular, fiind o versiune mai veche
+
+zope.app.zptpage
+    implementeaza template-uri persistente in baza de date
 
 Alte pachete
 ************
+Exista aproximativ 300 de pachete de extensie in svn.zope.org, neincluzand
+namespace-urile zope.* si zope.app.*. De altfel, comunitatea Zope este cea
+mai mare producatoare de pachete de tip egg (dupa statisticile de pe PyPi).
+Printre aceste pachete, se numara solutii pentru:
 
-* Aproximativ 400 de pachete de extensie in svn.zope.org, neincluzand
-  namespace-urile zope.* si zope.app.*
-* Comunitatea zope este cea mai mare producatoare de egg-uri
-* Pachete de extensie:
-    * stocarea fisierelor de dimensiuni mari
-        * z3c.extfile, z3c.blobfile
-    * reutilizarea view-urilor prin customizarea template-ului
-        * z3c.template
-    * separarea continutului unui view de layout-ului lui
-        * z3c.layout, z3c.pagelet
-    * formulare avansate, extensibilile
-        * z3c.form
-    * memoizarea view-urilor
-        * lovely.responsecache
-    * headere pentru caching
-        * z3c.caching
-        * z3c.responseheaders
-        * z3ext.cacheheaders
-    * ETAG support
-        * z3c.conditionalviews
-    * diverse field-uri si widgeturi
-        * z3c.schema.*
-        * z3c.widget.*
-    * integrare "first class citizen" cu RDB-uri
-        * STORM
-        * zope.sqlalchemy, z3c.saconfig, ore.alchemist
-    * includerea automata a resurselor (css, js)
-        * zc.resourcelibrary
-        * z3c.resourceinclude
-    * concatenarea resurselor
-        * z3c.resourcecollector
-    * configurare ZCA "locala"
-        * z3c.baseregistry
-    * engine de templating mai rapid
-        * z3c.pt
-    * workflow
-        * hurry.workflow
-    * configurare negociere, internationalizare continut
-        * z3c.language.*
-    * framework pentru operatiuni de configurare, specifice unui pachet
-        * z3c.configurator
-    * dezvoltarea de aplicatii
-        * zc.buildout, pb.recipes.pydev (pt Eclipse)
-    * executarea de taskuri asincron
-        * lovely.remotetask, zc.async
-    * partajarea sesiunii intre clientii zeo
-        * lovely.session
-    * generarea flexibila de tabele si listing-uri
-        * z3c.table, zc.table
-     * control mai mare asupra procesului de indexare si catalogare
-        * z3c.indexer
+stocarea fisierelor de dimensiuni mari
+    z3c.extfile, z3c.blobfile
+
+reutilizarea view-urilor prin customizarea template-ului
+    z3c.template
+
+separarea continutului unui view de layout-ului lui
+    z3c.layout, z3c.pagelet
+
+formulare avansate, extensibilile
+    z3c.form
+
+memoizarea view-urilor
+    lovely.responsecache
+
+headere pentru caching
+    z3c.caching
+    z3c.responseheaders
+    z3ext.cacheheaders
+
+ETAG support
+    z3c.conditionalviews
+
+diverse field-uri si widgeturi
+    z3c.schema.*
+    z3c.widget.*
+
+integrare "first class citizen" cu RDB-uri
+    STORM
+    zope.sqlalchemy, z3c.saconfig, ore.alchemist
+
+includerea automata a resurselor (css, js)
+    zc.resourcelibrary
+    z3c.resourceinclude
+
+concatenarea resurselor
+    z3c.resourcecollector
+
+configurare ZCA "locala"
+    z3c.baseregistry
+
+engine de templating mai rapid
+    z3c.pt
+
+workflow
+    hurry.workflow
+
+configurare negociere, internationalizare continut
+    z3c.language.*
+
+framework pentru operatiuni de configurare, specifice unui pachet
+    z3c.configurator
+
+dezvoltarea de aplicatii
+    zc.buildout, pb.recipes.pydev (pt Eclipse)
+
+executarea de taskuri asincron
+    lovely.remotetask, zc.async
+
+partajarea sesiunii intre clientii zeo
+    lovely.session
+
+generarea flexibila de tabele si listing-uri
+    z3c.table, zc.table
+
+control mai mare asupra procesului de indexare si catalogare
+    z3c.indexer
 
 
 Alte resurse pe web
 *******************
-    
-A Comprehensive Guide to Zope Component Architecture
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Un document bogat in exemple si explicatii despre Zope Component Architecture,
-configurarea cu zcml si modul in care poate fi folosita in orice aplicatie
-Python, nu doar Zope.
- 
-Locatie: http://www.muthukadan.net/docs/zca.html
 
+Zope 3 wiki
+    Desi pare putin atractiv, wiki-ul Zope 3 reprezinta in acest moment singurul 
+    site oficial si este un bun punct de plecare catre alte site-uri. Locatie: http://wiki.zope.org/zope3
+
+Noul site zope.org
+    Desi nu este inca lansat, noul site are deja suficiente pagini noi si 
+    interesante (de exemplu, ghidul Getting Started updatat la noile metode de 
+    instalare Zope 3). Locatie: http://new.zope.org/
+
+A Comprehensive Guide to Zope Component Architecture
+    Un document bogat in exemple si explicatii despre Zope Component Architecture,
+    configurarea cu zcml si modul in care poate fi folosita in orice aplicatie
+    Python, nu doar Zope. Locatie: http://www.muthukadan.net/docs/zca.html
 
 Ghid al pachetelor 3rd party Zope
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Un ghid/referinta al pachetelor de extensie din repozitorul svn.zope.org
-http://wiki.zope.org/zope3/Zope3PackageGuide
+    Un ghid/referinta al pachetelor de extensie din repozitorul svn.zope.org.
+    Locatie: http://wiki.zope.org/zope3/Zope3PackageGuide
 
 What's new in Zope 3.3
-~~~~~~~~~~~~~~~~~~~~~~
-Un document care discuta modificarile aduse de Zope 3.3. Util prin faptul ca
-discuta succint sistemul de skinuri, vocabulare si factories. http://kpug.zwiki.org/WhatIsNewInZope33
+    Un document care discuta modificarile aduse de Zope 3.3. Util prin faptul ca
+    discuta succint sistemul de skinuri, vocabulare si factories. Locatie: http://kpug.zwiki.org/WhatIsNewInZope33
 
 Zope 3 Book
-~~~~~~~~~~~
-Desi pare invechita, o buna parte din ceea ce exista in aceasta carte este inca
-valabil. http://wiki.zope.org/zope3/Zope3Book
+    Desi pare invechita, o buna parte din ceea ce exista in aceasta carte este inca
+    valabil. Locatie: http://wiki.zope.org/zope3/Zope3Book
 
 Worldcookery
-~~~~~~~~~~~~
-Sectiunea Downloads contine codul sursa sub licenta GPL, si reprezinta o foarte
-buna resursa pentru intelegerea Zope. http://worldcookery.com/Downloads
+    Sectiunea Downloads contine codul sursa sub licenta GPL, si reprezinta o foarte
+    buna resursa pentru intelegerea Zope. Locatie: http://worldcookery.com/Downloads
+
+Documentatia pentru z3c.form
+    z3c.form include documentatia direct in codul sursa al pachetului. O varianta
+    html, generata de Sphinx se afla la adresa http://www.carduner.net/docs/z3c.form/

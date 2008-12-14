@@ -64,7 +64,6 @@ Cunostintele dobandite in programarea pe platforma Zope pot fi refolosite in
 dezvoltarea de aplicatii Python: avantajele arhitecturii pe componente pot fi
 aplicate oricarei aplicatii Python.
 
-
 Puncte slabe
 ************
 
@@ -119,25 +118,3 @@ Desi Zope 3 ofera solutii puternice pentru integrarea cu baze de date
 relationale (prin zope.alchemy si STORM), faptul ca acestea nu vin integrate 
 direct cu Zope-ul si acesta ofera in mod implicit integrarea cu ZODB poate fi
 perceputa drept o slabiciune a Zope-ului.
-
-
-Slides
-------
-
-* folosirea de tehnologii noi, inovative, adecvate pentru crearea de aplicatii
-  complicate
-* folosirea ZCA-ului inseamna flexibilitate (plugability)
-* Ofera solutii noi, inovatoare, pentru problemele tipice dezvoltarii de 
-  aplicatii web (T)
-* numar mare de extensii open source, ce rezolva diverse probleme (T)
-* compatibilitate WSGI (T)
-* adaptabilitate la noile tehnologii (Grok, repoze.bfg) (T)
-* dezvoltatori cu experienta, lucreaza de peste 12 ani cu tehnologii Zope (T)
-* librariile zope sunt refolosibile in orice gen de aplicatii Python (T)
-
-* relativ complex de invatat (S)
-* folosirea cu predominanta a ZCA-ului = un obstacol de trecut (S)
-* comunitate relativ mica, dar in crestere (influxul de dezvoltatori Plone) (S)
-* documentatia relativ complexa, nu foarte vizibila incepatorilor (S)
-* necesita dezvoltatori cu experienta (S)
-* Integrarea ORM nu face parte din "core" (S)
