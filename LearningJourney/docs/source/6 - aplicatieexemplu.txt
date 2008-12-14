@@ -1,5 +1,3 @@
-.. highlight:: python
-
 O aplicatie exemplu
 ===================
 
@@ -47,7 +45,9 @@ namespace-ul ``learningjourney`` 5 pachete, dintre care cele mai importante sunt
 ``app`` si ``ui``. Namespace-ul ``app`` gazduieste modelel si logica aplicatiei ce 
 sunt independente de publicarea acestora ca si pagina web, iar pachetul ``ui`` 
 contine tot ceea ce tine de paginile web publicate de aplicatie (pagini, imagini
-si resurse CSS).
+si resurse CSS). Fisierul `startup.py` este cel care defineste serverul de 
+aplicatii si este folosit de catre scripturile din folderul ``bin`` pentru 
+pornire.
 
  
 Fisiere ZCML
