@@ -24,7 +24,7 @@ Aplicatia generata este o aplicatie WSGI ce poate fi configurata folosind unul
 dintre cele doua fisiere ``ini`` din radacina (in functie de modul in care se 
 doreste rularea aplicatiei - in mod `debug` sau pentru productie). 
 
-Pentru pornire, se foloseste:
+Pentru pornire se foloseste:
 
 ``# bin/paster server debug.ini``
 
@@ -37,21 +37,20 @@ Ambele comenzi vor porni aplicatia in modul debug.
 Structura aplicatiei
 --------------------
 Structura generata a aplicatiei este cea a unui pachet python dezvoltat folosind
-setuptools. In radacina se afla modulul setup.py ce configureaza pachetul, iar 
-codul in sine sta in namespace-ul learningjourney din directorul src. In 
-namespace-ul ``learningjourney`` 5 pachete, dintre care cele mai importante sunt
-``app`` si ``ui``. Namespace-ul ``app`` gazduieste modelel si logica aplicatiei ce 
-sunt independente de publicarea acestora ca si pagina web, iar pachetul ``ui`` 
+setuptools. In radacina se afla modulul ``setup.py`` ce configureaza pachetul, iar 
+codul in sine sta in namespace-ul ``learningjourney`` din directorul ``src``. In 
+namespace-ul ``learningjourney`` se gasesc 5 pachete, dintre care cele mai importante sunt
+``app`` si ``ui``. Primul, ``app``, gazduieste modelele si logica aplicatiei, independente
+in principiu de publicarea acesteia ca si pagina web. Pachetul ``ui`` 
 contine tot ceea ce tine de paginile web publicate de aplicatie (pagini, imagini
-si resurse CSS). Fisierul `startup.py` este cel care defineste serverul de 
+si resurse CSS). Fisierul ``startup.py`` este cel care defineste serverul de 
 aplicatii si este folosit de catre scripturile din folderul ``bin`` pentru 
 pornire.
  
 Fisiere ZCML
 ------------
-In radacina aplicatiei sta stau cateva fisiere zcml: site.zcml, apidoc.zcml si
-custom-security.zcml. 
-Fisierele zcml sunt fisiere XML ce contin instructiuni de configurare a 
+In radacina aplicatiei stau cateva fisiere zcml: ``site.zcml``, ``apidoc.zcml`` si
+``custom-security.zcml``. Fisierele zcml sunt fisiere XML ce contin instructiuni de configurare a 
 componentelor folosite in codul aplicatiei si a librariilor Zope. Aceste 
 operatiuni de configurare au direct echivalent in cod Python si pot fi 
 realizate si prin cod, insa separarea in XML are mai multe roluri:
@@ -85,10 +84,10 @@ Un exemplu de baza al unui fisier zcml:
     </configure>
 
 Primul tag, ``configure``, serveste drept directiva de grupare si specificare a 
-pachetului carui i se adreseaza directivele din interior. El defineste 
+pachetului pentru care sunt adresate directivele din interior. El defineste 
 namespaceul XML implicit drept ``http://namespaces.zope.org/zope`` si namespace-ul 
-cu prefixul browser drept ``http://namespaces.zope.org/browser``. Acestea nu sunt
-singurele namespace-uri folosite.
+cu prefixul **browser** drept ``http://namespaces.zope.org/browser``. Acestea sunt doar
+cateva din namespace-urile XML folosite, insa si cele mai importante.
 
 Directiva ``include`` foloseste la includerea unui nou pachet (in care este cautat
 un fisier cu numele configure.zcml si inclus in sistemul de configurare) sau
@@ -120,14 +119,14 @@ ca le "asigura". O interfata specifica comportamentul prin:
 
 Astfel, o interfata descrie caracteristicile unui obiect, capacitatea lui. Ea
 descrie ceea ce face obiectul, nu si cum o face. Pentru a observa modul in care
-obiectul realizeaza ceea ce interfata declara, trebuie citita implementarea 
+obiectul realizeaza ceea ce interfata declara trebuie citita implementarea 
 obiectului, adica clasa acestuia.
 
 Folosirea interfetelor se poate spune ca apartine unui model de programare 
 (patern). Una dintre recomandarile facute in `biblia paternurilor` - **Design
 Patterns** este "sa se programeze nu pentru o implementare, ci pentru o
 interfata". Definirea unei interfete ajuta in intelegerea sistemelor implicate
-si sunt primul pas pentru folosirea ZCA.
+si este primul pas pentru folosirea ZCA.
 
 Un exemplu de interfata::
 
@@ -144,9 +143,9 @@ Un exemplu de interfata::
        
 Se observa:
 
-* interfetele sunt clase ce mostenesc zope.interface.Interface (direct sau 
+* interfetele sunt clase ce mostenesc ``zope.interface.Interface`` (direct sau 
   prin intermediari)
-* atributele sunt definite ca obiecte de tip Attribute
+* atributele sunt definite ca obiecte de tip ``Attribute``
 * metodele nu trebuiesc implementate, ci doar definite si documentate. De aceea
   nu este nevoie de declararea parametrului self in semnatura metodei
 
@@ -197,7 +196,7 @@ sau direct a obiectelor:
 
     >>> alsoProvides(game, IBoardgame)
 
-Odata ce se cunosc interfetele, definitia componentei in intelegerea Zope este
+Odata ce se cunosc interfetele, definitia componentei in acceptiunea Zope este
 simpla: o componenta este un obiect care asigura cel putin o interfata. 
 Majoritatea claselor din cadrul Zope-ului sunt scrise astfel incat ele sa devina
 componente atunci cand sunt instantiate.    
@@ -258,7 +257,7 @@ obiect construind un adapter pentru fiecare obiect:
     >>> size = getAdapter(IDisplaySize, obj).get_size()
     
 Se remarca ca adaptorul ce este construit in urma apelarii ``getAdapter`` este o 
-componenta ce asigura (provides) interfata ``IDisplaySize``. Prin constructia 
+componenta ce asigura (``provides``) interfata ``IDisplaySize``. Prin constructia 
 adaptorului se poate obtine o implementare specifica fiecarui tip de context::
 
     class Mp3DisplaySize(object):
@@ -347,7 +346,7 @@ taguri zcml aflate in namespaceul **browser**: ``browser:resource``, ce
 inregistreaza o singura resursa (fisier text sau imagine) si 
 ``browser:resourceDirectory``, ce poate fi folosit pentru inregistrarea a unui 
 director de resurse. Pentru inregistrarea unor resurse internationalizabile
-se foloseste tagul i18n-resource.
+se foloseste tagul ``i18n-resource``.
 
 Calea catre aceste resurse este calculata ca fiind 
 relativa la site-ul local (detalii despre site-uri mai jos), sub forma 
@@ -364,14 +363,14 @@ Exemple se pot gasi in fisierele ``src/learningjourney/ui/configure.zcml`` si
 Obiecte persistente
 -------------------
 Pentru stocarea datelor in baza de date ZODB se folosesc clase care mostenesc
-clasa Persistent. Acestea sunt foarte simple, asa cum se poate observa luand
+clasa ``Persistent``. Acestea sunt foarte simple, asa cum se poate observa luand
 ca exemplu ``learningjourney.app.userhome.LearningEntry``: se mosteneste ``Persistent``,
 se implementeaza interfata ``ILearningEntry`` si se implenteaza metodele si 
 atributele definite in interfata.
 
 Urmatoarea cerinta pentru integrarea cu Zope-ul este aceea de a face declaratii
 de securitate pentru obiectele generate. In cazul in care acestea nu exista,
-accesul la obiect va fi interzis (si va declansa errori de tip ``Forbidden``). 
+accesul la attributele obiectului va fi interzis (si va declansa errori de tip ``Forbidden``). 
 Aceasta declaratie se face in zcml:
 
 .. code-block:: xml
@@ -384,6 +383,12 @@ Aceasta declaratie se face in zcml:
             permission="zope.ManageContent" 
             set_schema=".interfaces.ILearningEntry" />
     </class>
+    
+Pentru accesul direct la obiect, neintermediat de securitate, se poate folosi
+urmatorul exemplu:
+
+    >>> from zope.proxy import getProxiedObject
+    >> obj = getProxiedObject(someobj)
     
 In cadrul tag-ului require se foloseste attributul ``interface`` pentru a desemna
 o interfata ce defineste metodele accesibile si atributele disponibile pentru 
@@ -406,7 +411,7 @@ permisiunilor: IReadContainer si IWriteContainer. Exemplu:
   </class>
 
 Pentru restrictionarea tipurilor de obiecte ce pot fi adaugate intr-un 
-container, sau restrictionarea tipurilor de container in care poate fi adaugat
+container sau restrictionarea tipurilor de container in care poate fi adaugat
 un obiect se folosesc constrangerile din zope.container.constraints. Un 
 exemplu se afla in `learningjourney.app.userhome`.
 
@@ -415,10 +420,10 @@ Alte elemente care mai pot aparea in aceasta declaratie sunt:
 * tag-ul <allow>, ce poate fi folosi pentru a marca accesul la anumite atribute
   desemnate de o interfata sau direct prin numirea directa drept publice 
   (necesita permisiunea zope.Public)
-* optiunile `attributes`, `set_attributes` si `like_schema` care permit 
+* optiunile ``attributes``, ``set_attributes`` si ``like_schema`` care permit 
   configurarea permisiunilor la nivel de atribute, precum si copierea setarilor
   de securitate ale unei alte clase.
-* tag-ul `<implements`, descris mai sus, ce permite declararea implementarii
+* tag-ul ``<implements``, descris mai sus, ce permite declararea implementarii
   unei interfete de catre o clasa, independent de codul Python
 
 Interactiunea cu utilizatorul prin obiectul request
@@ -461,7 +466,7 @@ In cadrul template-urilor asociate unei clase, instanta clasei si atributele ei
 pot fi accesate prin intermediul obiectului ``view``. Contextul paginii se afla 
 in variabila ``context``, iar requestul in variabila ``request``. 
 
-Deoarece obiectul request din cadrul paginii ofera acces la datele asociate
+Deoarece obiectul **request** din cadrul paginii ofera acces la datele asociate
 metodei GET sau POST care a fost folosita pentru a accesa pagina, se pot 
 implementa pagini formulare simple, folosind o metoda de genul::
 
@@ -477,40 +482,40 @@ Template-ul `sampleform.pt` ar contine:
 .. code-block:: xml
 
     <form method="POST">
-    <input type="text" name="name" />
-    <input type="submit" name="submit" />
+        <input type="text" name="name" />
+        <input type="submit" name="submit" />
     </form>
 
-Prin obiectul response accesibil ca atribut al request-ului se pot stabili
+Prin obiectul **request.response** se pot stabili
 diversi parametri ai raspunsului intors catre vizitator (de exemplu, se pot 
 seta headere sau se poate implementa un redirect). Un exemplu simplu de astfel 
 de formular se gaseste in clasa ``EntryDeletePage`` din 
 ``learningjourney.ui.homefolder.page`` sau clasa ``DashboardRedirect`` din
 acelasi modul.
 
-O conventie folosita in Zope 3 folosita pentru a indica mecanismului de 
-traversare ca este vorba de o pagina sau un view, este aceea de a prefixa 
+O conventie folosita in Zope 3 pentru a indica mecanismului de 
+traversare ca are de-a face cu o pagina sau un view este aceea de a prefixa 
 numele paginii in cadrul url-ului cu doua semne **@**. Impreuna formeaza doi 
 "ochi", cu o trimitere directa la ceea ce reprezinta, un "view". 
 
 Exemplu: ``http://localhost/@@index.html``
 
 Prin folosirea acestei conventii se scurcircuiteaza mecanismul de traversare, 
-astfel ca se incearca direct construirea unui view cu numele index.html, in loc
-sa se caute un obiect cu numele "index.html" in cadrul obiectului context 
+astfel ca se incearca direct construirea unui view cu numele ``index.html``, in loc
+sa se caute un obiect cu numele ``index.html`` in cadrul obiectului context 
 curent.
 
-De asemenea, in cadrul template-urilor, paginile poti fi inserate direct, prin
+De asemenea, in cadrul template-urilor, paginile pot fi inserate direct, prin
 apelarea de genul: ``<div tal:content="structure item/@@detail" />``, unde item
-este un obiect persistent (ar putea fi context, sau un obiect din cadrul unui
-repeat, iar detail este numele unui view inregistrat si disponibil pentru acel
+este un obiect persistent (ar putea fi context sau un obiect din cadrul unui
+repeat, iar ``detail`` este numele unui view inregistrat si disponibil pentru acel
 tip de obiect. View-ul (sau pagina) ``detail`` va fi construita cu obiectul ``item``
 ca si context.
 
 Augumentarea interfetelor cu date despre tipul atributelor
 ----------------------------------------------------------
-O alta librarie pilon in cadrul Zope 3-ului este zope.schema, o extensie a 
-librariei zope.interface care permite specificarea mai exacta a tipului 
+O alta librarie pilon in cadrul Zope 3-ului este ``zope.schema``, o extensie a 
+librariei ``zope.interface`` care permite specificarea mai exacta a tipului 
 atributelor din cadrul interfetelor. In acest fel interfetele se transforma in
 "schema" si pot fi folosite pentru diverse sarcini: validarea valorilor 
 obiectelor, generarea de formulare complexe, automate, generare de pagini de 
@@ -519,9 +524,9 @@ atributele devin "field"-uri, iar impreuna cu
 ``zope.interface.fieldproperty.FieldProperty``, se poate implementa un mecanism
 foarte simplu de validare automata a valorilor obiectului, pe baza schemei (vezi
 modul de implementare a clasei ``LearningEntry`` in 
-`learningjourney.app.userhome`.
+``learningjourney.app.userhome``.
  
-zope.schema defineste o multitudine de tipuri de campuri, de exemplu
+``zope.schema`` defineste o multitudine de tipuri de campuri, de exemplu
 o linie de text (``TextLine``), o data (``Date``), o valoare de tip adevarat/false 
 (``Bool``), o lista (``List``), etc. Bineinteles, se pot scrie si alte tipuri de 
 campuri.
@@ -529,8 +534,10 @@ campuri.
 Un exemplu de interfata/schema este ``ILearningEntry``, din modulul
 ``learningjourney.app.interfaces``. Aceasta interfata este folosita pentru 
 implementarea automata a doua formulare:
+
 * un formulare de creare si adaugare a obiectelor de tip ``LearningEntry``
 * un formular de editare a obiectelor de tip ``ILearningEntry``
+
 Ambele de gasesc in modulul ``learningjourney.ui.homefolder.page``
 
 Site-uri si registre globale
@@ -548,11 +555,11 @@ si utilitarele locale. De asemenea, caile generate pentru accesarea resurselor
 
 Utilitare
 ---------
-Un alt tip de componenta definit de zope.component sunt utilitare. Acestea sunt
+Un alt tip de componente definit de ``zope.component`` sunt utilitarele. Acestea sunt
 de doua tipuri: globale si locale. In principiu, acestea se comporta similar
 cu obiectele de tip **singleton** din alte limbaje si modele de programare. Pe
 baza unei interfete se poate obtine obiectul unic ce este inregistrat ca 
-utilitar, indiferent ca acesta este global sau local.
+utilitar. 
 
 Pentru inregistrarea unui utilitar global se foloseste tagul ``<utility>``, in 
 care se desemneaza interfata pe care acesta o va asigura, numele pe care il 
@@ -583,11 +590,11 @@ fi obtinut folosind
 
     >>> catalog = zope.component.getUtility(ICatalog)
 
-In cadrul catalogului sunt adaugati indcsii (exemplu in 
+In cadrul catalogului sunt adaugati indecsii (exemplu in 
 ``learningjourney.app.event``), pentru care se configureaza interfata (aspectul)
-obiectului pe care il indexeseaza precum si atributul pe care il indexeaza. 
-Acesti indecsi stocheaza stocheaza ca referinte catre obiectul indexat un 
-intid - un numar intreg, unic in cadrul bazei de date, desemnat fiecarui 
+obiectului pe care il indexeaza precum si atributul pe care il indexeaza. 
+Acesti indecsi stocheaza ca referinte catre obiectul indexat un 
+**intid** - un numar intreg, unic in cadrul bazei de date, desemnat fiecarui 
 obiect de catre utilitarul ``zope.app.intid.interfaces.IIntIds``. 
 
 Indexarea obiectelor se face atunci cand acestea sunt adaugate sau sterse din
@@ -607,19 +614,21 @@ gaseste in ``learningjourney.ui.search.page``.
 
 Sistemul de layere si skinuri
 -----------------------------
-Librariile CMF din Zope 2 ofera conceptul de Layere pe care sunt inregistrate
-resursele, paginile si skin-uri, care grupeaza layer-ele pentru a oferi o 
-anumita infatisare si capabilitati ale unui website. Aceste concepte se regasesc
-in Zope 3 intr-o forma simplificata si usor de implementate.
+Librariile CMF din Zope 2 ofera conceptul de 
 
-Un layer este determinat de o interfata ce mosteneste 
+* **layere** pe care sunt inregistrate resursele, paginile 
+* **skin-uri**, care grupeaza layer-ele pentru a oferi o anumita infatisare si 
+  capabilitati ale unui website. 
+  
+Aceste concepte se regasesc in Zope 3 intr-o forma simplificata si usor de 
+implementat. Un layer este determinat de o interfata ce mosteneste 
 ``zope.publisher.browser.interfaces.IBrowserRequest``. Odata definit layer-ul, 
 obiectele de tip browser (gen pagini, view-uri si resurse) pot fi inregistrate
-pe acel layer folosind atributul "layer" in zcml. Un exemplu de layer se gaseste
+pe acel layer folosind atributul ``layer`` in zcml. Un exemplu de layer se gaseste
 in modul ``__init__`` din `learningjourney.ui`
 
-Un skin este un layer care a fost desemnat ca avand tipul ``IBrowserSkinType``, plus
-numele care il va avea acel skin. Exemplu se gaseste in 
+Un skin este un layer care a fost desemnat ca avand tipul ``IBrowserSkinType``, 
+plus numele care il va avea acel skin. Exemplu se gaseste in 
 ``learningjourney/ui/configure.zcml``.
 
 Pentru selectarea skinului folosit se poate folosi un namespace traverser 
@@ -627,15 +636,16 @@ special in URL, de genul:
 
     ``http://localhost:8080/++skin++lj/Application/@@index.html``
 
-In cadrul aplicatiei LearningJourney a fost folosit pachetul de extensie
-``z3c.layer.minimal``, care ofera un layer foarte simplu care nu are inregistrat
-decat paginile de erori.
+In cadrul aplicatiei **LearningJourney** a fost folosit pachetul de extensie
+``z3c.layer.minimal``, care ofera un layer minimal, care nu are inregistrat
+decat paginile de erori. Acesta aduce ca avantaj faptul ca se vor cunoaste si
+controla exact paginile care sunt publicate prin web.
 
 Folosirea macro-urilor in template-uri
 --------------------------------------
 Datorita faptului ca Zope 3 nu ofera publicarea directa a template-urilor si
-atasarea lor de orice tip de context, folosirea macro-urilor in Zope 3 este mai
-anevoioasa.
+atasarea lor de orice tip de context, folosirea macro-urilor in Zope 3 este un pic 
+mai anevoioasa.
 
 Metoda clasica in Zope 3 de folosire a macro-urilor este inregistrarea unor
 pagini care ofera macro-uri intr-o lista dintr-o pagina denumita 
@@ -643,7 +653,7 @@ pagini care ofera macro-uri intr-o lista dintr-o pagina denumita
 ``learningjourney.ui.site``. 
 
 Pentru a face mai usoara utilizarea acestora, comunitatea Zope a realizat un
-pachet de extensie, ``z3c.macro``, ce inregistreaza un nou tip de expresie TAL,
+pachet de extensie, ``z3c.macro``, ce inregistreaza un nou tip de expresie **TAL**,
 `macro` si care poate fi folosit pentru inregistrarea directa paginilor care
 ofera macro-uri.
 
@@ -654,8 +664,8 @@ in Zope 2, folosind atributele din namespace-ul i18n. De asemenea, in cadrul
 fisierelor ZCML se poate specifica domeniul in cadrul caruia vor fi traduse
 atributele de tipul "title" sau "label" are tagurilor din acel fisier. 
 
-La nivelul codului python se foloseste un ``MessageIdFactory``, ce construieste un
-nou id pentru mesaje. Ca exemplu, se poate observa definirea unui messageid 
+La nivelul codului python se foloseste un ``MessageIdFactory``, ce construieste 
+un nou id pentru mesaje. Ca exemplu, se poate observa definirea unui messageid 
 in modulul ``learningjourney.i18n`` si folosirea acestuia in 
 ``learningjourney.app.interfaces``. Pentru modificarea limbii pe baza caruia ii 
 este prezentata interfata site-ului catre utilizator se poate folosi namespace
@@ -674,9 +684,10 @@ totodata flexibil si puternic. La baza sistemului de securitate stau
 interactiunile si principalii (obiecte reprezentand utilizatorii). Obiectele
 de tip **principal** sunt reconstruite pentru fiecare request, de obicei pe baza 
 informatiei extrase din request. Utilitarul global care genereaza obiectele
-`principal` este inregistrat pentru interfata 
+**principal** este inregistrat pentru interfata 
 ``zope.app.security.interfaces.IAuthentication``. Implementarea oferita de Zope
-se numeste **Pluggable Authentication Utility** (PAU) si ofera un sistem de pluginuri
+se numeste **Pluggable Authentication Utility** (PAU), se gaseste in pachetul
+``zope.app.authentication`` si ofera un sistem de pluginuri
 prin care se poate stabili modul in care se extrage informatia despre 
 credentiile de autentificare ale utilizatorului si sursele de utilizatori cu 
 care aceste informatii sunt folosite pentru a verifica veridicitatea lor. Un 
@@ -687,16 +698,16 @@ username-ului sau verificarea faptului ca utilizatorul este autentificat). Modul
 in care poate fi folosit se poate vedea concret in pachetul 
 `learningjourney.ui.authentication`
 
-Exista cateva directive pentru definirea tipurilor de principali (autentificati,
-neautentificati, etc). Acestea se pot observa in fisierul site.zcml din radacina 
+Exista cateva directive ZCML pentru definirea tipurilor de principali (autentificati,
+neautentificati, etc) ce se pot observa in fisierul site.zcml din radacina 
 aplicatiei. La runtime principalii pot fi construiti si pe baza unor informatii
 stocate in baza de date (sursa de utilizatori). Zope ofera o astfel de sursa
 de utilizatori in forma unui container (``PrincipalFolder``), ce stocheaza obiecte
 de tipul ``IInternalPrincipal`` - atentie, acestea sunt doar informatii despre 
 principali, nu principali in sine. Sursa de utilizatori si plugin-ul de 
 extragere a secretelor de autentificare din request sunt obiecte in containerul
-PAU, iar utilitarului PAU i se specifica pluginurile de tip extragere si cele de 
-tip sursa de utilizatori, precum si si ordinea lor. Toate acestea se pot observa
+PAU, iar utilitarului PAU i se specifica pluginurile de tip `extragere` si cele de 
+tip `sursa de utilizatori`, precum si si ordinea lor. Toate acestea se pot observa
 in ``learningjourney.app.event``
 
 Accesul la obiecte si la proprietatile acestora se protejeaza cu permisiuni, 
@@ -710,5 +721,5 @@ adapteaza contextul la interfata IPrincipalRoleManager, astfel:
                                                     request.principal.id)
                                                     
 Declararea de noi permisiuni, roluri, precum si aprobarea permisiunilor pentru
-roluri se poate observa in fisierul custom-security.zcml din radacina 
+roluri se poate observa in fisierul ``custom-security.zcml`` din radacina 
 aplicatiei.

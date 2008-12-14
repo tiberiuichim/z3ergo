@@ -11,10 +11,10 @@ Face posibila realizarea de aplicatii complexe
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Unul dintre atuurile Zope 3 este ca ofera o modalitate de administrare a 
 complexitatii. Una dintre solutiile gasite de industrie pentru realizarea de 
-aplicatii complexe este acela de a baza aplicatiile pe o arhitectura bazata pe
+aplicatii complexe si extensibile este aceea de a baza aplicatiile pe o arhitectura bazata pe
 componente. Exemple includ XPCOM (Mozilla), Java Beans (Sun), COM (Microsoft) si
 Gumbo Flex (Adobe). Solutia oferita de catre Zope 3 este integrarea librariilor
-``zope.interface`` si ``zope.component``, adica **ZCA - Zope Component Architecture**. 
+``zope.interface`` si ``zope.component``, adica **Zope Component Architecture - ZCA**. 
 
 
 Folosirea ZCA-ului inseamna flexibilitate (plugability)
@@ -74,23 +74,18 @@ expansiune datorita adoptarii de catre Plone, in general Zope se bucura de o
 expunere si un marketing mai slab decat alte framework-uri web, gen Django sau
 Ruby on Rails.
 
-Necesita dezvoltatori cu experienta
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Necesita dezvoltatori cu experienta, este relativ greu de invatat
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Zope 3 nu e PHP. Prin folosirea unor concepte avansate si oferta de solutii
 pentru multitudinea de probleme des intalnite in dezvoltarea de aplicatii web,
 Zope 3 este relativ dificil de folosit de catre programatorii incepatori. Cu
 siguranta, unui incepator i-ar fi mult mai usor sa inteleaga PHP decat sa 
-foloseasca in mod eficient infrastructura Zope 3.
-
-Relativ greu de invatat
-~~~~~~~~~~~~~~~~~~~~~~~
-Datorita folosirii arhitecturii pe componente si a unor concepte OOP avansate, 
-Zope este destul greu de invatat. Un programator care nu a mai avut de-a face 
-cu tehnologiile Zope trebuie sa invete limbajul de templating, arhitectura 
-sistemului, modul de functionare al ZCA, dialectul ZCML XML, concepte precum
-viewlet-uri, librariile de formulare, etc. Cu toate acestea, pentru a fi 
-productiv nu este nevoie de o cunoastere aprofundata a tuturor componentelor,
-ci doar acelea care se doresc a fi folosite.
+foloseasca in mod eficient infrastructura Zope 3. Un programator care nu a mai 
+avut de-a face cu tehnologiile Zope trebuie sa invete limbajul de templating, 
+arhitectura sistemului, modul de functionare al ZCA, dialectul ZCML XML, 
+concepte precum viewlet-uri, librariile de formulare, etc. Cu toate acestea, 
+pentru a fi productiv nu este nevoie de o cunoastere aprofundata a tuturor 
+componentelor, ci doar acelea care se doresc a fi folosite.
 
 Folosirea cu predominanta a ZCA
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -117,4 +112,4 @@ Integrarea cu baze de date relationale
 Desi Zope 3 ofera solutii puternice pentru integrarea cu baze de date 
 relationale (prin zope.alchemy si STORM), faptul ca acestea nu vin integrate 
 direct cu Zope-ul si acesta ofera in mod implicit integrarea cu ZODB poate fi
-perceputa drept o slabiciune a Zope-ului.
+perceput drept o slabiciune a Zope-ului.

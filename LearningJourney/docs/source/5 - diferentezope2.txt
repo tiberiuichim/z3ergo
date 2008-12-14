@@ -13,10 +13,10 @@ persistenta obiectelor)
 
 Dezvoltarea prin web
 --------------------
-A fost eliminata complet. Una dintre modificarile aduse de Zope 3 este refuzul
-de a mai stoca cod sau template-uri in baza de date. Cu toate acestea, exista 
-posibilitatea de a implementa forme de dezvoltare prin web folosind librariile 
-existente in Zope.
+A fost eliminata complet. Una dintre modificarile aduse de Zope 3 este refuzul 
+dezvoltatorilor de a mai stoca cod sau template-uri in baza de date. Cu toate 
+acestea, exista posibilitatea de a implementa forme de dezvoltare prin web 
+folosind librariile existente in Zope.
 
 Achizitia
 ---------

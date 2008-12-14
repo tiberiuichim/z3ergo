@@ -5,7 +5,7 @@ Publicarea prin web
 -------------------
 Principalul rol al Zope-ului este acela de a publica pagini prin web. Desi nu 
 este neaparat legat de protocolul http, o mare parte din librariile Zope se 
-preocupa de aceasta problema. Module in care Zope realizeaza aceasta publicare
+preocupa de aceasta problema. Modul in care Zope realizeaza aceasta publicare
 este acela de a asocia pagini unui graph (arbore) de obiecte. In principiu
 aceste obiecte sunt obiecte persistente provenind din ZODB, dar la fel de bine
 se pot publica si obiecte tranziente.  
@@ -13,7 +13,7 @@ se pot publica si obiecte tranziente.
 Persistenta obiectelor
 ----------------------
 In mod implicit datele sunt salvate intr-o baza de date cu obiecte, ZODB. 
-Odata cu aparitia librariilor cu facilitati ORM, au aparut si modalitati de 
+Odata cu aparitia librariilor cu facilitati ORM au aparut si modalitati de 
 integrare cu acestea. Una dintre problemele care o rezolva Zope-ul in 
 integrarea cu baza de date este mecanismul de tranzactie. Daca o eroare a 
 aparut in codul ce genereaza pagina sau proceseaza datele utilizatorului, datele
@@ -26,8 +26,8 @@ ceea ce este necesar pentru dezvoltarea de aplicatii web. API-ul Zope-ului este
 bine documentat si este stabil. In cazul in care unele librarii se depreciaza,
 acestea sunt mentinute si se pastreaza compatibilitate in versiunile urmatoare.
 Datorita folosirii pachetelui zope.interface in marea majoritate a librariilor 
-Zope, se asigura auto-documentarea API-ului. Datorita folosirii extensive a 
-procedurilor de programare de tip Aspect Oriented Programming, extinderea sau
+Zope, se asigura auto-documentarea API-ului, iar prin folosirea extensiva a 
+modelului de programare de tip Aspect Oriented Programming, extinderea sau
 modificarea comportamentului implicit al librariilor este usor de realizat, la
 fel si dezvoltarea de cod ce va fi usor de extins de catre alte parti.
 
@@ -35,7 +35,7 @@ Sistem de templating extensibil
 -------------------------------
 Desi Zope poate folosi orice motor de templating, in mod clasic este preferata
 sintaxa ZPT. In Zope exista doua implementari ZPT: cea clasica si z3c.pt, o 
-noua librarie compatibila cu sintaxa ZPT si integrata cu Zope, dar care ofera 
+noua librarie, compatibila cu sintaxa ZPT si integrata cu Zope, dar care ofera 
 o viteza de cel putin 10 ori mai mare. In Zope sistemul de templating ZPT poate
 fi extins cu noi tipuri de expresii.
 

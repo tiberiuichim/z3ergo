@@ -14,7 +14,7 @@ Designul infrastructurii pe care o reprezinta Zope 3 a fost in mare parte
 centrat pe nevoile companiilor mari si ai clientilor Corporatiei Zope, in mod 
 special avandu-se in vedere realizarea de aplicatii cu un nivel de logica 
 complicata. Ca urmare, el poate fi folosit direct pentru dezvoltarea de 
-aplicatii pentru companii mari, modele noi si eficiente de dezvoltare. 
+aplicatii complexe, eficienta maxima a acestuia gasindu-se in aceste medii. 
 
 Principalele componente care fac posibile dezvoltarea de aplicatii web cu Zope 
 sunt:
