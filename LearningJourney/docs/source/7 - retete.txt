@@ -83,7 +83,116 @@ Iar codul care adauga comentarii poate fi pur si simplu::
     IComments(some_blog_entry).add_comment(...)
     IComments(some_other_object_type).add_comment(...)
     
+Adnotarea obiectelor
+--------------------
+Un alt concept introdus de Zope 3 in scopul de a mentine obiectele cat mai
+"curate" este acela de adnotare. Cu ajutorul adnotarii pot fi atasate date 
+suplimentare obiectelor. De exemplu, sa presupunem ca avem obiecte de tipul
+``Boardgame``::
 
+    class IBoardgame(Interface):
+        name = zope.schema.TextLine(title=u"Numele jocului"
+    
+    class Boardgame(Persistent):
+        implements(IBoardgame)
+        
+        name = u""
+    
+Dorim sa atasam o lista cu toate datele cand acel joc a folosit. Aceste date 
+stau in obiecte de tip ``UsageInfo``::
+
+    class IUsage(Interface):
+        date = Date(title=u"Data folosirii")
+    
+    class Usage(Persistent):
+        date = None
+        
+        def __repr__(self):
+            return "Used at %s" % self.date
+
+Lista o vom implementa annotand obiectele de tip ``Boardgame`` cu informatie de tip
+``IUsageInfo``::
+ 
+    class IUsageInfo(Interface):
+        usages = List(  title=u"Dates when used",
+                        value_type=Object(title=u"Usage",
+                                          schema=IUsage)
+                      )
+    
+    class UsageInfo(Persistent):
+        implements(IUsageInfo)
+        adapts(IBoardgame)
+        
+        usages = None
+    
+Obiectele de tip UsageInfo vor fi stocate in annotarea obiectelor de tip 
+``IBoardgame``. Adnotarea in sine este un adapter ce se construieste folosind
+functia ``factory`` ``din zope.annotation.factory``
+
+    >>> from zope.annotation.factory import factory
+    >>> usage_info_annotation = factory(UsageInfo)
+    >>> zope.component.provideAdapter(usage_info_annotation)
+
+De obicei configurarea ultimei linii se face in zcml astfel:
+
+.. code-block:: xml
+
+    <zope:adapter factory=".annotations.usage_info_annotation" />
+
+In final, folosirea adnotarii in cod este foarte simpla:
+
+    >>> usage_info = IUsageInfo(some_boardgame)
+    >>> usage_info.usages.append(Usage(datetime.datetime.now()))
+    >>> print usage_info.usages
+
+Annotarea nu este ceva care sa fie in mod implicit asigurat tutoror obiectelor
+persistente. Pentru ca adnotarea sa fie disponibila pentru un obiect, acesta
+trebuie sa fie adaptabil la interfata ``IAnnotations`` (de exemplu, ar putea sa 
+existe un adaptor care sa stocheze adnotarea obiectelor intr-un RDB). In cazul
+obiectelor persistente bazate pe ZODB, acestea pot fi facute usor adaptabile
+prin marcarea claselor acestora ca implementand interfata 
+``zope.annotation.interfaces.IAttributeAnnotatable``. Exista un adapter care
+adapteaza acest tip de obiecte la interfata IAnnotations prin stocarea 
+adnotarilor intr-un atribut ``__annotations__``. 
+
+
+DublinCore
+----------
+Informatia de tip ``DublinCore`` este stocata de stocata de catre libraria 
+``zope.dublincore`` implicit in annotarea obiectelor adnotabile. De aceea, pentru a 
+beneficia de ``DublinCore`` pentru obiecte este suficient sa se marcheze clasa
+unui obiect ca implementand ``IAttributeAnnotatable``.
+
+DublinCore inseamna o sumedenie de atribute si informatii. Exista doua 
+modalitati de a modifica modul in care este determinata aceasta informatie (in
+afara, bineinteles, a implementarii directe a informatiei).
+
+Primul mod, se poate declara un attribut ca fiind o proprietate ``DublinCore``::
+
+    from zope.dublincore.property import DCProperty
+    class Book:
+        implements(IBook)
+        name = DCProperty("title")
+        authors = DCProperty("creators")
+    
+Al doilea mod implica crearea manuala a adaptorului DC folosind un `factory`, 
+caz in care putem specifica o mapare intre campurile DC si campurile obiectului. 
+::
+
+    dc_annotation = partialAnnotatableAdapterFactory({
+                                    'name':'title', 
+                                    'author':'creators'
+                                    })
+
+Adapterul este inregistrat astfel:
+
+.. code-block:: xml
+                                        
+    <zope:adapter 
+        for=".interfaces.IBook" 
+        factory=".annotations.dc_annotation" 
+        provides="zope.dublincore.interfaces.IZopeDublinCore"/>
+        
 Folosirea anotarilor si a relatiilor
 ------------------------------------ 
 Avand un folder cu imagini de pe circuitele de curse de masini, dorim sa 

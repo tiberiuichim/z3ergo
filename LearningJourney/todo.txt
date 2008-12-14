@@ -1,0 +1,4 @@
+* traducere articol template-uri
+* unificare sectiune viewlet-uri
+* mai multe exemple pentru content providers
+* exemple mai compicate de formlib

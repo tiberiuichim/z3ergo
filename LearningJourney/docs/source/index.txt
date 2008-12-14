@@ -13,13 +13,11 @@ Contents:
    4 - facilitatiincorporate
    5 - diferentezope2
    6 - aplicatieexemplu
-   7 - ecosistem
-   8 - retete
+   7 - retete
+   8 - ecosistem
    9 - viitorzope3
 
 Indices and tables
 ~~~~~~~~~~~~~~~~~~
 
-* :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
