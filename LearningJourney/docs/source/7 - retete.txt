@@ -10,11 +10,11 @@ clasa a implementarii acelei capabilitati atrage cu aceasta si beneficierea de
 implementarea acelei capabilitati. Exemplu:
 
 Sa presupunem ca vrem sa dezvoltam o solutie reutilizabila de adaugare de 
-comentarii. Fiecare comentariu va fi stocat intr-un obiect de tip IComment, iar
+comentarii. Fiecare comentariu va fi stocat intr-un obiect de tip ``IComment``, iar
 aceste comentarii vor fi stocate in anotarile obiectelor. Intr-un sistem de tip
-CMS, pentru care tip de obiecte va fi afisat butonul "Add comment"? A lua ca 
+CMS, pentru care tip de obiecte va fi afisat butonul `Add comment`? A lua ca 
 indiciu faptul ca un obiect este anotabil nu este de ajuns: nu toate obiectele
-anotabile trebuiesc sa fie comentabile. Solutia este simpla: vom crea o 
+anotabile trebuie sa fie comentabile. Solutia este simpla: vom crea o 
 interfata marker::
 
     class IHasComments(Interface):
@@ -96,7 +96,7 @@ Lista o vom implementa annotand obiectele de tip ``Boardgame`` cu informatie de 
     
 Obiectele de tip UsageInfo vor fi stocate in annotarea obiectelor de tip 
 ``IBoardgame``. Adnotarea in sine este un adapter ce se construieste folosind
-functia ``factory`` ``din zope.annotation.factory``
+functia ``factory`` din ``zope.annotation.factory``
 
     >>> from zope.annotation.factory import factory
     >>> usage_info_annotation = factory(UsageInfo)
@@ -126,14 +126,15 @@ adnotarilor intr-un atribut ``__annotations__``.
 
 DublinCore
 ----------
-Informatia de tip ``DublinCore`` este stocata de stocata de catre libraria 
-``zope.dublincore`` implicit in annotarea obiectelor adnotabile. De aceea, pentru a 
-beneficia de ``DublinCore`` pentru obiecte este suficient sa se marcheze clasa
-unui obiect ca implementand ``IAttributeAnnotatable``.
+Informatia de tip ``DublinCore`` este stocata de catre libraria 
+``zope.dublincore`` implicit pentru toate obiectele persistente adnotabile. De 
+aceea, pentru a beneficia de ``DublinCore`` pentru obiecte este suficient sa se 
+marcheze clasa unui obiect ca implementand ``IAttributeAnnotatable``.
 
-DublinCore inseamna o sumedenie de atribute si informatii. Exista doua 
-modalitati de a modifica modul in care este determinata aceasta informatie (in
-afara, bineinteles, a implementarii directe a informatiei).
+**DublinCore** reprezinta o sumedenie de atribute si informatii, de aceea, 
+daca se doreste modificarea comportamentului implicit, procesul de implementare 
+a acestei interfete trebuie optimizat. Exista doua 
+modalitati de a realiza aceasta:
 
 Primul mod, se poate declara un attribut ca fiind o proprietate ``DublinCore``::
 
@@ -165,7 +166,7 @@ Adapterul este inregistrat astfel:
 Folosirea relatiilor intre obiecte
 ---------------------------------- 
 Avand un folder cu imagini de pe circuitele de curse de masini, dorim sa 
-asignam o lista de imagini unor obiecte de tipul Pilot, Echipa sau Stadion.::
+asignam o lista de imagini unor obiecte de tipul Pilot, Echipa sau Stadion::
 
     class IHasImages(Interface):
        """marker, objects have pointers to images"""
@@ -202,7 +203,7 @@ asignam o lista de imagini unor obiecte de tipul Pilot, Echipa sau Stadion.::
 Astfel, codul ce foloseste aceasta anotare este simplu::
              
     IPicturesInfo(pilot_instance).images.append(img) 
-    del IPicturesInfo(team_instance).images[1] 
+    del IPicturesInfo(team_instance).images[somename] 
 
 
 Internationalizarea continutului cu z3c.language.switch
@@ -261,16 +262,16 @@ atributului interogat, in loc de o valoare goala.
 Modificarea traversarii cu z3c.traverser
 ----------------------------------------
 Exemplul de mai jos foloseste un caz in care o serie de imagini sunt stocate
-intr-un folder adnotare al obiectelor de tip Business. Datorita acestui 
+intr-un folder adnotare al obiectelor de tip ``Business``. Datorita acestui 
 amplasament al imaginilor, pentru ca acestea sa fie publicate prin web ca 
-aflandu-se intr-un container *images* aflat in obiecte de tip ``Business``, a
+aflandu-se intr-un container *images* aflat in adnotarea obiectelor de tip ``Business``, a
 fost nevoie de modificarea mecanismului de traversare al obiectelor de tip
-``Business``. Pachetul z3c.traverser introduce un mecanism prin care se pot
+``Business``. Pachetul ``z3c.traverser`` introduce un mecanism prin care se pot
 scrie plugin-uri pentru modificarea traversarii, per obiect, prin modificarea
 publisher-ului default al obiectelor cu unul care are acest suport pentru 
 pluginuri. Prima inregistrare zcml modifica publisher-ul pentru obiectele de 
-tip IBusiness, iar cea de-a doua inregistreaza pluginul cu acest publisher
-(acest mecanism este descris in amanunt in documentatia z3c.traverser).
+tip ``IBusiness``, iar cea de-a doua inregistreaza pluginul cu acest publisher
+(acest mecanism este descris in amanunt in documentatia ``z3c.traverser``).
 
 .. code-block:: xml
 
@@ -314,8 +315,8 @@ tip IBusiness, iar cea de-a doua inregistreaza pluginul cu acest publisher
                 raise NotFound(self.context, name, request)
             return subob
 
-Metode de inserare a continutului in pagini 
--------------------------------------------
+Metode avansate de integrare a template-urilor
+----------------------------------------------
 In cazul dezvoltarii unui site cu Zope 2, modul in care template-urile trebuie
 create este evident: este necesar un template pentru layout-ul site-ului, se 
 folosesc macro-urile si sloturile pentru a umple acest template si eventual se 
@@ -434,7 +435,7 @@ inserat, denumite **content providere**. Gratie interfetelor, este foarte usor
 sa se redefineasca continutul provider-ului in functie de tipul contextului,
 tipul request-ului (skin-ul) si tipul paginii (interfata sau clasa implementata
 de pagina). De exemplu, in site-ul nostru de text am putea defini un menu de 
-navigare ce va fi inserat pe fiecare pagina astfel:
+navigare ce va fi inserat pe fiecare pagina astfel::
  
     from zope.contentprovider.interfaces import IContentProvider
     from zope.publisher.interfaces.browser import IDefaultBrowserLayer
