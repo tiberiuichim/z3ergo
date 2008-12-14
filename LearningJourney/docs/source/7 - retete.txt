@@ -5,7 +5,9 @@ Sfaturi generale
 ----------------
 * codul sursa al Zope-ului este simplu si usor de interpretat. Daca nu exista
   documentatie, citeste codul sursa, incepand cu interfetele si apoi fisierul
-  configure.zcml, pentru a intelege ce ofera acel pachet. 
+  configure.zcml, pentru a intelege ce ofera acel pachet. Foloseste 
+  instrumentele APIDOC si Zope Book pentru a citi documentatia. Foloseste 
+  pagina de introspectare a obiectelor pentru a intelege structura obiectelor.
 * Foloseste namespace-urile
 * Separa partea de "backend" de cea de "frontend" in sub-pachete-uri diferite:
   `app` si una din variantele: `browser`, `skin`, `ui`.

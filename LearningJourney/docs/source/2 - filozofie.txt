@@ -11,10 +11,10 @@ Astfel, in Zope 3 primeaza urmatoarele idei:
 
 * este "pythonic". Urmeaza conventiile de structurare a codului, foloseste
   librariile Python, pastreaza o structura simpla, usor de inteles a codului.
-* se promoveaza interoperabilitatea (se ofera sisteme de adaptare a librariilor
+* se promoveaza interoperabilitatea - se ofera sisteme de adaptare a librariilor
   externe, este implementat standardul WSGI, se ofera flexibilitate in alegerea
-  mediului de persistenta, etc)
-* se doreste disparitia "programatorului de Zope" si inlocuirea acestuia cu 
+  mediului de persistenta, etc.
+* se doreste disparitia "programatorului Zope" si inlocuirea acestuia cu 
   "programatorul de aplicatii web Python"
 * codul se vrea a fi cat mai curat, elegant si testat, obiectele persistente nu
   sunt incarcate cu functionalitate care nu le apartine in mod logic
