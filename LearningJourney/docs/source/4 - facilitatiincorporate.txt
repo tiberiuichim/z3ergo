@@ -56,7 +56,7 @@ ceea ce face foarte usoara integrarea cu sisteme de cautare specializate precum
 Lucene sau Xapian.
 
 Adnotarea obiectelor
--------------------
+--------------------
 Unul dintre conceptele inovatoare integrate in Zope 3 este cel al adnotarii 
 obiectelor. Acest mecanism, facilitat de ZCA, permite adnotarea cu date a 
 oricarui obiect (fie el persistent sau tranzient), astfel incat sa poata fi 
@@ -128,8 +128,8 @@ Slides
       aplicatii la care adaugi aplicatii
 * Sistem de templating (ZPT, DTML, z3c.pt => chameleon.* - de 10x mai rapid,
   pentru Plone cu aproape 200% mai rapid)
-    * sistemul de templating poate fi extins cu noi tipuri de expresii
-        * ex: lovely.tal, z3ext.formatter
+    * sistemul de templating poate fi extins cu noi tipuri de expresii, ex: 
+      lovely.tal, z3ext.formatter, zope.contentprovider
     * expresia path('/root/obj/@@hello')
 * zope.interface - o extensie Python pentru documentarea obiectelor
     * provide, implements

@@ -1,39 +1,6 @@
 Modalitati de rezolvare a unor probleme tipice
 ==============================================
 
-Sfaturi generale
-----------------
-* codul sursa al Zope-ului este simplu si usor de interpretat. Daca nu exista
-  documentatie, citeste codul sursa, incepand cu interfetele si apoi fisierul
-  configure.zcml, pentru a intelege ce ofera acel pachet. Foloseste 
-  instrumentele APIDOC si Zope Book pentru a citi documentatia. Foloseste 
-  pagina de introspectare a obiectelor pentru a intelege structura obiectelor.
-* Foloseste namespace-urile
-* Separa partea de "backend" de cea de "frontend" in sub-pachete-uri diferite:
-  `app` si una din variantele: `browser`, `skin`, `ui`.
-* Pastreaza o balanta intre necesitatea de a separa in pachete si un numar prea
-  mare de pachete, cu interdependinte ridicate
-* Foloseste pachetele comunitatii Zope (z3c), acestea sunt cel mai adesea mai 
-  noi si mai flexibile decat cele cu care vine zope. Exemplu: z3c.form, 
-  z3c.pagelet, z3c.table, etc.
-* Atunci cand faci design-ul unei librarii sau componente reutilizabile, este
-  foarte usor sa se creeze o infrastructura bazata pe ZCA, cu multe puncte de 
-  insertie. O balanta trebuie mentinuta, pentru a nu face ca folosirea acelui
-  pachet sa impuna necesitati ridicate (gen: implementeaza un adaptor pentru
-  interfata asta, am nevoie de un utility pentru interfata asta, etc). Se poate
-  intampla ca atunci cand dezvoltatorul sa vrea sa foloseasca componenta 
-  respectiva sa ii fie mai usor sa o inlocuiasca cu totul, asa ca fii sigur ca
-  asiguri cel putin un punct unic de "override", care sa faca posibila 
-  inlocuirea intregului mecanism. Cu toate acestea:
-* Incearca sa faci componentele general valabile, pentru a fi reutilizabile.
-  Pe termen lung acesta este unul dintre avantajele folosirii Zope 3: 
-  componentele sunt usor de dezvoltat astfel incat ele sa fie refolosibile
-* Viewlet-urile si pageleturile sunt o idee buna, insa nu trebuiesc abuzate, 
-  pentru ca necesita mai multa munca din partea dezvoltatorului.
-* Nu e nevoie de o integrare foarte mare cu ZMI.   
-* Nu e recomandabil designul unei aplicatii complexe fara experienta.
-
-
 Folosirea interfetelor de tip marker pentru definirea capabilitatilor
 ---------------------------------------------------------------------
 O interfata de tip marker este o interfata "goala, ce mosteneste direct 
@@ -84,6 +51,7 @@ Iar codul care adauga comentarii poate fi pur si simplu::
 
     IComments(some_blog_entry).add_comment(...)
     IComments(some_other_object_type).add_comment(...)
+    
     
 Adnotarea obiectelor
 --------------------
@@ -147,7 +115,7 @@ In final, folosirea adnotarii in cod este foarte simpla:
     >>> usage_info.usages.append(Usage(datetime.datetime.now()))
     >>> print usage_info.usages
 
-Annotarea nu este ceva care sa fie in mod implicit asigurat tutoror obiectelor
+Adnotarea nu este ceva care sa fie in mod implicit asigurat tutoror obiectelor
 persistente. Pentru ca adnotarea sa fie disponibila pentru un obiect, acesta
 trebuie sa fie adaptabil la interfata ``IAnnotations`` (de exemplu, ar putea sa 
 existe un adaptor care sa stocheze adnotarea obiectelor intr-un RDB). In cazul
@@ -195,8 +163,9 @@ Adapterul este inregistrat astfel:
         factory=".annotations.dc_annotation" 
         provides="zope.dublincore.interfaces.IZopeDublinCore"/>
         
-Folosirea anotarilor si a relatiilor
------------------------------------- 
+        
+Folosirea relatiilor intre obiecte
+---------------------------------- 
 Avand un folder cu imagini de pe circuitele de curse de masini, dorim sa 
 asignam o lista de imagini unor obiecte de tipul Pilot, Echipa sau Stadion.::
 
@@ -240,6 +209,10 @@ Astfel, codul ce foloseste aceasta anotare este simplu::
 
 Internationalizarea continutului cu z3c.language.switch
 -------------------------------------------------------
+Implementarea de mai jos este una reala, folosita intr-un portal realizat cu
+Zope 3. Metoda queryAttribute a interfetei II18n a fost redefinita pentru a 
+introduce un mecanism prin care se intoarce valoarea limbii default a 
+atributului interogat, in loc de o valoare goala.
 ::
 
     class BusinessI18NInfo(Persistent):
@@ -290,10 +263,28 @@ Internationalizarea continutului cu z3c.language.switch
             
 Modificarea traversarii cu z3c.traverser
 ----------------------------------------
-Traversing to business/images will return the annotation of BusinessImagesAlbum 
-for the Business:
+Exemplul de mai jos foloseste un caz in care o serie de imagini sunt stocate
+intr-un folder adnotare al obiectelor de tip Business. Datorita acestui 
+amplasament al imaginilor, pentru ca acestea sa fie publicate prin web ca 
+aflandu-se intr-un container *images* aflat in obiecte de tip ``Business``, a
+fost nevoie de modificarea mecanismului de traversare al obiectelor de tip
+``Business``. Pachetul z3c.traverser introduce un mecanism prin care se pot
+scrie plugin-uri pentru modificarea traversarii, per obiect, prin modificarea
+publisher-ului default al obiectelor cu unul care are acest suport pentru 
+pluginuri. Prima inregistrare zcml modifica publisher-ul pentru obiectele de 
+tip IBusiness, iar cea de-a doua inregistreaza pluginul cu acest publisher
+(acest mecanism este descris in amanunt in documentatia z3c.traverser).
 
 .. code-block:: xml
+
+  <view
+    for=".interfaces.IBusiness"
+    type="zope.publisher.interfaces.browser.IBrowserRequest"
+    provides="zope.publisher.interfaces.browser.IBrowserPublisher"
+    factory="z3c.traverser.browser.PluggableBrowserTraverser"
+    permission="zope.Public">
+    setup plugin traversal for the IBusiness
+  </view>
 
   <subscriber
     for="lovely.reviewportal.app.interfaces.IBusiness
@@ -304,7 +295,8 @@ for the Business:
 .. code-block:: python
 
     class BussinesTraverserPlugin(ContainerTraverserPlugin):
-        """Traverser that returns the images album at business/images/ for a Business
+        """Traversing to business/images will return the annotation of 
+        BusinessImagesAlbum for the Business:
         """
     
         def publishTraverse(self, request, name):
@@ -326,14 +318,170 @@ for the Business:
             return subob
 
 
+
+Metode de inserare a continutului in pagini 
+-------------------------------------------
+In cazul dezvoltarii unui site cu Zope 2, modul in care template-urile trebuie
+create este evident: este necesar un template pentru layout-ul site-ului, se 
+folosesc macro-urile si sloturile pentru a umple acest template si eventual se 
+foloseste mecanismul CMF de suprascriere a template-urilor folosind skinurile.
+Plone este un exemplu de aplicatie care a folosit acest mecanism cu succes.
+
+Cu Zope 3, avand in vedere multitudinea de alegeri ce pot fi facute, acest
+mecanism nu este foarte clar conturat. In continuare vom analiza cateva dintre 
+aceste optiuni, in contextul unui scenariu ce presupune realizarea unui website
+pentru o companie multinationala.
+
+Inserarea continutului HTML direct
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Aceasta metoda de includere a continutului din alta pagina (sa-i spunem template
+deocamdata) este usor similara cu functia ``include()`` din PHP. In Zope exista
+totusi avantajul ca pagina respectiva este direct legata de tipul obiectului
+asupra caruia ii este aplicata. Exemplu::
+
+    <div tal:replace="structure context/@@footer" />
+
+Simplu, dar cu cateva probleme: pe fiecare pagina a site-ului va trebui copiata
+structura de baza a site-ului si apoi inserate partile specifice ale paginii
+in zone clar demarcate. Pentru orice site cu mai mult de cateva pagini devine
+foarte dificila modificarea structurii de baza a site-ului, pentru ca trebuiesc
+modificate toate paginile din site. 
+
+METAL: Macro-uri si sloturi, la fel ca in Plone-ul clasic
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Metoda clasica de separare a layout-ului site-ului de cel al continutului
+paginii este acela de a folosi extensia METAL, cu macro-uri si slot-uri. Un 
+exemplu:
+
+In primul avem template-ul site-ului, denumit template.pt 
+
+.. code-block:: xml
+
+    <html metal:define-macro="page">
+        <head metal:define-slot="header">
+            <title>Some title</title>
+        </head>
+        <body metal:define-slot="body">
+            Body content comes here
+        </body>
+    </html>
+
+Apoi trebuie sa facem macro-ul disponibil. Vom realiza o pagina cu numele de
+``view_macros`` si o vom adauga la tuple-ul ``page_macros`` al view-ului
+``standard_macros``. Acest view este un browser-view special ce implementeaza
+interfata ``zope.interface.common.mapping.IItemMapping`` (a se vedea, de exemplu,
+``standard_macros.py`` din ``zope.app.basicskin`` si ``zope.app.rotterdam``. 
+Acest view are o lista de nume de pagini care contin macro-uri si o lista de 
+aliasuri dintre macro-uri. In final, macro-ul este inclus in pagina, astfel:
+
+.. code-block:: xml
+
+    <html metal:use-macro="context/@@standard_macros/page">
+        <head metal:fill-slot="header">
+            <title>MyTitle</title>
+        </head>
+        <body metal:fill-slot="body">
+            Content here...
+        </body>
+    </html>
+
+O alta modalitate de "gasire" a macro-urilor in cadrul unui template este acela
+de a pune o referinta catre template-ul cu macro-uri in cadrul clasei ce 
+genereaza pagina::
+
+    class MainPage(BrowserPage):
+        macros = ViewPageTemplate('/path/to/macros.pt')
+
+In cadrul template-ului asociat paginii MainPage, se poate introduce macro-ul 
+cu::
+
+    <div metal:use-macro="view/macros/some_macro">
+    
+
+z3c.macro: inregistrarea simplificata a macro-urilor
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Folosind z3c.macro, registrarea de noi macro-uri devine o sarcina simpla, ce 
+nu mai presupune redefinirea si modificarea unei clase. De exemplu, pentru
+inregistrarea unui nou macro ``page`` din ``template.pt``, trebuie inserat in 
+zcml::
+
+.. code-block:: xml
+
+    <configure xmlns:z3c="http://namespaces.zope.org/z3c">
+        <z3c:macro template="template.pt" name="page" />
+    </configure>
+
+Macro-ul este apoi inserat in pagini cu:
+
+.. code-block:: xml
+
+    <html metal:use-macro="macro:page">
+    ...
+    </html>
+
+
 Viewlet-uri, content providers
 ------------------------------
-Folosirea content provider-ilor permite "componentizarea" paginilor web, prin
+Luand ca exemplul site-ul companiei multinationale, sa presupunem ca vom avea
+un menu de navigare pentru site. Daca ar fi sa il dezvoltam site-ul folosind 
+doar macro-uri, am scrie un macro pe care l-am insera in template-ul principal.
+Ce s-ar intampla daca am dor sa modificam acest menu de navigare pentru cateva 
+dintre paginile site-ului? Doua solutii exista:
+
+* sa inseram o gramada de logica in macro, care sa verifice cazurile speciale.
+  Urat, complicat, e de dorit sa se evite acest caz 
+* sa restructuram menu-ul sub forma unui view care sa poata fi redefinit per 
+  tip de context. Aceasta solutie functioneaza in cazul in care dorim sa 
+  redefinim modul in care arata menul in functie context, dar nu si daca dorim 
+  sa modificam menu-l in functie de pagina in care apare.
+
+Solutia oferita de Zope 3 este o varianta a celei de-a doua solutii de mai sus,
+prin introducerea unui tip de view ce tine cont si de view-ul in care este 
+inserat, denumite **content providere**. Gratie interfetelor, este foarte usor
+sa se redefineasca continutul provider-ului in functie de tipul contextului,
+tipul request-ului (skin-ul) si tipul paginii (interfata sau clasa implementata
+de pagina). De exemplu, in site-ul nostru de text am putea defini un menu de 
+navigare ce va fi inserat pe fiecare pagina astfel:
+ 
+    from zope.contentprovider.interfaces import IContentProvider
+    from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+    from zope.publisher.interfaces.browser import IBrowserView
+    
+    class MainSiteNavigation(object):
+        implements(IContentProvider)
+        adapts(Interface, IDefaultBrowserLayer, IBrowserView)
+    
+        def __init__(self, context, request, view):
+            self.context = context
+            self.request = request
+            self.__parent__ = view
+    
+        def update(self):
+            pass
+    
+        render = ViewPageTemplateFile('navigation.pt')
+
+Acest content provider este inregistrat astfel::
+
+    <adapter factory=".browser.MainSiteNavigation" name="main_site_navigation" />
+
+Pentru suprascrierea provider-ului, de exemplu pentru obiectele de tip 
+PressRelease, vom folosi::
+
+    class PressReleasesNavigation(object):
+        adapts(IPressRelease, IDefaultBrowserLayer, IBrowserView)
+        render = ViewPageTemplateFile('press_releases_navigation.pt')
+
+.. code-block:: xml
+
+    <adapter 
+        factory=".browser.PressReleasesNavigation" 
+        name="main_site_navigation" />
+
+
+Astfel, folosirea content provider-ilor permite "componentizarea" paginilor web, prin
 dezvoltarea de componente ce pot fi refolosite in mai multe locatii si tipuri
-de obiecte context. Content provider-ii sunt implementati ca multiadapteri 
-pentru context, request si view. In acest fel ei pot fi modificati per tipul 
-contextului, layer-ul (sau skin-ul) asigurat de request si pagina (view-ul)
-pe care se gasesc. Folosind inregistrarea acestui multiadaptor cu un nume,
+de obiecte context. Folosind inregistrarea acestui multiadaptor cu un nume,
 el poate fi inserat in template-uri folosind expresia `provider`::
 
     <div tal:content="structure provider:lj.MyProvider" />
@@ -342,13 +490,15 @@ Pentru a genera continutul content provider-ilor se foloseste un proces numit
 "two phase rendering". Prima data se apeleaza metoda `update` al CP-ului, apoi
 metoda `render` ce genereaza continutul ce va fi inserat in pagina. 
 
-O extensie a content providerilor sunt viewlet-urile si viewlet managerii. 
-Viewlet managerii sunt content provideri ce insereaza continut in pagini. 
-Diferenta fata de content providerii clasici este ca acestia, pentru generarea
-continutului, folosesc niste 'mini-view-uri', viewleturile. Acestea sunt 
-inregistrate ca multiadapteri ce tin cont de interfata viewlet manager-ului,
-a layer-ului, a contextului si a paginii in care se doreste aparitia lor. 
-Folosind aceste elemente de "discriminare" se poate controla aparitia lor.
+Viewlet-uri si viewlet managere
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Viewlet-urile reprezinta un pas inainte in directia facute de content providere:
+un viewlet manager este un content provider ce agregheaza si insereaza in pagina o serie
+de "mini-view-uri", definite ca multiadaptori pentru context, request, view si 
+manager. Folosind mecanismul de viewlet-uri se poate decupla continutul de 
+template-ul sau contextul in care este inserat: se pot controla ce "box-uri" sa 
+apara in fiecare pagina doar prin adaugarea de inregistrari de viewlet-uri, 
+nemaifiind necesara editarea de macro-uri, templateuri sau prea mult cod. 
 
 Pachetul zope.viewlet ofera doua noi tag-uri ZCML: browser:viewletManager si
 browser:viewlet. Atunci cand se inregistreaza un viewlet manager poate fi 
@@ -360,7 +510,9 @@ Desi poate fi tentanta, ideea de a transforma o intreaga pagina si
 intreg site-ul intr-o structura bazata pe viewlet-uri este periculoasa: 
 formularele in viewlet-uri sunt destul de greu de implementat, paginile vor fi 
 greu de definit si greu de administrat (deoarece nu exista o imagine clara, 
-in cod, a ceea ce apare pe pagina). 
+in cod, a ceea ce apare pe pagina). E recomandat ca macar partea principala 
+de continut a paginii sa nu fie definita in viewet-uri, ci folosind mecanismul
+de pagelet-uri, descris mai jos. 
 
 Un exemplu practic:
 
@@ -383,7 +535,7 @@ Un exemplu practic:
             layer='.demoskin.IMySkin'
             />
 
-* se introduce in template-ul principal:
+* se introduce in template-ul principal al site-ului:
     
     .. code-block:: xml
     
@@ -435,203 +587,27 @@ Un exemplu practic:
             layer='.demoskin.IMySkin'
             permission='zope.View'
             />
-        
-
-Template layout options when developing with Zope 3
----------------------------------------------------
-A high level overview over available methods of laying out a website
-
-When developing a Zope 2 site, the way the templates would be laid out is 
-obvious: create a template for the site layout, use macros and slots to fill 
-in that template and use the CMF skin overriding mechanism when you have to 
-customize a certain template or Python script for another skin. Plone has been 
-using this mechanism very successfully.
-
-With Zope 3 the path is not very clear. There are several mechanisms, each 
-with its advantages and disadvantages. Let's take an example website, let's 
-say a multinational company website and discuss how will these various 
-solutions apply.
-
-Insert rendered HTML with TAL
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-This method of including content from another page (let's say template for now) 
-resembles PHP's include(); I'd still call this method superior to the PHP method 
-of including another page as, with Zope, you can render that page based on the 
-context on which it is called::
-
-    <div tal:replace="structure context/@@footer" />
-
-Simple, but has drawbacks: on each page of the website you'll have to "copy" 
-the basic site structure and insert the specifics of the page in clearly 
-delimited areas. For more then a few pages, this makes it very hard to change 
-the basic website structure, as it would require changing all the pages in 
-the site. Plus, you can't easily define reusable templates because you can't 
-fill those templates with values except based on the context for which they 
-are rendered.
-
-METAL: Macros and Slots, just like "classic Plone"
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-The classic PageTemplates method of separating the site layout from the general 
-page layout has been to use the METAL extension, namely macros and slots. This 
-would be achieved as such:
-
-First, we have the site template, let's call it template.pt:
-
-.. code-block:: xml
-
-    <html metal:define-macro="page">
-        <head metal:define-slot="header">
-            <title>Some title</title>
-        </head>
-        <body metal:define-slot="body">
-            Body content comes here
-        </body>
-    </html>
-
-Next, we need to make this macro available. First, we publish this page under 
-the "view_macros" page name and add it to the 'page_macros' tuple of the 
-`standard_macros` view. Some notes about this special view: it is a special 
-browser view which implements the zope.interface.common.mapping.IItemMapping 
-(see for example the standard_macros.py from zope.app.basicskin and 
-zope.app.rotterdam). This special view has a list of page names that provide 
-macros and a list of aliases between macros (for example, you might want to 
-have the "page" macro also available under the "dialog" macro name).
-
-You then reference this macro from your page, let's say our main page of the 
-website, the `page.pt` file:
-
-.. code-block:: xml
-
-    <html metal:use-macro="context/@@standard_macros/page">
-        <head metal:fill-slot="header">
-            <title>MyTitle</title>
-        </head>
-        <body metal:fill-slot="body">
-            Content here...
-        </body>
-    </html>
-
-You can, of course, add new pages that will hold macros and add them to the 
-macro_pages tuple of the StandardMacros view, reference them from the 
-template and so on.
-
-Another method of getting some macros inside your templates is to reference 
-that template from the browser page class. For example::
-
-    class MainPage(BrowserPage):
-        macros = ViewPageTemplate('/path/to/macros.pt')
-
-And, inside the template associated with this MainPage class::
-
-    <div metal:use-macro="view/macros/some_macro">
-    
-
-z3c.macro: no more bickering with standard_macros
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-One of the problems with the method described in the previous section is that, 
-if you want to add new macro pages you need to override standard_macros in 
-your skin layer or define another view to act as a macro provider. z3c.macro 
-is a package that tries to overcome this by creating an easy way to register 
-and retrieve new macros.
-
-To register a new macro, let's say the `page` macro from template.pt, you'd do 
-something like this:
-
-.. code-block:: xml
-
-    <configure xmlns:z3c="http://namespaces.zope.org/z3c">
-        <z3c:macro template="template.pt" name="page" />
-    </configure>
-
-To use this macro, in our study case, inside page.pt we'd do:
-
-.. code-block:: xml
-
-    <html metal:use-macro="macro:page">
-    ...
-    </html>
 
 
-Viewlets and content providers
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Let's continue developing our study website. We'll probably want a navigation 
-menu for the website. If we would continue to use macros, we would develop a 
-macro, insert it into the main template and be done with it. But what happens 
-if we want to customize this navigation menu for just one page? Or maybe 
-several special case pages... We'd have to implement a lot of logic on the 
-macro, to check for the special cases, etc. Ugly and hard.
+Separarea inregistrarii templat-ului de clasa cu z3c.viewtemplate
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Continuand cu implementarea studiului nostru de caz, sa presupunem ca aceasta
+companie are multiple website-uri, generate de catre aceeasi aplicatie Zope,
+cate unul pentru fiecare tara, continutul este aproximativ identic, dar se
+folosesc layout-uri si template-uri usor diferite. In acest caz, sistemul de 
+skinuri multiple aplicate aplicatiei ar functiona bine, cu singura problema
+fiind data de necesitatea subclasarii, per skin, a fiecare clase de view,
+pentru a putea modifica template-ul folosit.
 
-The solution in Zope 3 are the Content Providers, which, thanks to interfaces, 
-would allow you to override per interface what is being rendered. They are a 
-special type of zope views (as they are dependent on the browser layer) that 
-provide content. For example, in our study website, a navigation menu can be 
-inserted in every page by creating a content provider, something like this::
+Una dintre solutiile posibile este data de catre pachetul z3c.viewtemplate,
+ce permite separarea inregistrarii template-ului folosit de inregistrarea 
+paginii, ce permite redefinirea simpla a template-ului folosit.
 
-    from zope.contentprovider.interfaces import IContentProvider
-    from zope.publisher.interfaces.browser import IDefaultBrowserLayer
-    from zope.publisher.interfaces.browser import IBrowserView
-    
-    class MainSiteNavigation(object):
-        implements(IContentProvider)
-        adapts(Interface, IDefaultBrowserLayer, IBrowserView)
-    
-        def __init__(self, context, request, view):
-            self.context = context
-            self.request = request
-            self.__parent__ = view
-    
-        def update(self):
-            pass
-    
-        render = ViewPageTemplateFile('navigation.pt')
-
-And register it like::
-
-    <adapter factory=".browser.MainSiteNavigation" name="main_site_navigation" />
-
-Overriding this provider for, lets say, the press releases content objects, 
-is a simple matter of::
-
-    class PressReleasesNavigation(object):
-        adapts(IPressRelease, IDefaultBrowserLayer, IBrowserView)
-        render = ViewPageTemplateFile('press_releases_navigation.pt')
-
-And register it the same way:
-
-.. code-block:: xml
-
-    <adapter 
-        factory=".browser.PressReleasesNavigation" 
-        name="main_site_navigation" />
-
-Viewlets and viewlet managers are a step forward: a viewlet manager is a 
-content provider for which you can register, per context interface type, 
-`viewlets`. The viewlet manager then places all the rendered viewlets in 
-its allocated slot in the template.
-
-The viewlet mechanism is beneficial through the fact that you can "decouple" 
-the content from the template: now you can control what "boxes" appear in 
-each page by just adding/removing registrations for viewlets, no editing of 
-macros, templates or code required.
-
-
-Break the template from class with z3c.viewtemplate
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Let's continue with our study case website. Suppose this company has multiple 
-websites, hosted one the same server, one for each country, with some shared 
-content and slightly different layout and templates. In this case, multiple 
-skins applied to the same Zope site are great, but you get into the pains of 
-having to override (or reregister) the classes just to be able to specify a 
-different template.
-
-One of the possible solutions is the z3c.viewtemplate packages. It allows you 
-to register the template separately for a view, so that you can override it, 
-per browser layer.
-
-Let's have an example. Suppose we want to be able to change the main page on 
-one of the skin layers, to add another column. Presume we were using a 
-MainSitePage browser page, with a main_page.pt template and now we want to 
-override it. We'll need to change the MainSitePage class, something like this::
+Ca exemplu, sa presupunem ca dorim sa schimbam prima pagina a unuia dintre
+skinuri, pentru a adauga o noua  coloana. Avem ``MainSitePage`` ca pagina principala,
+cu template-ul folosit ``main_site.pt`` si dorim sa modificam template-ul. Va
+trebui sa schimbam. Pentru a beneficia de ``z3c.viewtemplate``, ``MainSitePage``
+trebuie modificata in genul urmator::
 
     class MainSitePage(object):
         template = RegisteredPageTemplate()
@@ -639,12 +615,12 @@ override it. We'll need to change the MainSitePage class, something like this::
         def __call__(self):
             return self.template()
 
-or simply inherit from BaseView::
+sau, pur si simplu, putem mosteni ``BaseView`` din ``z3c.viewtemplate``::
 
     class MainSitePage(BaseView):
         ...
 
-And now we can register a templates per browser layer:
+Apoi putem inregistra template-ul, per layer:
 
 .. code-block:: xml
 
@@ -653,8 +629,8 @@ And now we can register a templates per browser layer:
         template="main_page.pt" 
         layer=".SkinLayerOne" />
 
-You can override the template for viewlets, too, if you inherit from a 
-superclass such as this::
+Se pot suprascrie, de asemenea, template-urile si pentru viewlet-uri, daca se
+foloseste un superclass de genul::
 
     class BaseViewlet(object):
     
@@ -663,31 +639,27 @@ superclass such as this::
         def render(self):
             return self.template()
 
-In practice you'll have something like this:
+In practica, structura va arata astfel:
 
-* a main site template that will provide the layout and maybe insert 
-  viewlet managers, using the standard_macros mechanism
-* the page will use the `page` macro and fill in the `content` slot of the 
-  main template and only deal with the specifics of the page (there's 
-  nothing special about these names, they're just the usual convention).
+* un template principal al site-ul ce va asigura layout-ul si va insera viewlet
+  managerele. Acest layout va fi oferit sub forma unui macro denumit ``page``
+* paginile site-ului vor folosi macro-ul ``page`` si vor insera doar continutul
+  specific al paginii
 
-You can define a viewlet manager and use viewlets for the `content area`, but 
-you should probably avoid this as it will probably mean that you'll have to 
-deal with forms inside viewlets and this will be difficult to handle properly.
+Folosind un mecanism inteligent de mostenire, este posibil sa se reduca la minim
+necesitatea definirii de template-uri noi.
 
-Introducing z3c.template, a better version of z3c.viewtemplate
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-z3c.template is a package similar to z3c.viewtemplate (it allows separate 
-registration of templates from the view code), but it also aims to separate 
-the definition and registration of the layout of a page from the 
-actual `content`.
+z3c.template, o versiune imbunatatita a pachetului z3c.viewtemplate
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+z3c.template este un pachet similar cu z3c.viewtemplate (permite separarea codului
+de inregistrarea template-ului), insa are ca scop si separarea definitiei si 
+inregistrarii layout-ului paginii de continutul si template-ul continutului 
+acesteia. 
 
-Let's suppose we're implementing our site using z3c.template and we have the 
-press releases page. For each page we will have a layout template and a 
-content template, but we can skip the definition of the layout template by 
-inheriting a base class.
-
-The layout template will contain:
+Sa presupunem ca implementam un site folosind z3c.template si avem pagina de 
+stiri pentru presa. Pentru fiecare pagina vom avea un template pentru layout
+si unul pentru continut, insa putem sari definirea template-ului de layout
+daca mostenim o clasa de baza. Template-ul de layout va contine:
 
 .. code-block:: xml
 
@@ -700,8 +672,7 @@ The layout template will contain:
     </body>
     </html>
 
-The layout template, which, in the previous step, provided the `page` macro 
-will be registered as:
+Acest template va fi inregistrat:
 
 .. code-block:: xml
 
@@ -709,8 +680,8 @@ will be registered as:
         <z3c:layout template="main_template" for=".interfaces.ISitePage" />
     </configure>
 
-We need a browser view that knows how to use the layout template and the 
-content template::
+Avem nevoie de un browser view care sa stie cum sa foloseasca template-ul de layout
+si cel de continut::
 
     class SitePage(BrowserPage):
         zope.interface.implements(ISitePage)
@@ -738,7 +709,7 @@ content template::
                 return layout(self)
             return self.layout()
 
-Our view class will then inherit the SitePage class::
+Clasa noastra pentru stiri de presa va mosteni clasa ``SitePage``::
 
     class PressReleaseViewPage(SitePage):
     
@@ -746,7 +717,8 @@ Our view class will then inherit the SitePage class::
         def title(self):
             return u"Press release: " + self.context.title
 
-And then we can simply register a content template for the class:
+Apoi putem sa inregistram pur si simplu template-ul pentru zona de continut a 
+paginii:
 
 .. code-block:: xml
 
@@ -754,31 +726,30 @@ And then we can simply register a content template for the class:
         <z3c:template template="press_review_view.pt" for="IPressReview" />
     </configure>
 
-Note: z3c.template has several other features: named templates and the 
-possibility to 'publish' macros from templates.
-
-All this is very nice, but there are a couple of problems: you'll need to 
-do some work to support forms, and why bother writing the SitePage class, 
-when there's a package that does all this, and more? Its name is...
+Desi mecanismul este relativ simplu si usor de inteles, presupune o oarecare
+munca pentru a suporta form-uri, si de ce sa scriem clasa SitePage, cand exista
+deja un pachet care o ofera? Acesta este...
 
 z3c.pagelet
 ~~~~~~~~~~~
-This package introduces a new type of browser page: pagelet. A pagelet is a 
-page with a layout template: you define the layout with the mechanisms 
-introduced in z3c.template, but the `SitePage` base class is no longer 
-necessary, as it is provided by the z3c.pagelet package. Inside the layout 
-template you include the `pagelet` content provider::
+Acest pachet introduce un nou tip de browser page: pagelet-ul. Un pagelet este o
+pagina cu un template pentru layout: se defineste layout-ul folosind mecanismele
+introduse de ``z3c.template``, dar clasa ``SitePage`` nu mai este necesara 
+deoarece este asigura de pachet. In interiorul template-ului de layout, acolo
+unde urmeaza a fi inserat continutul, se insereaza pagelet-ul, ca si content
+provider::
 
     <div tal:replace="structure provider: pagelet" />
 
-The list of goodies continues: the package includes replacements for the 
-formlib base classes: EditForm, AddForm and so on. Even more, using 
-z3c.skin.pagelet you get a starter skin that has all the bits in place to 
-bootstrap developing a pagelet based website (including, for 
-example, "pagelet-ified" exception pages).
+Alte "bunatati" incluse in pachet sunt: 
 
-To register a pagelet you do something like (notice the similarity to a 
-browser:page registration):
+* pachetul include integrare cu clase de formulare ale ``zope.formlib``
+* folosind z3c.skin.pagelet se poate porni cu un skin de start care are toate
+  clasele necesare pentru realizarea unui website bazat pe pagelet-uri 
+  (incluzand, de exemplu, pagini de exceptii implementate cu pagelet-uri)
+  
+Pentru inregistrarea unui pagelet se foloseste (se observa similitudinea cu
+inregistrarea unei pagini):
 
 .. code-block:: xml
 
@@ -790,17 +761,46 @@ browser:page registration):
       permission="zope.View"
       />
 
-More pointers and packages
+Alte pachete folositoare in template-uri
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    * z3c.pt: o implementare a template-urilor ZPT cu mult mai rapida (x10). 
+    * z3c.macroviewlet -Permite definirea de macro-uri din template-uri ca
+      viewlet-uri, inlesnind astfel scrierea de site-uri complete in viewlet-uri 
+    * z3c.formui: integreaza pagelet-urile cu libraria z3c.form
 
-    * z3c.macroviewlet - Allows you to write the a complete template of the 
-      website in one file and also define some of the macros of this 
-      template as viewlets.
-    * z3c.pt: a faster version of PageTemplates, but with several restrictions 
-      (no macro support, no TAL paths and expressions)
-    * gocept.form: contains integration of z3c.form with z3c.pagelet
-    * z3c.formui: Use overridable templates with z3c.form using the 
-      z3c.template mechanism
       
+Sfaturi generale
+----------------
+* codul sursa al Zope-ului este simplu si usor de interpretat. Daca nu exista
+  documentatie, citeste codul sursa, incepand cu interfetele si apoi fisierul
+  configure.zcml, pentru a intelege ce ofera acel pachet. Foloseste 
+  instrumentele APIDOC si Zope Book pentru a citi documentatia. Foloseste 
+  pagina de introspectare a obiectelor pentru a intelege structura obiectelor.
+* Foloseste namespace-urile
+* Separa partea de "backend" de cea de "frontend" in sub-pachete-uri diferite:
+  `app` si una din variantele: `browser`, `skin`, `ui`.
+* Pastreaza o balanta intre necesitatea de a separa in pachete si un numar prea
+  mare de pachete, cu interdependinte ridicate
+* Foloseste pachetele comunitatii Zope (z3c), acestea sunt cel mai adesea mai 
+  noi si mai flexibile decat cele cu care vine zope. Exemplu: z3c.form, 
+  z3c.pagelet, z3c.table, etc.
+* Atunci cand faci design-ul unei librarii sau componente reutilizabile, este
+  foarte usor sa se creeze o infrastructura bazata pe ZCA, cu multe puncte de 
+  insertie. O balanta trebuie mentinuta, pentru a nu face ca folosirea acelui
+  pachet sa impuna necesitati ridicate (gen: implementeaza un adaptor pentru
+  interfata asta, am nevoie de un utility pentru interfata asta, etc). Se poate
+  intampla ca atunci cand dezvoltatorul sa vrea sa foloseasca componenta 
+  respectiva sa ii fie mai usor sa o inlocuiasca cu totul, asa ca fii sigur ca
+  asiguri cel putin un punct unic de "override", care sa faca posibila 
+  inlocuirea intregului mecanism. Cu toate acestea:
+* Incearca sa faci componentele general valabile, pentru a fi reutilizabile.
+  Pe termen lung acesta este unul dintre avantajele folosirii Zope 3: 
+  componentele sunt usor de dezvoltat astfel incat ele sa fie refolosibile
+* Viewlet-urile si pageleturile sunt o idee buna, insa nu trebuiesc abuzate, 
+  pentru ca necesita mai multa munca din partea dezvoltatorului.
+* Nu e nevoie de o integrare foarte mare cu ZMI.   
+* Nu e recomandabil designul unei aplicatii complexe fara experienta.
+
 
       
       
@@ -884,29 +884,3 @@ Slides
 * Setari pentru apache, nginx
 * Construirea de aplicatii cu zc.buildout
     * virtualenv
-
-    
-A Comprehensive Guide to Zope Component Architecture
-----------------------------------------------------
-Un document bogat in exemple si explicatii despre Zope Component Architecture,
-configurarea cu zcml si modul in care poate fi folosita in orice aplicatie
-Python, nu doar Zope.
- 
-Locatie: http://www.muthukadan.net/docs/zca.html
-
-
-Ghid al pachetelor 3rd party Zope
----------------------------------
-http://wiki.zope.org/zope3/Zope3PackageGuide
-
-
-Zope 3 Book
------------
-Desi pare invechita, o buna parte din ceea ce exista in aceasta carte este inca
-valabil http://wiki.zope.org/zope3/Zope3Book
-
-Worldcookery
-------------
-Sectiunea Downloads contine codul sursa sub licenta GPL, si reprezinta o foarte
-buna resursa pentru intelegerea Zope.
-http://worldcookery.com/Downloads

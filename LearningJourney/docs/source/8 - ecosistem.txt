@@ -402,9 +402,31 @@ Alte pachete
         * z3c.table, zc.table
      * control mai mare asupra procesului de indexare si catalogare
         * z3c.indexer
-        
-* Compatibilitate WSGI
-    * zope.paste pentru integrare cu Paster
-    * repoze.profiler
-    * Deliverance
-    * repoze.squeeze
+
+Alte resurse pe web
+-------------------
+    
+A Comprehensive Guide to Zope Component Architecture
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Un document bogat in exemple si explicatii despre Zope Component Architecture,
+configurarea cu zcml si modul in care poate fi folosita in orice aplicatie
+Python, nu doar Zope.
+ 
+Locatie: http://www.muthukadan.net/docs/zca.html
+
+
+Ghid al pachetelor 3rd party Zope
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+http://wiki.zope.org/zope3/Zope3PackageGuide
+
+
+Zope 3 Book
+~~~~~~~~~~~
+Desi pare invechita, o buna parte din ceea ce exista in aceasta carte este inca
+valabil. http://wiki.zope.org/zope3/Zope3Book
+
+Worldcookery
+~~~~~~~~~~~~
+Sectiunea Downloads contine codul sursa sub licenta GPL, si reprezinta o foarte
+buna resursa pentru intelegerea Zope. http://worldcookery.com/Downloads
