@@ -52,7 +52,8 @@ pornire.
  
 Fisiere ZCML
 ------------
-In radacina aplicatiei sta stau cateva fisiere zcml: site.zcml si apidoc.zcml. 
+In radacina aplicatiei sta stau cateva fisiere zcml: site.zcml, apidoc.zcml si
+custom-security.zcml. 
 Fisierele zcml sunt fisiere XML ce contin instructiuni de configurare a 
 componentelor folosite in codul aplicatiei si a librariilor Zope. Aceste 
 operatiuni de configurare au direct echivalent in cod Python si pot fi 
@@ -363,7 +364,7 @@ Pentru calcularea acestei cai, in template, este folosita o constructie de
 genul: ``<script tal:attributes="src context/++resource++myscripts/jquery.js" />``
 
 Exemple se pot gasi in fisierele ``src/learningjourney/ui/configure.zcml`` si
-`src/learningjourney/widget/addremove/configure.zcml <../../src/learningjourney/widget/addremove/configure.zcml>`_ si fisierele template
+``src/learningjourney/widget/addremove/configure.zcml`` si fisierele template
 ``src/learningjourney/ui/site/pt/layout.pt`` si 
 ``src/learningjourney/widget/addremove/widget.pt``
 
@@ -570,10 +571,12 @@ Pentru inregistrarea unui utilitar global se foloseste tagul ``<utility>``, in
 care se desemneaza interfata pe care acesta o va asigura, numele pe care il 
 va avea si componenta care va fi folosita pentru construirea utilitarului.
 
-<utility 
-    provides="ILanguageNegociation" 
-    component=".app.LanguageNegociation" 
-    permission="zope.Public" />
+.. code-block:: xml
+
+    <utility 
+        provides="ILanguageNegociation" 
+        component=".app.LanguageNegociation" 
+        permission="zope.Public" />
     
 Pentru inregistrarea locala, la nivelul site manager-ului local, se foloseste
 functia ``zope.component.registerUtility`` sau functionalitatea din interfata ZMI
@@ -602,8 +605,8 @@ intid - un numar intreg, unic in cadrul bazei de date, desemnat fiecarui
 obiect de catre utilitarul ``zope.app.intid.interfaces.IIntIds``. 
 
 Indexarea obiectelor se face atunci cand acestea sunt adaugate sau sterse din
-containere (pe baza evenimentelor ``ObjectAddedEvent``, ``ObjectRemovedEvent``), precum
-si atunci cand se declanseaza un eveniment ``ObjectModifiedEvent``.
+containere (pe baza evenimentelor ``ObjectAddedEvent``, ``ObjectRemovedEvent``), 
+precum si atunci cand se declanseaza un eveniment ``ObjectModifiedEvent``.
 Exemplu:
 
     >>> obj.title = u"My title"

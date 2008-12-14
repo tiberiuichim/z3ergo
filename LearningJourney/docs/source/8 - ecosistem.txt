@@ -1,8 +1,34 @@
 Ecosistemul Zope 3
 ==================
 
+Marimea ecosistemului pachetelor de extensie pentru Zope 3 este o dovada clara a 
+vitalitatii platformei. Mai mult, datorita compatibilitatii WSGI este posibila
+extinderea ecosistemului pentru a include librarii pentru dezvoltarea de 
+aplicatii web care aparent nu au legatura cu Zope. Se pot identifica 3 mari
+actori in acest ecosistem: Zope Corporation, Zope 3 Community (o comunitate
+informala, raspunzatoare in mare parte pentru realizarea Zope 3) si comunitatea
+dezvoltatorilor pe platforma Plone, desi pachetele realizate de acestia, 
+compatibile pe de-intregul cu Zope 3 sunt mai putine.  
+
 Pachetele Zope
---------------
+**************
+Librariile cele mai folosite pentru implementarea de aplicatii Zope 3 sunt:
+
+* zope.annotation
+* zope.contentprovider
+* zope.viewlet
+* zope.copypastemove
+* zope.event
+* zope.securitypolicy
+* zope.formlib
+* zope.interface
+* zope.schema
+* zope.app.catalog
+* zope.app.container
+
+Pachetele din namespace-ul zope.*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 * zope.annotation
     * face posibila atasarea de date pentru obiecte. Ofera o implementare ce 
       stocheaza aceste date intr-un atribut pe obiecte
@@ -169,6 +195,7 @@ Pachetele Zope
       inserate. Defineste, de asemenea, cateva viewlet managere standard
 * zope.xmlpickle
     * pickle based serialization to and from xml
+
 
 Pachetele din namespace-ul zope.app
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -350,7 +377,8 @@ Pachetele din namespace-ul zope.app
 
 
 Alte pachete
-------------
+************
+
 * Aproximativ 400 de pachete de extensie in svn.zope.org, neincluzand
   namespace-urile zope.* si zope.app.*
 * Comunitatea zope este cea mai mare producatoare de egg-uri
@@ -403,8 +431,9 @@ Alte pachete
      * control mai mare asupra procesului de indexare si catalogare
         * z3c.indexer
 
+
 Alte resurse pe web
--------------------
+*******************
     
 A Comprehensive Guide to Zope Component Architecture
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -417,9 +446,13 @@ Locatie: http://www.muthukadan.net/docs/zca.html
 
 Ghid al pachetelor 3rd party Zope
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+Un ghid/referinta al pachetelor de extensie din repozitorul svn.zope.org
 http://wiki.zope.org/zope3/Zope3PackageGuide
 
+What's new in Zope 3.3
+~~~~~~~~~~~~~~~~~~~~~~
+Un document care discuta modificarile aduse de Zope 3.3. Util prin faptul ca
+discuta succint sistemul de skinuri, vocabulare si factories. http://kpug.zwiki.org/WhatIsNewInZope33
 
 Zope 3 Book
 ~~~~~~~~~~~

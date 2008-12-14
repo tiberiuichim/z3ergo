@@ -403,7 +403,7 @@ z3c.macro: inregistrarea simplificata a macro-urilor
 Folosind z3c.macro, registrarea de noi macro-uri devine o sarcina simpla, ce 
 nu mai presupune redefinirea si modificarea unei clase. De exemplu, pentru
 inregistrarea unui nou macro ``page`` din ``template.pt``, trebuie inserat in 
-zcml::
+zcml:
 
 .. code-block:: xml
 
@@ -799,7 +799,7 @@ Sfaturi generale
 * Viewlet-urile si pageleturile sunt o idee buna, insa nu trebuiesc abuzate, 
   pentru ca necesita mai multa munca din partea dezvoltatorului.
 * Nu e nevoie de o integrare foarte mare cu ZMI.   
-* Nu e recomandabil designul unei aplicatii complexe fara experienta.
+* Nu e recomandabil designul unei aplicatii complexe fara experienta prealabila.
 
 
       

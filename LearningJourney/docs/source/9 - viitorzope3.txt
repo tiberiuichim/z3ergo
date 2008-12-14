@@ -1,5 +1,5 @@
-Directii de dezvoltare a Zope-ului
-==================================
+Viitorul platformei Zope 3
+==========================
 
 Zope 3 este constituit din librarii mature, intarite de anii de folosinta in 
 diverse aplicatii online, care nu mai necesita modificari majore. Cu toate
@@ -13,8 +13,8 @@ conexe. Numarul de dezvoltatori pe platforma Zope este in crestere, datorita:
 * au aparut noi proiecte de tip CMS (z3ext, vudo, hivurt, etc) care ruleaza 
   folosind librariile Zope
 
-Printre directiile noi de dezvoltare a Zope-ului se numara:
-
+Directii noi de dezvoltare
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 * Se urmareste micsorarea interdependentelor dintre pachetele Zope. Aceasta va
   avea ca efect imbunatatirea performantelor (utilizare RAM mai mica, etc) si 
   scaderea complexitatii vizibila dezvoltatorilor. 
