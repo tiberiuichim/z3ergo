@@ -4,7 +4,7 @@ Modalitati de rezolvare a unor probleme tipice
 Folosirea interfetelor de tip marker pentru definirea capabilitatilor
 ---------------------------------------------------------------------
 O interfata de tip marker este o interfata "goala, ce mosteneste direct 
-`zope.interface.Interface`. Folosind aceste interfate pot fi definite 
+``zope.interface.Interface``. Folosind aceste interfate pot fi definite 
 capabilitati si implementarea abstractizata a acestora. Declararea de catre o 
 clasa a implementarii acelei capabilitati atrage cu aceasta si beneficierea de 
 implementarea acelei capabilitati. Exemplu:
