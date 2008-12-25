@@ -1,0 +1,30 @@
+The philosophy of the Zope 3 ecosystem
+======================================
+
+When  Zope 2 was published, it was an extremely inovative product (in that 
+period, CGI was still considered high end). Still, some of the choices and 
+assumptions made in the design of Zope 2 are not valid anymore, so Zope 3 was
+developed, partly, as a reaction to the perceived shortcommings of Zope 2.
+
+Thus, in Zope 3 there are several important ideas:
+
+It is `pythonic` 
+    It follows the mainstream conventions of code structuring,
+    it uses Python libraries, it keeps a simple, easily understandable code 
+    structure.
+Promotes interoperatibility
+    The patter of adaptation makes it possible to safely use external libraries,
+    the WSGI standard is implemented and made easily available, there is 
+    flexibility in the choice of the persistency medium, etc.
+No more Zope programmers
+    There are no more odd things in Zope 3 development that would require 
+    splitting from the rest of the community
+Clean code
+    The code should be clean, elegant and tested, the persistent objects 
+    shouldn't be overloaded with functionality that doesn't belong to them, 
+    logically
+    
+A testimony of the flexibility of the Zope 3 libraries is the inclusion in 
+various applications and frameworks, among which are Plone, repoze.bfg, z3ext, 
+etc. Most of the packages from Cheeseshop (PyPI) are producced by the Zope
+communities (Plone, Zope 3, Grok, zc.buildout).
