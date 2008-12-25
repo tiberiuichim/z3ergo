@@ -1,0 +1,107 @@
+Strong points, weak points
+==========================
+
+In order to understand Zope 3 it is useful to know its advantages and 
+disadvantages. These are:
+
+Strong points
+*************
+
+Makes possible development of complex applications
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+One of the advantages of Zope 3 is that it offers a way to manage the 
+complexity of applications. One of the solutions used in the industry to build
+complex and extensible applications is to use an architecture that is based on
+components. Examples include XPCOM (Mozilla), Java Beans (Sun), COM (Microsoft)
+and Gumbo Flex (Adobe). The solution offered by Zope 3 is to integrate the 
+``zope.interface`` and ``zope.component`` libraries, which together form the
+**Zope Component Architecture** - ZCA
+
+Using ZCA means flexibility and plugability
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Most of the Zope 3 libraries use ZCA and this makes it possible to achieve great
+flexibility in changing the behaviour of libraries: injection points cover
+almost of the Zope operations.
+
+It offers new and inovative solutions for web development
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Just like Zope2 was an inovative product when it appeared and managed to make
+itself used and supported by a large community for more then 10 years, the 
+innovations brought by Zope3 offer a strongly argumented solution to most of the
+tipical problems that are met by a web developer.
+
+WSGI Compatibility
+~~~~~~~~~~~~~~~~~~
+Just as Pylons, Turbogears and others, Zope 3 offers the possibility to be 
+integrated with WSGI libraries "out of the box". By integrating with PasteScript
+it is possible to use, very easy, filters and other WSGI middleware.
+
+Adaptability to new trends
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+One of the latest trends is developing relatively small projects, by small 
+teams. In this context the preferences go to "agile" solutions and conventions
+over explicitness, so that the productivity is maximized for the ammount of 
+written code. To cover this segment there is **Grok**, a framework that offers
+a level of convetions over the explicitness preferred by Zope 3. For those that
+prefer the minimalism, there is **repoze.bfg**, a framework similar to Pylons,
+but that integrates the Zope libraries. 
+
+Experienced developers
+~~~~~~~~~~~~~~~~~~~~~~
+Some of the Zope developers have been working for over 12 years with the Zope
+components and some of its predecesors (Bobo, Principia, etc). One of the 
+advantages that is given by the persistence and tenacity of this people is
+the experience that they offer in developing new versions of concepts and 
+libraries that will offer solutions for the Zope 3 platform.
+
+Reusable Zope libraries
+~~~~~~~~~~~~~~~~~~~~~~~
+The knowledge gained in programming on the Zope platform can be reused in 
+developing other forms of Python applications: the advantages of the component
+based architecture can be applied to any other Python application.
+
+Weak points
+***********
+
+The developer/users community
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Although the Zope 3 developers community is relatively big and strongly 
+expanding thanks to its adaption by Plone, in general Zope has a smaller 
+exposure and weaker marketing then other web frameworks, such as Django or Ruby
+on Rails.
+
+Needs experienced developers, is relatively hard to learn
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Zope 3 is not PHP. By using advanced concepts and the vast amount of solutions
+offered, Zope 3 is relatively dificult to learn by beginner programmers. With
+certainty, a beginning web developer would find it easier to understand PHP than 
+to use efficiently the Zope 3 infrastructure. A programmer that never had to
+deal with Zope technologies has to learn the templating language, the system 
+architecture, the ZCA way of thinking, the ZCML dialect of XML, concepts such
+as viewlets, form libraries, etc. Still, to be productive, one doesn't need to
+deeply learn all the components, just the way the libraries used work.
+
+Predominant use of ZCA
+~~~~~~~~~~~~~~~~~~~~~~
+Although it doesn't have foreign or difficult to learn concepts for a programmer
+with knowledge of OOP, ZCA needs some accomodation period to understand the way
+it can be used to the benefit of the developer.
+
+Documentation problems
+~~~~~~~~~~~~~~~~~~~~~~
+This is a problem of perception and marketing. Zope 3 doesn't have, at this 
+moment, an attractive site that will centralize an exhaustive documentation set,
+as other webframeworks have (for example, Django). But there are several books
+dedicated to Zope 3, up to date with the latest changes, and the usage of 
+``zope.interface`` throught the codebase ensure that there is a good 
+documentation of the API. Thus, the Zope API is well documented and is available
+straight from any Zope 3 application or from the site http://apidoc.zope.org.
+The text files that document the various libraries are gathered in a Zope Book,
+available in the same place.
+
+Integration with relational databases
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Although there are strong solutions for integration with relational databases
+(especially with ORM systems such as STORM or SQLAlchemy), the fact that they
+don't come by default with Zope, which offers an implicit integration with 
+ZODB, can be perceived as a weakness of Zope.
