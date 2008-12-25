@@ -1,0 +1,120 @@
+Builtin features
+================
+
+Web publishing
+--------------
+The main role of Zope is to publish webpages. Although Zope can work with
+more then the http protocol, many of the Zope libraries deal with this problem.
+The way in which Zope achieves web pages publishing is to associate pages
+to a graph (tree) of objects. Most of the times these objects are persistent,
+coming from ZODB, but they can be just as well "transient" objects. 
+
+Object persistency
+------------------
+By default the user data is saved in an object database called ZODB. Lately,
+with the appearance of the ORM libraries also appeared libraries that make it
+possible to publish objects that represent database data. The main problem that
+the ORM - Zope integration library solve is integration with the transaction ]
+mechanism. If an error appears in the code that generates the page or processes
+the user data, the data will not be saved in the database, thus preserving the
+integration of the data.
+
+Persistenta obiectelor
+----------------------
+In mod implicit datele sunt salvate intr-o baza de date cu obiecte, ZODB. 
+Odata cu aparitia librariilor cu facilitati ORM au aparut si modalitati de 
+integrare cu acestea. Una dintre problemele care o rezolva Zope-ul in 
+integrarea cu baza de date este mecanismul de tranzactie. Daca o eroare a 
+aparut in codul ce genereaza pagina sau proceseaza datele utilizatorului, datele
+din baza de date nu sunt salvate. 
+
+API pentru dezvoltarea de aplicatii
+-----------------------------------
+Zope 3 se bucura de un ecosistem de librarii care acopera o mare parte din 
+ceea ce este necesar pentru dezvoltarea de aplicatii web. API-ul Zope-ului este
+bine documentat si este stabil. In cazul in care unele librarii se depreciaza,
+acestea sunt mentinute si se pastreaza compatibilitate in versiunile urmatoare.
+Datorita folosirii pachetelui zope.interface in marea majoritate a librariilor 
+Zope, se asigura auto-documentarea API-ului, iar prin folosirea extensiva a 
+modelului de programare de tip Aspect Oriented Programming, extinderea sau
+modificarea comportamentului implicit al librariilor este usor de realizat, la
+fel si dezvoltarea de cod ce va fi usor de extins de catre alte parti.
+
+Sistem de templating extensibil
+-------------------------------
+Desi Zope poate folosi orice motor de templating, in mod clasic este preferata
+sintaxa ZPT. In Zope exista doua implementari ZPT: cea clasica si z3c.pt, o 
+noua librarie, compatibila cu sintaxa ZPT si integrata cu Zope, dar care ofera 
+o viteza de cel putin 10 ori mai mare. In Zope sistemul de templating ZPT poate
+fi extins cu noi tipuri de expresii.
+
+Modele de templating
+--------------------
+Zope ofera cateva modele de nivel inalt de integrare a continutului cu 
+template-urile: **content providere-le**, ce insereaza continut in template in 
+functie de tipul contextului, **viewlet-urile**, o forma extensibila de management
+al content providerelor si **pagelet-urile**, care separa continutul unui fragment
+html (pagina sau view) de layout-ul aceastuia.
+
+Sistem de indexare si cautare
+-----------------------------
+Zope ofera un sistem integrat de indexare a obiectelor, oferind in mod implicit
+indecsi pentru Text si valori arbitrare (Field). Scrierea unui nou tip de index
+nu este o sarcina foarte complicata, in mod special datorita API-ului simplu, 
+ceea ce face foarte usoara integrarea cu sisteme de cautare specializate precum
+Lucene sau Xapian.
+
+Adnotarea obiectelor
+--------------------
+Unul dintre conceptele inovatoare integrate in Zope 3 este cel al adnotarii 
+obiectelor. Acest mecanism, facilitat de ZCA, permite adnotarea cu date a 
+oricarui obiect (fie el persistent sau tranzient), astfel incat sa poata fi 
+extinsa functionalitatea acestora.
+
+Internationalizare
+------------------
+Zope 3 ofera un mecanism de internationalizare compatibil cu standardul 
+**gettext**. Acest mecanism are extensii pentru ZPT si se ofera si un API foarte 
+usor de folosit din Python. De asemenea se ofera mecanisme pentru localizare 
+(formatarea numerelor, a datelor si a timpului) precum si o baza de date ce 
+contine diferentele regionale ce implica mecanismul de localizare. Exista de 
+asemenea si unelte pentru dezvoltatori ce faciliteaza extragerea mesajelor 
+internationalizabile si integrarea in fisiere de traducere deja existente.
+Este, de asemenea, posibila internationalizarea continutului prin folosirea
+a cateva extensii create de comunitatea Zope.
+
+Evenimente
+----------
+O modalitate foarte eleganta de asigurare a unor puncte de insertie pentru
+extinderea functionalitatii, evenimentele sunt prezente si in Zope 3. Astfel,
+exista o gama larga de evenimente definite si declansate de catre Zope in timpul
+functionarii. Printre cele mai importante sunt cele legate de ciclul de viata
+al obiectelor (crearea, adaugarea, modificarea sau stergerea obiectelor).
+
+Formulare web
+-------------
+Zope ofera doua librarii pentru generarea, validarea si procesarea automata a 
+formularelor web, iar comunitatea Zope a dezvoltat un nou pachet (z3c.form) 
+care reprezinta o solutie similara celei integrate in Zope, dar mai avansata si 
+mai flexibila.
+
+Securitate
+----------
+Securitatea este unul dintre capitolele in care Zope este foarte puternic. 
+Sistemul integrat in Zope abstractizeaza interactiunea cu agentii externi 
+(utilizatori) si ofera un mecanism bazat pe permisiuni, grupuri si roluri. 
+In mod implicit exista doua nivele de verificari ale securitatii: per pagina
+publicata si per obiect. 
+
+Librarii de testare a codului
+-----------------------------
+Zope ofera posibilitati de testare automata a codului (de altfel testarea este
+puternic incurajata de catre comunitatea Zope). Se ofera integrare cu toate
+mecanismele de test oferite de Python, putandu-se realiza atat teste pe cod
+cat si teste de integrare si functionalitate a intregului sistem.
+
+Alte protocoale
+---------------
+Zope ofera un sistem foarte simplu pentru definirea de facilitati de trimitere
+asincrona a mesajelor de email. De asemenea, se ofera posibilitatea publicarii 
+obiectelor prin protocoalele WebDAV, FTP si XMLRPC.
