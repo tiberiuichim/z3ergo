@@ -1,0 +1,29 @@
+General presentation
+====================
+
+Zope 3 is a complete framework that makes it possible to develop web 
+applications using Python. Much of this framework can be used in any Python
+application, independent of what represents, historically, a Zope application.
+
+The development of Zope 3 began in 2001-2002, in part as a reaction to the 
+experience gained through developing the Zope 2 application server. The first
+version (Zope 3.0) was published in 2004.
+
+The design of the infrastructure that represents Zope 3 was largely centered on
+the needs of big companies and the clients of the Zope Corporation, having in 
+mind applications with a big level of complexity. As such, Zope 3 can be used
+in developing complex application, its best use being in such environments.
+
+The main components that make it possible to develop Zope applications are:
+
+* publishing a graph of objects through various protocols, tipically http
+* an infrastructure similar to MVC for page publishing
+* a security system that can be applied to any object, including pages
+* integrates the Zope Component Architecture (ZCA)
+
+Typically, a Zope application would include:
+
+* integration with zc.buildout, to build the application infrastructure
+* files to configure the server, maybe even integration with PasteScript
+* a module that starts the application (startup.py)
+* code packages and ZCML that will implement the desired application
