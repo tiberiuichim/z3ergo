@@ -1,0 +1,29 @@
+Differences to Zope 2
+=====================
+The programmers that have developed on the Zope 2 platform need to take the 
+following into consideration:
+
+Radical change in concepts
+--------------------------
+Although some concepts from Zope and CMF are kept, there are enough changes
+that the two systems can be considered completely different. Even so, a Zope 2
+programmer will have a shorter and easier learning period.
+
+Through the web development
+---------------------------
+TTW development is discouraged in Zope 3. The facilities provided by Zope 3 for 
+TTW are limited and need to be enabled explicitely.
+
+Acquisition
+-----------
+It is limited and explicit (even more, it is not used by the community). Some
+of the problems that acquisition solved are not longer valid (TTW development),
+or solve through other paradigms: local utilities, registered at site levels
+and an inteligent system of layers and skins implemented in Python code.
+
+RestrictedPython
+----------------
+Once TTW development is no longer used, RPython is not necessary. This makes it
+possible to have unrestricted access to objects in ZPT (the objects are still
+wrapped in security proxies, so the objects need an explicit declaration of
+security settings).
