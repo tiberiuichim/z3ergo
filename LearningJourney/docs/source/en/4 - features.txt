@@ -14,107 +14,93 @@ Object persistency
 By default the user data is saved in an object database called ZODB. Lately,
 with the appearance of the ORM libraries also appeared libraries that make it
 possible to publish objects that represent database data. The main problem that
-the ORM - Zope integration library solve is integration with the transaction ]
+the ORM to Zope integration libraries solve is that of the transaction 
 mechanism. If an error appears in the code that generates the page or processes
 the user data, the data will not be saved in the database, thus preserving the
 integration of the data.
 
-Persistenta obiectelor
-----------------------
-In mod implicit datele sunt salvate intr-o baza de date cu obiecte, ZODB. 
-Odata cu aparitia librariilor cu facilitati ORM au aparut si modalitati de 
-integrare cu acestea. Una dintre problemele care o rezolva Zope-ul in 
-integrarea cu baza de date este mecanismul de tranzactie. Daca o eroare a 
-aparut in codul ce genereaza pagina sau proceseaza datele utilizatorului, datele
-din baza de date nu sunt salvate. 
-
-API pentru dezvoltarea de aplicatii
------------------------------------
-Zope 3 se bucura de un ecosistem de librarii care acopera o mare parte din 
-ceea ce este necesar pentru dezvoltarea de aplicatii web. API-ul Zope-ului este
-bine documentat si este stabil. In cazul in care unele librarii se depreciaza,
-acestea sunt mentinute si se pastreaza compatibilitate in versiunile urmatoare.
-Datorita folosirii pachetelui zope.interface in marea majoritate a librariilor 
-Zope, se asigura auto-documentarea API-ului, iar prin folosirea extensiva a 
-modelului de programare de tip Aspect Oriented Programming, extinderea sau
-modificarea comportamentului implicit al librariilor este usor de realizat, la
-fel si dezvoltarea de cod ce va fi usor de extins de catre alte parti.
-
-Sistem de templating extensibil
+API for developing applications
 -------------------------------
-Desi Zope poate folosi orice motor de templating, in mod clasic este preferata
-sintaxa ZPT. In Zope exista doua implementari ZPT: cea clasica si z3c.pt, o 
-noua librarie, compatibila cu sintaxa ZPT si integrata cu Zope, dar care ofera 
-o viteza de cel putin 10 ori mai mare. In Zope sistemul de templating ZPT poate
-fi extins cu noi tipuri de expresii.
+Zope 3 enjoys a rich ecosystem of libraries that cover most of what is necessary
+to develop web applications. The Zope API is well documented and stable. In  
+case one of the libraries is deprecated, the backwards compatibility is 
+maintaned. Thanks to the extensive usage of zope.interface in most of Zope's
+libraries, the API is self-documenting, and thanks to the extensive usage of
+the adaption design pattern, extending and changing the default behaviour of 
+those libraries is easy to achieve. Just the same, it is easy to write code that
+makes it easy for third parties to extend.
 
-Modele de templating
+Extensible templating system
+----------------------------
+Although Zope can use any templating engine, the default integration is with the
+ZPT engine. There are two implementations for ZPT: the classic one and 
+**z3c.pt**, a new library, compatible with the ZPT syntax and integrated with 
+Zope, but that offers a better rendering speed by a factor of at least 10 times.
+In Zope, the ZPT templating system can be extended with new expression types.
+
+Templating models
+-----------------
+Zope offers several high level models of integrating content into templates:
+the **content providers**, that insert content according to the the type of 
+context, the **viewlets**, an extensible form of management of the content 
+providers and **pagelets**, which separate the content of an html fragment 
+(page or view) from the layout used for that piece of content.
+
+Indexing and search system
+--------------------------
+Zope offers an integrated system of indexing objects, offering by default 
+indexes for Text and arbitrary values (Field). Writing a new type of index is 
+not a complicated task, thanks to the simple API that needs to be implemented.
+This makes it possible to easily integrate specialized search systems such as
+Lucene or Xapian.
+
+Object adnotation
+-----------------
+One of the innovative concepts integrate by Zope 3 is that of object annotation.
+This mechanism, facilitated by ZCA, allows annotating any object (persistent
+or transient) with data, so that its functionality can be extended.
+
+Internationalization
 --------------------
-Zope ofera cateva modele de nivel inalt de integrare a continutului cu 
-template-urile: **content providere-le**, ce insereaza continut in template in 
-functie de tipul contextului, **viewlet-urile**, o forma extensibila de management
-al content providerelor si **pagelet-urile**, care separa continutul unui fragment
-html (pagina sau view) de layout-ul aceastuia.
+Zope 3 offers an internationalization mechanism compatible with the **gettext**
+standard. This mechanism has extensions for ZPT and there is an easy to use
+API from Python. Also, there are mechanism to localize (format numbers, dates
+and time) and also a database with regional differences that are involved in 
+localization. There are tools to extract the messages from zcml, zpt and 
+python files and to integrate them in already generated po files. To 
+internationalize content there are several extensions created by the Zope
+Community.
 
-Sistem de indexare si cautare
------------------------------
-Zope ofera un sistem integrat de indexare a obiectelor, oferind in mod implicit
-indecsi pentru Text si valori arbitrare (Field). Scrierea unui nou tip de index
-nu este o sarcina foarte complicata, in mod special datorita API-ului simplu, 
-ceea ce face foarte usoara integrarea cu sisteme de cautare specializate precum
-Lucene sau Xapian.
+Events
+------
+A very easy and elegant way of providing insertion point to extend 
+functionality, events are also used in Zope 3. During normal processing, there 
+are a large number of events defined and triggered. Among the most important 
+are the ones connected to the object lifecycle (creating, adding, modifying
+and erasing objects).
 
-Adnotarea obiectelor
---------------------
-Unul dintre conceptele inovatoare integrate in Zope 3 este cel al adnotarii 
-obiectelor. Acest mecanism, facilitat de ZCA, permite adnotarea cu date a 
-oricarui obiect (fie el persistent sau tranzient), astfel incat sa poata fi 
-extinsa functionalitatea acestora.
+Web forms
+---------
+Zope offers two libraries to generate, validate and process web forms, and the
+Zope community has developed a new package (z3c.form), which offers a similar,
+but more advanced and flexible compared to the provided Zope form library.
 
-Internationalizare
-------------------
-Zope 3 ofera un mecanism de internationalizare compatibil cu standardul 
-**gettext**. Acest mecanism are extensii pentru ZPT si se ofera si un API foarte 
-usor de folosit din Python. De asemenea se ofera mecanisme pentru localizare 
-(formatarea numerelor, a datelor si a timpului) precum si o baza de date ce 
-contine diferentele regionale ce implica mecanismul de localizare. Exista de 
-asemenea si unelte pentru dezvoltatori ce faciliteaza extragerea mesajelor 
-internationalizabile si integrarea in fisiere de traducere deja existente.
-Este, de asemenea, posibila internationalizarea continutului prin folosirea
-a cateva extensii create de comunitatea Zope.
+Security
+--------
+Security is one aspect where Zope is very strong. The system integrated in Zope
+abstracts the interaction of external agents (users) and offers a mechanism
+based on permission, groups and roles. Implicit, there are two levels of 
+security checks: per published page and per object.
 
-Evenimente
-----------
-O modalitate foarte eleganta de asigurare a unor puncte de insertie pentru
-extinderea functionalitatii, evenimentele sunt prezente si in Zope 3. Astfel,
-exista o gama larga de evenimente definite si declansate de catre Zope in timpul
-functionarii. Printre cele mai importante sunt cele legate de ciclul de viata
-al obiectelor (crearea, adaugarea, modificarea sau stergerea obiectelor).
+Code test libraries
+-------------------
+Zope makes it possible to automatically test the code (testing is strongly
+encouraged by the Zope community). There is integration with the test mechanisms
+offered by default by Python, and there is also the possibility to have 
+integration and functional tests, to test the entire system.
 
-Formulare web
--------------
-Zope ofera doua librarii pentru generarea, validarea si procesarea automata a 
-formularelor web, iar comunitatea Zope a dezvoltat un nou pachet (z3c.form) 
-care reprezinta o solutie similara celei integrate in Zope, dar mai avansata si 
-mai flexibila.
-
-Securitate
-----------
-Securitatea este unul dintre capitolele in care Zope este foarte puternic. 
-Sistemul integrat in Zope abstractizeaza interactiunea cu agentii externi 
-(utilizatori) si ofera un mecanism bazat pe permisiuni, grupuri si roluri. 
-In mod implicit exista doua nivele de verificari ale securitatii: per pagina
-publicata si per obiect. 
-
-Librarii de testare a codului
------------------------------
-Zope ofera posibilitati de testare automata a codului (de altfel testarea este
-puternic incurajata de catre comunitatea Zope). Se ofera integrare cu toate
-mecanismele de test oferite de Python, putandu-se realiza atat teste pe cod
-cat si teste de integrare si functionalitate a intregului sistem.
-
-Alte protocoale
+Other protocols
 ---------------
-Zope ofera un sistem foarte simplu pentru definirea de facilitati de trimitere
-asincrona a mesajelor de email. De asemenea, se ofera posibilitatea publicarii 
-obiectelor prin protocoalele WebDAV, FTP si XMLRPC.
+Zope offers a simple way to queue messages for sending, including in 
+asynchronous mode. Also, it is possible to publish the objects through various
+other protocols, such as WebDAV, FTP and XMLRPC.
