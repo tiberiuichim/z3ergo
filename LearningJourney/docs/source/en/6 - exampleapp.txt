@@ -1,0 +1,699 @@
+An example application
+======================
+
+LearningJourney is a minimal Zope 3 example application. It offers a sistem 
+similar with a basic blogging, multi-user, system. It has the following 
+facilities:
+
+* self-registering of users, with a system to check the emails
+* a personal content area, protected by roles and permissions, in which the user
+  can create personal content
+* a simple type of content with a text field that can be edited with **TinyMCE**
+  and a tag field that is used to clasify the record
+* search on the site using the Zope catalog
+* a page used to browse all the records, groupd by the tags.
+
+Generating the application skeleton
+-----------------------------------
+The skeleton of the application was generated using ZopeSkel, a project that
+extends **PasteScript** with a new template (**zope_app**) that can be used to
+generate a basic Zope 3 application. This application is a WSGI app which can
+be configured using one of the two ``ini`` files from the root of the app - one
+for the debug mode and one for the production mode.
+
+To start the app, one of the following commands can be used::
+
+    # bin/paster serve debug.ini
+    # bin/learningjourney-ctl fg
+
+Both versions will start the applicatio in debug mode.
+
+The application structure
+-------------------------
+The generated structure is that of a python package developed using setuptools.
+In the root is the ``setup`.py` module, which configures the package, while the
+code itself sits in the ``learningjourney`` namespace from the ``src`` folder.
+In this namespace there are 5 packages, of which the most important are ``app``
+and ``ui``. The ``app`` package hosts the models and the logic of the 
+application, independent of their publishing as web pages. The ``ui`` package
+contain everything that pertains to the web pages published by the application
+(pages, images, CSS files, etc). The ``startup.py`` module is the one that
+defines the application server and is used by the scripts from the ``bin`` 
+folder to start the app.
+
+ZCML files
+----------
+In the root of the application there are several zcml files: ``site.zcml``, 
+``apidoc.zcml`` and ``custom-security.zcml``. These are XML files that contain
+instructions to configure the components used inside the application and the
+rest of the Zope libraries. These configuration operations have a direct 
+equivalent in Python code, but separating them in XML serves the following 
+purposes:
+
+* allows the site managers to configure the application without needing to know
+  how to program (it is assumed that XML, as a language, is more familiar to the
+  site admins)
+* the ZCML configuration system does not allow accidental overriding of the 
+  configured components. To be able to override, an explicit mechanism needs to
+  be used
+* in general, it makes the developers' job easier, by making it easy to
+  identify the components used in a package, without needing to read the code.
+  
+A basic example of an xml file:
+
+.. code-block:: xml
+
+    <configure xmlns="http://namespaces.zope.org/zope" 
+               xmlns:browser="http://namespaces.zope.org/browser"
+               package="learningjourney" 
+               i18n_domain="learningjourney">
+       
+       <include file="configure.zcml" />
+       <include package=".ui" />
+       <includeOverrides file="overrides.zcml" />
+       
+       <configure package="z3c.widget.tiny">
+           <browser:resourceDirectory path="lib/resources" />
+       </configure>
+       
+    </configure>
+
+The first tag, ``configure``, serves as a grouping directive and specifies the
+package for which the grouped directives apply. It defines the default 
+XML namespace as ``http://namespaces.zope.org/zope`` and the namespace with the
+**browser** prefix as ``http://namespaces.zope.org/browser``.
+
+The ``include`` directive is used to include a package (the ``configure.zcml`` 
+file from that package will be read and configured) or a file, specified by
+a complete path, relative to the folder of the current file. In case a package
+name is used, this can be spelled as an "absolute" python package, with the
+complete name of the package, or as a "relative" package, in which case the
+name will start with one dot, for a sub-package in the current package, or two
+dots, for a package in the parent package. See PEP 328 http://www.python.org/dev/peps/pep-0328/#id10 for more details.
+
+The ``includeOverrides`` directive (not shown here) is used to identify a file
+whose configuration will have priority in case it conflicts with other
+configuration directives.
+
+A complete reference of the ZCML dialect is published on the APIDOC website,
+at http://apidoc.zope.org/++apidoc++/. Other ZCML directives will be
+discussed further in this text.
+
+The basics of Zope Component Architecture
+-----------------------------------------
+The interfaces are one of the fundamental mechanisms of Zope 3. They are 
+objects that specify (document) the behaviour of other objects that declare to
+"provide" them. An interface specifies behaviour with the help of:
+
+* informal documentation: the docstrings
+* defining how methods and attributes should look like
+* invariants, which are conditions the object should meet to "provide" that
+  interface.
+  
+Thus, an interface describes the characteristics of an object, not its 
+capacities. It describes what the object does, not how it does that. To 
+understand how an object provides what the interface defines, it is necessary
+to read the definition of that object, its class.
+
+The use of interfaces can be said to belong to a design pattern. One of the 
+recommandations made in the "bible of patterns" - **Design Patterns** is to
+"program not for an implementation, but for an interface". Defining an interface
+helps in understanding the involved systems and is one of the first steps in 
+using the ZCA.
+
+An example of interface::
+
+    from zope.interface import Interface, Attribute, implements, provides
+
+    class IBoardgame(Interface):
+       """A boardgame"""
+       
+       title = Attribute("title")
+       description = Attribute("description")
+       
+       def borrow(to_person):
+           """Allows changing the owner by borrowing to another person"""
+       
+We notice:
+
+* interfaces are classes that inherit ``zope.interface.Interface`` (directly or
+  through a chain of inheritance)
+* attributes are defined as instances of ``Attribute``
+* methods don't have to be implemented, just defined and documented. That's why
+  defining the self parameter in the method signature is not needed.
+  
+A class that will implement the interface can look like this::
+
+    class Boardgame(object):
+        implements(IBoardgame)
+        
+        title = u""
+        description = u""
+        
+        def borrow(self, to_person):
+           self._location = "At this moment the game is at " + to_person 
+       
+We notice the declaration ``implements(IBoardgame)``, which registers the class
+``Boardgame`` as implementing the interface ``IBoardgame``. Just as many other
+things in Python, this declaration is based on a "gentlemen's agreement", as it
+doesn't force the programmer to really implement the interface. This means that
+it cannot be used, by itself, to implement "static typing" system in Python. It
+can be used, however, to determine the capabilities of an object::
+
+    >>> game = Boardgame()
+    >>> IBoardgame.providedBy(game)
+    True
+    >>> IBoardgame.implementedBy(Boardgame)
+    True
+    >>> list(providedBy(game))
+    [IBoardgame]
+    
+Notice: a class implements (will have ``implements()`` in code), an object will
+provide the interface (``provides()`` can be asserted on it).
+
+``zope.interface`` provides an API to decorate with interfaces even objects and
+classes that come from external libraries::
+
+    >>> classImplements(Boardgame, IBoardgame)
+
+and the equivalent in zcml:
+
+.. code-block:: xml
+
+    <class class=".app.Boardgame">
+        <implements=".interfaces.IBoardgame" /> 
+    </class>
+
+or, direct on objects:
+
+    >>> alsoProvides(game, IBoardgame)
+
+Once the interfaces are known, the definition for a **component**, as understood
+by Zope, is simple: a component is an object that provides at least an 
+interface. Most of the classes in Zope are written so that they become component
+once they are instantiated. 
+
+Other features of ZCA
+---------------------
+``zope.component`` is a library based on ``zope.interface`` that introduces
+several types of components, in fact an implementation of several design 
+patterns. The 4 base components are:
+
+* adapters
+* utilities
+* subscribers
+* handlers
+
+Adapters
+~~~~~~~~
+Adapters are an implementation of the AOP (aspect oriented programming) model. 
+It helps, using the interfaces, to obtain an aspect of an object. In the process 
+of adaptation are involved the adapted object and the interface that determins
+the aspect that we are seeking for that object.
+
+An example: let's suppose we have a container that holds various objects. Some
+objects are audio files (mp3), some are images, some are text files, etc. We are
+looking to display the specific dimension of each of these objects. For the 
+audio files we will display the size in seconds, for images the size in pixels,
+etc.
+
+The solutions that would not involve ``zope.component`` would be:
+
+* Building a class that would know how to extract the information from each
+  type of object. This system is not flexible: to add a new type of object we 
+  need to add code to the class that will know how to extract the info from the
+  object
+* Implementing, by each object type, of a special method that would return the
+  information that will be displayed. This means that the objects need to 
+  know in what type of systems they will be integrated, which leads to an 
+  overload with functionality for those objects.
+  
+The solution offered by adapters is elegant, but more complex. For each type of
+object there is a component that adapts the object and extract the information
+from each object.
+
+We will have an interface ``IDisplaySize`` that defines the way the size for
+objects is displayed::
+
+    class IDisplaySize(Interface):
+        """Provides information about the size of objects"""
+        
+        get_size():
+            """Display the size, this info is intended for users"""
+            
+The code that displays the sizes of the objects will iterate through the 
+objects of the container and build an adapter for each object:
+
+    >>> size = getAdapter(IDisplaySize, obj).get_size()
+    
+Notice that the object that is build by calling ``getAdapter`` is a component
+that provides the interface ``IDisplaySize``. Through the construction of the 
+adapter we can get an implementation specific to each type of context::
+
+    class Mp3DisplaySize(object):
+        zope.component.adapts(IMp3File)
+        zope.interface.implements(IDisplaySize)
+        
+        def __init__(self, context):
+            self.context = context
+                
+        def get_size(self):
+            sound_length = extract_track_size(context) 
+            return "%s seconds" % sound_length
+            
+    class ImageDisplaySize(object)
+        zope.component.adapts(IImage)
+        zope.interface.implements(IDisplaySize)
+        
+        def __init__(self, context):
+            self.context = context
+        
+        def get_size(self):
+            width, height = get_image_size(context)
+            return "%s x %s px" % (width, height)
+        
+Thus, acording to the type of context (``IMp3File`` or ``IImage``), will be 
+selected a class that will be used in building the adapter, retrieving this way
+an object that is different for each type of context and that will know how
+to extract the information from it.
+
+The construction ``getAdapter(...)`` can be shortned with:
+
+    >>> IDisplaySize(obj).get_size()
+
+There are also **multiadapters**, which adapt more then one object to a given 
+interface. The most common met example of multiadapters are the pages (or 
+views), which adapt the request - information received from the user, along with
+the context object, to an information of type ``IBrowserPublisher``, which will
+be returned to the users. The pages are registered as multiadapters with a name,
+so that we don't need to specify the interfaces to which we adapt the two 
+objects, because there will be just one with that name and type of request:
+
+    >>> view = getMultiAdapter((context, request), name='index.html')
+    >>> page_content = view()
+
+The rest of components (utilities, subscribers, handlers) will be covered later.
+   
+Publishing a simple page
+-----------------------------
+Zope 3 has several ways to develop and publish web pages. The simples page 
+doesn't need Python code, just a ZPT file. Pages are components which are 
+registered with the ZCA.
+
+.. code-block:: xml
+
+    <browser:page 
+        name="about.html" 
+        for="*" 
+        template="pt/about.pt" 
+        permission="zope.View" 
+        />
+    
+Notice the name of the page that will be used in the publishing of that page,
+the path to the template used, permission which the user needs to have to access
+it and the attribute ``for``, which says for what type of contexts the page is
+available (in this case, all).
+
+In case there are pages with the same name, because adaptation is used to
+determine the class that will be used to generate the page, it is possible to
+discriminate by using the type of context by class or interface and the layer 
+(skin) per which the page is registered. 
+
+The context is determined by a dotted name to a class, an interface or the 
+asterix, which means "all types of context" (or ``zope.interface.Interface``).
+
+Publishing resources
+--------------------
+Resources (images, CSS and JS files) are registered with the help of two zcml
+tags from the **browser** namespace: ``browser:resource``, which registers
+a single resource (text file or image) and ``browser:resourceDirectory``, which 
+can be used to register a folder to act as container for resources. For 
+resources which are different according to the language, the 
+``browser:i18n-resource`` tag is used.
+
+The path to these resources is generated as relative to the local site 
+(details about sites will follow), in the form
+``http://localhost/mysite/@@/styles.css``
+
+To compute this path, in the template is used an expression such as:
+``<script tal:attributes="src context/++resource++myscripts/jquery.js" />``
+
+Examples of resources and their registration can be found in the files
+``src/learningjourney/ui/configure.zcml`` and
+``src/learningjourney/widget/addremove/configure.zcml`` and the template file
+``src/learningjourney/ui/site/pt/layout.pt`` and
+``src/learningjourney/widget/addremove/widget.pt``
+
+Persistent objects
+------------------
+To store the data in ZODB, we use classes that inherit from the ``Persistent``
+class. These are very simple classes, as can be noticed from the 
+``learningjourney.app.userhome.LearningEntry`` example: inherit ``Persistent``,
+implement the ``ILearningEntry`` interface, write the methods and attributes 
+defined by the interface.
+
+The last thing, to complete the integration with Zope, is the need to declare
+the security of that object. In case this doesn't exist, access to the 
+attributes of the object will be forbidden (there will be ``Forbidden`` errors).
+This security declaration is done in zcml:
+
+.. code-block:: xml
+
+    <class class=".userhome.LearningEntry">
+        <require 
+            permission="zope.View" 
+            interface=".interfaces.ILearningEntry" />
+        <require 
+            permission="zope.ManageContent" 
+            set_schema=".interfaces.ILearningEntry" />
+    </class>
+    
+For direct access to the object, unproxied by the security mechanism, the 
+following piece of code can be used:
+
+    >>> from zope.proxy import getProxiedObject
+    >> obj = getProxiedObject(someobj)
+    
+Within the ``require`` tag the ``interface`` attribute is used to designate an
+interface that defines methods and attributes available for reading, with the
+indicated permission. The ``set_schema`` attribute is used to asign a permission
+to change the attributes from indicated interface.
+
+In the case of containers, there are two interfaces involved in specifying the
+required permissions: ``IReadContainer`` and ``IWriteContainer``. Example:
+
+.. code-block:: xml
+
+  <class class=".site.Application">
+    <require permission="lj.ModifyContent"
+      interface="zope.app.container.interfaces.IWriteContainer" />
+    <require permission="zope.View"
+      interface="zope.app.container.interfaces.IReadContainer" />
+    <allow attributes="getSiteManager" />
+    <require permission="zope.ManageServices" attributes="setSiteManager" />
+  </class>
+
+To restrict the types of objects that can be added in a container or the type of
+containers where an object can be added, you can use the constraints available
+from ``zope.container.constraints``. An example is in 
+``learningjourney.app.userhome``.
+
+Other elements that can appear in this declaration are:
+
+* the <allow> tag, which can be used to to set the access to certain attributes
+  defined by an interface, or directly name the attributes as public (which
+  will require the ``zope.Public`` permission)
+* the ``attributes``, ``set_attributes`` and ``like_schema`` options allow
+  setting permissions at the level of attributes or copying the security 
+  settings of another class
+* the ``<implements>``, as specified earlier, allows augumenting a class with
+  an extra interface. Objects derived from that class will provide that 
+  interface.
+  
+Interaction with the user through the request object
+----------------------------------------------------
+We saw earlier how a simple page can be created using just a template. Usually,
+we need a bigger level of logic and iteraction with the user. To achieve this,
+we can use a class to generate the page::
+
+    class HelloWorldPage(object):
+    
+        def __init__(self, context, request):
+            self.context = context
+            self.request = request
+            
+        def __call__(self) 
+            return u"Hello world"
+        
+.. code-block:: xml
+
+    <browser:page 
+        name="hello.html"
+        class=".pages.HelloWorldPage"  
+        for="*" 
+        permission="zope.View" 
+        />
+    
+Notice that the published page is the result of calling the class instance - 
+the ``__call__`` method is run. Also, the class is a multiadapter, so in the
+``__init__`` it receives the context and the request. This class will be used
+as a `mixin` to generate, at `runtime`, a new type of object that will generate
+the class, so it's not really necessary to declare the ``__init__`` method, as
+it is not necessary to inherit from ``BrowserPage`` either. 
+
+It is also possible to combine a class with a ZPT template, as it is 
+demonstrated for the ``explore.html`` (``ExplorePage``), associated with the  
+``learningjourney.app.interfaces.ILearningJourneyApplication`` objects, defined
+in the ``learningjourney.ui.site.page`` module.
+
+In the templates associated with a page class, the instance of that class and 
+its attributes can be accessed through the ``view`` variable. ``context`` and
+``request`` can be accessed too.
+
+Because the **request** object from the page offers access to the data 
+associated with the GET and POST methods that were used to access the page, 
+simple form pages can be implemented using a method like this::
+
+    class SampleForm(object):
+        def __call__(self):
+            if 'submit' in self.request.form:
+                return u'Hello, %s' % self.request.form.get('name', 'John Doe')
+            else:
+                return ViewPageTemplateFile('sampleform.pt')()
+
+The template, ``sampleform.pt`` will contain:
+
+.. code-block:: xml
+
+    <form method="POST">
+        <input type="text" name="name" />
+        <input type="submit" name="submit" />
+    </form>
+
+Using the **request.response** object, several parameters can be changed for
+the response returned to the visitor (for example, set some headers, implement
+a redirect, etc). A simple example of such a form can be found in the class
+ ``EntryDeletePage`` from ``learningjourney.ui.homefolder.page`` or the class
+ ``DashboardRedirect`` from the same module.
+
+A convention used in Zope 3 to tell the traversing mechanism that it deals with
+a page or a view is to prefix the name of the page, in the URL, with two @
+signs. Together they form two "eyes", a way of saying it's a "view".
+
+Example: ``http://localhost/@@index.html``
+
+By using this convention the traversing mechanism is shortcuted, so that it will
+not try to find an object called ``index.html`` in the traversed container, and
+instead it will directly build a page ``index.html`` for the context object.
+
+In templates pages can be inserted in other pages directly, like this::
+
+    <div tal:content="structure item/@@detail" />
+
+where item is an object (can be persistent or not, for example the context, or
+an object retrieved from a ``tal:repeat`` construct), and ``detail`` is the
+name of the view registered and available for that object. When the ``detail``
+view is built, it will have the ``item`` object as context.
+
+Augumenting interfaces with information about the type of attributes
+--------------------------------------------------------------------
+Another important library from Zope 3 is ``zope.schema``, an extension of the
+``zope.interface`` library, which allows a more details specification of the 
+type of attributes defines in interfaces. In this way, the interfaces become
+"schema" and can be used in various tasks: validate object values, generate 
+automated forms, generate pages to view objects, etc. By using the zope.schema
+extension, the attributes become "fields". Using 
+``zope.interface.fieldproperty.FieldProperty`` it is possible to implement
+an automatic validation of the values of an object, based on the schema (see, 
+for an example, the implementation of ``learningjourney.app.userhome.LearningEntry``.
+ 
+``zope.schema`` defines various types of fields. Some of them are text lines
+(``TextLine``), dates (``Date``), boolean values (``Bool``), list of objects 
+(``List``), etc. It is possible to write new type of fields.
+
+An example of schema/interface is 
+``learningjourney.app.interfaces.ILearningEntry``. This interface is used to
+automatically implement two forms:
+
+* an add and create form
+* an edit form
+
+Both are found in the module ``learningjourney.ui.homefolder.page``
+
+Sites and global registries
+---------------------------
+By default, the ZCA stores its component registrations in a global registry.
+The results of configuration specified in ZCML are always recorded in the global
+registry. It is possible to create a local registry, at the level of a 
+persistent container in ZODB. This container will be called a "site" and in its
+local registry will recorded component registrations that are "local" to that 
+site, which will have precedence over those recorded in an upper level or in the
+global registry. Not all types of components can be recorded in a local
+registry, just the utilities. An example of creating a local site manager is
+the code in ``learningjourney.app.event.configure_site``. Local sites are also 
+targeted as the base path in generating locations for browser resources
+(CSS, images, JS).
+ 
+Utilities
+---------
+Another type of component defined by ``zope.component`` are utilities. There
+are two types of utilities: global utilities and local utilites. They behave
+in a manner similar to **singletons** from the design patterns. Based on an
+interface, it is possible to get the unique object that is registered as an
+utility.
+
+To register a global utility the tag ``<utility>`` is used. Its registration
+includes the interface the utility will be registered for, the name of the
+utility (it is possible to have several utilities registered for the same 
+interface, but with different names), and the component that will be used in 
+building the utility.
+
+.. code-block:: xml
+
+    <utility 
+        provides="ILanguageNegociation" 
+        component=".app.LanguageNegociation" 
+        permission="zope.Public" />
+    
+To make an utility local you need a persistent object, which you'll register
+as a utility using ``zope.component.registerUtility`` or the functionality
+available in the ZMI on the "Registration" page. 
+
+Examples of how to create and register local utilities can be found in 
+``learningjourney.ui.search.page.SearchPage``.
+
+Indexing and searching objects
+------------------------------
+Because searching all objects for certain values of an attribute can be an
+expensive operation, Zope offers a solution to index and catalog objects 
+according the the values of predetermined attributes and methods.
+
+The catalog is a persistent object registered as a local utility for the
+``zope.app.catalog.interfaces.ICatalog`` interface. Thus, the catalog can be
+retrieved like this:
+
+    >>> catalog = zope.component.getUtility(ICatalog)
+
+In the catalog indexes are added (example in ``learningjourney.app.event``), 
+which records which interface and attribute it indexes. These indexes record,
+as a reference to the indexed object, an **intid** - an unique integer, 
+guaranteed to be unique, assigned to all persistent objects by an intid utility
+registered for the ``zope.app.intid.interfaces.IIntIds`` interface.
+
+The object indexing is performed usually when there are added or erased from
+containers (based on the ``ObjectAddedEvent`` and ``ObjectRemovedEvent`` event,
+and also when the ``ObjectModifiedEvent`` is triggered in code. Example:
+
+    >>> obj.title = u"My title"
+    >>> zope.event.notify(ObjectModifiedEvent(obj))
+    
+When indexing an object, each index from the catalog will try to index the 
+object by adapting the object to the interface they're assigned, and retrieving
+the value for the attribute or method assigned.
+
+An example of how to perform a search can be found in 
+``learningjourney.ui.search.page``. 
+
+The layers and skinning system
+------------------------------
+The CMF libraries from Zope 2 define the concept of 
+
+* **layers**, where the resources and pages are declared
+* **skins**, which group the layers to create a cohesive functionality and look
+  for the website.
+  
+These concepts are present in Zope 3, but in a easy to implement, simplified 
+form. A layer is determined by an interface that inherits 
+``zope.publisher.browser.interfaces.IBrowserRequest``. Once a layer is defined,
+browser components (pages, views and resources) can be registered on that layer
+using the ``layer`` attribute in zcml. An example of layer is found in the 
+__init__ module from ``learningjourney.ui``. 
+
+A skin is a layer that has been assigned the ``IBrowserSkinType`` type, with
+the name that the skin will have. An example of a skin can be found in 
+``learningjourney/ui/configure.zcml``.
+
+To select the skin that is used, a special namespace traverser is used in the
+URL, like:
+
+    ``http://localhost:8080/++skin++lj/Application/@@index.html``
+
+For **LearningJourney** the ``z3c.layer.minimal`` package has been used as base
+layer. This layer is a minimal layer, with just the error pages defined. Having
+a minimal layer as the base means the pages that are published for a site can
+be fully controled.
+
+Using macros in templates
+-------------------------
+Because Zope 3 doesn't directly publish templates and doesn't attach them to
+all types of context, by default, using macros in Zope 3 is a little more 
+difficult.
+
+The default method is to register pages with macros in a list of macro pages,
+available in a page called ``standard_macros``. Their use can be observed in the
+``learningjourney.ui.site`` package.
+
+The Zope Community has developed an extension package called ``z3c.macro`` which
+offers new **TAL** expression and a zcml extension that make it very easy to
+register and use macros and their templates.
+
+UI internationalization
+-----------------------
+At the level of templates, the internationalization is "classic", just like 
+Zope 2, using the attributes from the i18n namespace. Also, in the ZCML files,
+a message domain can be specified for the titles and labels defined in that 
+file.
+
+In Python code, a ``MessageIdFactory`` is used to build new ids for messages.
+Look for an example in the ``learningjourney.i18n`` package, and its usage in
+``learningjourney.app.interfaces``. To change the language for the site,
+there's a namespace traverser, which can be used like this: 
+
+    ``http://localhost:8080/++skin++lj/++lang++ro/Application/@@index.html``
+    
+Another method of changing the user's language is by using the request in a 
+traverser, using the ``IBrowserPreferredLanguages`` interface, thus being able
+to store the user language preference in a cookie or session.
+
+Security, permissions
+---------------------
+The security sistem in Zope is relatively complex, but powerful and flexible.
+At its base are the principals (objects that represent users) and interactions
+between users and the system. The **principal** objects are built on every 
+request, usually based on the information extracted from the request. The global
+utility that generates **principal** objects is registered for the 
+``zope.app.security.interfaces.IAuthentication`` interface. The implementation
+offered by Zope is called **Pluggable Authentication Utility** (PAU), 
+implemented in ``zope.app.authentication``. It offers a system of plugins that 
+can control how the authentication credentials are extracted from the request
+and where the users come from (the users source). An complete example of
+building an authentication system, complete with user source, can be found in
+``learningjourney.app.event``. Once the principal object has been created, it
+is stored in the request and can be used for various tasks: displaying the 
+user id, checking if the curent user is authenticated, etc. You can see more of
+the authentication system in action in the ``learningjourney.ui.authentication``
+package.
+
+There are several ZCML directives that define types of principals 
+(authenticated, unauthenticated, etc), which can be seen in the site.zcml fiel
+from the root of the application. At runtime the principals are build based
+on the information extracted from request and checked against the users
+source. Zope offers a source of users in the form of a container 
+(``PrincipalFolder``), which stores objects of type ``IInternalPrincipal``. 
+Note: these users are information about principals, not principals in 
+themselves. The source of users and the credentials extraction plugins are 
+objects stored in PAU, which is configured with an explicit list of active
+plugins extraction and user source plugins. This type of configuration can be
+observed in ``learningjourney.app.event``
+
+Access to objects and their properties is protected by permissions, as could 
+be noticed in the `Persistent objects` chapter. To ease the management of 
+permissions, the concept of roles is used: to a principal, in a context, can be
+assigned a certain role. This role is granted permissions. To assign a role to
+a principal (user), the ``IPrincipalRoleManager`` adapter is used:
+
+    >>> IPrincipalRoleManager(context).assignRoleToPrincipal('lj.Owner', 
+                                                    request.principal.id)
+                                                    
+Declaring new permissions, roles and granting permissions to roles can be 
+seen in the ``custom-security.zcml`` file from the root of the app.
