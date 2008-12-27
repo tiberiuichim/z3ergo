@@ -1,0 +1,39 @@
+The future of the Zope 3 platform
+=================================
+The main purpose of the Zope 3 platform, that to build a component based web
+framework, has been achieved. Zope right now is built on mature libraries, 
+hardened by years of deployment in various online applications. They are stable
+and will not require any extensive changes in the near future. The developers
+that use this platform are experienced developers, usually involved in complex 
+projects that drive the development of new conex libraries or refining the 
+existing ones. The number of developers using the Zope 3 platform is rising, 
+thanks to:
+
+* migrating to Zope 3 of some popular systems such as Plone
+* the Repoze initiative, with its offer of Zope libraries repackaged and ready
+  to use in any other web framework
+* new CMS projects (z3ext, vudo, hivurt, etc), which run of the Zope libraries
+
+New development directions
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+Although the core is considered to be complete, the Zope Community keeps 
+improving the platform. Several areas are considered to be essential to be on
+the roadmap:
+
+* Decrease the level of interdependencies between the code Zope packages. This
+  will lead to a better usage of resources (less RAM, etc) and the complexity
+  as it is apparent to the developers
+* Promote alternative solutions to those offered by Zope by default: 
+  compatibility with WSGI, integration with RDBs through ORMs, etc.
+* Lowering the entry levels for new developers, through the Grok platform, 
+  which is a simple and powerful way to developer web applications on the 
+  Zope 3 platform
+* Repoze.bfg, a new independent webdevelopment framework that is based on 
+  libraries from Zope 3,  WebOb and WSGI, has a strong integration of Zope 3 
+  concepts, but with the intended purpose of reducing the interdependence 
+  among components. It wants to be agnostic about the choices and offer multiple
+  paths to solving some key problems (such as persistency, template engine, 
+  etc). 
+* the **chameleon** templating engine has a better performance and offers
+  several syntax implementations (ZPT, Genshi) and integration with some of 
+  the key Zope and Zope Community packages.
