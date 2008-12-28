@@ -316,90 +316,81 @@ zope.app.folder
     its representation as external object (IFileRepresentation)
 
 zope.app.form
-    libraria "clasica" de formuri a zope-ului, este considerata depasita 
-    datorita dependentei de zcml si a inflexibilitatii. Cu toate acestea,
-    modelul de widget-uri este folosit de catre zope.formlib si de aceea 
-    ramane o librarie importanta. 
+    the old form library for Zope, it is considered outdated because of the
+    dependency on ZCML and inflexibility. All these considered, the widget
+    model is also used by zope.formlib and thus remains an important library
 
 zope.app.ftp
-    ofera un model de view pentru protocolul ftp
+    a view model for FTP
 
 zope.app.generations
-    face posibila migrarea bazei de date atunci cand schema obiectelor 
-    persistente se modifica
+    migrationi for database when the persistent objects schema is changed
 
 zope.app.homefolder
-    ofera o implementare a unui homefolder pentru utilizatori
+    has a homefolder implementation for users
 
 zope.app.http
-    integrare a protocolului http: exceptii, metode, definirea modului de 
-    traversare si rezolvare a view-ului
+    integration with the http protocol: exceptions, methods, traversing methods
+    and how views are solved
 
 zope.app.i18n
-    contine implementarea unui message catalog persistent precum si extensii
-    ZCML pentru inregistrarea unui director ce contine traduceri
+    implements a persistent i18n messages catalog and ZCML extensions to 
+    register translation folders 
 
 zope.app.i18nfile
-    contine implementarea internationalizabila a fisierelor si imaginilor
-    stocate in baza de date
+    internationalizable images and files (as content)
 
 zope.app.interface
-    ofera un vocabular pentru interfetele oferite de un obiect
+    a vocabulary for interfaces that an object provides
 
 zope.app.interpretor
-    contine un interpretor pentru cod python in care nu se poate avea 
-    incredere
+    an untrusted Python code interpretor
 
 zope.app.intid
-    un utilitar ce asociaza id-uri unice obiectelor din baza de date
+    a utility that associates unique ids to objects from the database
 
 zope.app.keyreference
-    un adapter pentru obiectele persistente care extrage pozitia lor din
-    baza de date pe baza caruia i se poate asocia un intid
+    an adapter for persistent objects that extracts their low level id from the 
+    database, based on which an intid can be associated
 
 zope.app.locales
-    contine traduceri si utilitare pentru software-ul Zope 3
+    contains translation and utilities for Zope 3 software
 
 zope.app.locking
-    o implementare pentru blocarea accesului la obiecte, de exemplu pentru 
-    integrarea cu protocolul Webdav
+    an implementation for object access locking, to be used, for example, in
+    WebDav
 
 zope.app.module
-    o implementare de module python persistente (cod python in ZODB)
+    persistent Python modules (Python code in ZODB)
 
 zope.app.onlinehelp
-    ofera o infrastructura de documentatie si help precum si o extensie ZCML
-    ce face posibila asocierea de catre orice pachet de sectiuni de help
+    an infrastructure for help and documentation and a ZCML extension that makes
+    it possible to register help by any extension package
 
 zope.app.pagetemplate
-    face posibila integrarea template-urilor ZPT cu clasele de view, ofera
-    o expresie ZCML ce face posibila inregistrarea de noi tipuri de expresii
-    ZCML.
+    integrates ZPT templates with the view classes, offers a ZCML expression
+    that makes it possible to register new types of ZPT expressions
 
 zope.app.preference
-    implementeaza o modalitate de stocare a preferintelor pentru fiecare 
-    utilizator si contine integrare cu ZCML pentru inregistrarea grupurilor
-    de preferinte
+    implements a method of storing preferences for each user and contains
+    integration with ZCML for recording groups of preferences
 
 zope.app.preview
-    ofera o modalitate simpla de a previzualiza site-ul intr-un iframe
+    a simple way of previewing the site in an iframe
 
 zope.app.principalannotation
-    ofera o modalitate de asociere de date pentru principali, prin anotarea
-    persistenta a acestora
+    a method to associated data with principals, through a persistent annotation
 
 zope.app.publication
-    integreaza metodele de publicare a continutului, ofera o extensie ZCML
-    pentru dezvoltarea de noi moduri de publicare, per tip de verb http 
-    folosit.
+    integrated methods of content publishing, has a ZCML extension to define 
+    new methods of publishing, for each HTTP verb used
 
 zope.app.publisher
-    implementeaza obiecte/pagini, ce pot fi folosite in publicarea de 
-    continut. Implementeaza extensii zcml pentru inregistrarea paginilor si
-    a menurilor din ZMI
+    implements objects/pages that can be used in publishing content. Implements
+    ZCML extensions to register pages and menus in ZCML
 
 zope.app.pythonpage
-    implementeaza un tip de continut ce poate interpreta continut python
+    implements a type of persistent content that can interpret Python
 
 zope.app.renderer
     infrastructura pentru transformarea unui tip de continut intr-un alt tip
@@ -475,6 +466,7 @@ zope.app.zopetop
 zope.app.zptpage
     implementeaza template-uri persistente in baza de date
 
+
 Other packages
 **************
 There are aproximatively 300 extension packages on svn.zope.org, not including
@@ -529,29 +521,29 @@ faster templating engine
 workflow
     hurry.workflow
 
-configurare negociere, internationalizare continut
+language negociation, content internationalization
     z3c.language.*
 
-framework pentru operatiuni de configurare, specifice unui pachet
+configuration framework, specific to each package
     z3c.configurator
 
-dezvoltarea de aplicatii
-    zc.buildout, pb.recipes.pydev (pt Eclipse)
+application development
+    zc.buildout, pb.recipes.pydev (Eclipse integration for buildout)
 
-executarea de taskuri asincron
+execution of asynchronous tasks
     lovely.remotetask, zc.async
 
-partajarea sesiunii intre clientii zeo
+session sharing for ZEO clients
     lovely.session
 
-generarea flexibila de tabele si listing-uri
+flexible generation of tables and listings
     z3c.table, zc.table
 
-control mai mare asupra procesului de indexare si catalogare
+greater control over the cataloging and indexing process
     z3c.indexer
 
 
-Alte resurse pe web
+Other web resources
 *******************
 
 Zope 3 wiki
