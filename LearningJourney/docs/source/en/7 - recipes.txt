@@ -1,0 +1,795 @@
+Some recipes for tipical problems
+=================================
+
+Using marker interfaces to define capabilities
+----------------------------------------------
+
+A marker interface is an "empty" interface, that usually inherits directly 
+``zope.interface.Interface``. Using these interfaces, we can define capabilities
+and implement them in an abstract, reusable way. Declaring that a class 
+implements the capability means that we can also benefit from a default 
+implementation, which can be overriden if needed. Example:
+
+Let's assume that we want a reusable solution to add comments. Each comment 
+will be stored in objects of type ``IComment``, and these comments will be 
+stored in object annotations. In a CMS environment, for what object types the 
+`Add comment` button will be shown? To take as a clue the fact that the object
+is annotatable is not enough: not all annotatable objects need to be 
+commentable. The solution is simple: we will create a marker interface:: 
+
+    class IHasComments(Interface):
+        """This type of objects can be commented"""
+        
+The adapter used for the factory that generated the object addnotation can be::       
+
+    class IComments(Interface):
+        """Object comments"""
+    
+    class Coments(BTreeContainer):
+        implements(IComments)
+        adapts(IHasComments)
+        
+        def add_comment(self, *args, **kwds):
+            self[u"Comment %s" % len(self)] = Comment(*args, **kwds)
+
+If we have an object of type BlogEntry, it is sufficient to mark it as being
+"commentable"::        
+
+    class BlogEntry(Persistent):
+        implements(IBlogEntry, IHasComments)
+
+A viewlet that presents a fragment with the comments for the current object with
+the "Add comments" button, can be like this::    
+
+    class CommentsViewlet(BaseViewlet):
+
+        @property
+        def available(self):
+            return IHasComments.providedBy(self.context)
+        
+The code that adds the comments to objects can be like::
+
+    IComments(some_blog_entry).add_comment(...)
+    IComments(some_other_object_type).add_comment(...)
+    
+Object adnotation
+-----------------
+Another concept introduced by Zope 3 with the purpose of maintaing object as
+"clean" as possible is the annotation. With the annotation we can attach 
+additional data to objects. For example, let's suppose we have objects of type
+``Boardgame``::
+
+    class IBoardgame(Interface):
+        name = zope.schema.TextLine(title=u"Game name"
+    
+    class Boardgame(Persistent):
+        implements(IBoardgame)
+        
+        name = u""
+    
+We want to attach objects with the dates when the game was used. This dates sit
+in objects of type ``UsageInfo``::
+
+    class IUsage(Interface):
+        date = Date(title=u"Date of usage")
+    
+    class Usage(Persistent):
+        date = None
+        
+        def __repr__(self):
+            return "Used at %s" % self.date
+
+The list will be implemented by annotating the ``Boadgame`` objects with 
+information of type ``IUsageInfo``::
+ 
+    class IUsageInfo(Interface):
+        usages = List(  title=u"Dates when used",
+                        value_type=Object(title=u"Usage",
+                                          schema=IUsage)
+                      )
+    
+    class UsageInfo(Persistent):
+        implements(IUsageInfo)
+        adapts(IBoardgame)
+        
+        usages = None
+    
+Objects of type UsageInfo will be stored in the annotation for objects of type
+``IBoardgame``. The annotation itself is an adapter that is built using the 
+``factory`` function from ``zope.annotation.factory``.
+
+    >>> from zope.annotation.factory import factory
+    >>> usage_info_annotation = factory(UsageInfo)
+    >>> zope.component.provideAdapter(usage_info_annotation)
+
+Usually, the configuration of that last line is done in ZCML, like so:
+
+.. code-block:: xml
+
+    <zope:adapter factory=".annotations.usage_info_annotation" />
+
+Finally, using the annotation in code is simple:
+
+    >>> usage_info = IUsageInfo(some_boardgame)
+    >>> usage_info.usages.append(Usage(datetime.datetime.now()))
+    >>> print usage_info.usages
+
+Adnotarea nu este ceva care sa fie in mod implicit asigurat tutoror obiectelor
+persistente. Pentru ca adnotarea sa fie disponibila pentru un obiect, acesta
+trebuie sa fie adaptabil la interfata ``IAnnotations`` (de exemplu, ar putea sa 
+existe un adaptor care sa stocheze adnotarea obiectelor intr-un RDB). In cazul
+obiectelor persistente bazate pe ZODB, acestea pot fi facute usor adaptabile
+prin marcarea claselor acestora ca implementand interfata 
+``zope.annotation.interfaces.IAttributeAnnotatable``. Exista un adapter care
+adapteaza acest tip de obiecte la interfata IAnnotations prin stocarea 
+adnotarilor intr-un atribut ``__annotations__``. 
+
+DublinCore
+----------
+The ``DublinCore`` information is handled with the help of the 
+``zope.dublincore`` library. By default, the DC information is stored for all
+persistent annotatable objects. Because of this, to benefit from ``DublinCore``,
+objects need just to be marked with their class as implementing 
+``IAttributeAnnotatable``.
+
+**DublinCore** represents a lot of attributes and information and because of 
+this, if the default behaviour needs to be modified, the implementation process
+for this interface needs to be optimized. There are two ways of achieving this: 
+
+The first, we can declare an attribute as being a ``DublinCore`` property::
+
+    from zope.dublincore.property import DCProperty
+    class Book:
+        implements(IBook)
+        name = DCProperty("title")
+        authors = DCProperty("creators")
+
+Second way involves manually creating the DC adapter using a `factory` and in
+this case we can also specify a mapping between the DC fields and the object
+attributes.::
+
+    dc_annotation = partialAnnotatableAdapterFactory({
+                                    'name':'title', 
+                                    'author':'creators'
+                                    })
+
+The adapter is configured this way:
+
+.. code-block:: xml
+                                        
+    <zope:adapter 
+        for=".interfaces.IBook" 
+        factory=".annotations.dc_annotation" 
+        provides="zope.dublincore.interfaces.IZopeDublinCore"/>
+        
+        
+Creating relationships between objects
+--------------------------------------
+Let's say we have a folder with images from racings, and we wish to assign
+a list of images to object of type Pilot, Team or Stadium::
+
+    class IHasImages(Interface):
+       """marker, objects have pointers to images"""
+    
+    class Pilot:
+       implements(IHasImages, IAttributeAnnotatable)
+       #it is wrong to have IHasImage inherit IAttributeAnnotatable
+       #HasImages says something about behaviour, IAttributeAnnotatable is 
+       #already about how you implement the IAnnotations 
+    
+    class Team(Persistent):
+       implements(IHasImages, IAttributeAnnotatable)
+    
+    class Stadium(Persistent):
+       implements(IHasImages, IAttributeAnnotatable)
+       
+    class PicturesAlbum(BTreeContainer): 
+       contains(IImage)
+    
+    class IPicturesInfo(Interface):
+       images = List(title=u"Image",
+                     value_type=Relation(title="Relation")
+                     )
+    
+    class PicturesInfoAnotation(Persistent):
+        implements(IPicturesInfo)
+        adapts(IHasImages)
+        
+        images = None
+       
+    from zope.annotation.factory import factory
+    annotation_factory = factory(PicturesInfoAnotation, 'images_pointers')
+
+The code that uses this annotation is simple::
+             
+    IPicturesInfo(pilot_instance).images.append(img) 
+    del IPicturesInfo(team_instance).images[somename] 
+
+
+Internationalising content with z3c.language.switch
+---------------------------------------------------
+The following implementation is based on a real implementation for a Zope 3 
+based portal. The queryAttribute method of the II18n interface was redefined
+to introduce a mechanism that allows getting a value (for the default language)
+instead of an empty value when there is no translation for that language/value.
+::
+
+    class GameI18NInfo(Persistent):
+        """The game content object"""
+    
+        name = FieldProperty(IGame['name'])
+        description = FieldProperty(IGame['description'])
+        promo_message = FieldProperty(IGame['promo_message'])
+    
+    
+    class Business(I18n, BTreeContainer, Contained):
+        """ """
+        _factory = BusinessI18NInfo
+        _defaultLanguage = 'en'
+    
+        implements(IGame)
+    
+        name = I18nFieldProperty(IGame['name'])
+        address = I18nFieldProperty(IGame['address'])
+        description = I18nFieldProperty(IGame['description'])
+        promo_message = I18nFieldProperty(IGame['promo_message'])
+    
+        def queryAttribute(self, name, language=None, default=None):
+            #override so that we never return empty stuff
+            value = super(Game, self).queryAttribute(name, language, default=None)
+            if value is None:
+                negotiator = getUtility(INegotiator, context=self)
+                lang = negotiator.serverLanguage
+                try:
+                    value = self.getAttribute(name, language=lang)
+                except KeyError:
+                    pass
+            if value is None:
+                #try to return something meaningful
+                langs = self.getAvailableLanguages()
+                if langs:
+                    lang = langs[0]
+                try:
+                    value = self.getAttribute(name, language=lang)
+                except KeyError:
+                    pass
+            if value is not None:
+                return value
+            else:
+                return default
+            
+Changing the traversing with z3c.traverser
+------------------------------------------
+Exemplul de mai jos foloseste un caz in care o serie de imagini sunt stocate
+intr-un folder adnotare al obiectelor de tip ``Business``. Datorita acestui 
+amplasament al imaginilor, pentru ca acestea sa fie publicate prin web ca 
+aflandu-se intr-un container *images* aflat in adnotarea obiectelor de tip ``Business``, a
+fost nevoie de modificarea mecanismului de traversare al obiectelor de tip
+``Business``. Pachetul ``z3c.traverser`` introduce un mecanism prin care se pot
+scrie plugin-uri pentru modificarea traversarii, per obiect, prin modificarea
+publisher-ului default al obiectelor cu unul care are acest suport pentru 
+pluginuri. Prima inregistrare zcml modifica publisher-ul pentru obiectele de 
+tip ``IBusiness``, iar cea de-a doua inregistreaza pluginul cu acest publisher
+(acest mecanism este descris in amanunt in documentatia ``z3c.traverser``).
+
+.. code-block:: xml
+
+  <view
+    for=".interfaces.IBusiness"
+    type="zope.publisher.interfaces.browser.IBrowserRequest"
+    provides="zope.publisher.interfaces.browser.IBrowserPublisher"
+    factory="z3c.traverser.browser.PluggableBrowserTraverser"
+    permission="zope.Public">
+    setup plugin traversal for the IBusiness
+  </view>
+
+  <subscriber
+    for="lovely.reviewportal.app.interfaces.IBusiness
+         zope.publisher.interfaces.browser.IBrowserRequest"
+    provides="z3c.traverser.interfaces.ITraverserPlugin"
+    factory=".traversing.BussinesTraverserPlugin" />
+
+.. code-block:: python
+
+    class BussinesTraverserPlugin(ContainerTraverserPlugin):
+        """Traversing to business/images will return the annotation of 
+        BusinessImagesAlbum for the Business:
+        """
+    
+        def publishTraverse(self, request, name):
+            if name == "images":
+                images = IBusinessImagesAlbum(self.context)
+                proxied_images = LocationProxy(images, container=self.context,
+                                               name="images")
+                return proxied_images
+            if name == "promotions":
+                promotions = IPromotions(self.context)
+                proxied_promotions = LocationProxy(promotions,
+                                                   container=self.context,
+                                                   name=name)
+                return proxied_promotions
+    
+            subob = self.context.get(name)
+            if subob is None:
+                raise NotFound(self.context, name, request)
+            return subob
+
+Metode avansate de integrare a template-urilor
+----------------------------------------------
+In cazul dezvoltarii unui site cu Zope 2, modul in care template-urile trebuie
+create este evident: este necesar un template pentru layout-ul site-ului, se 
+folosesc macro-urile si sloturile pentru a umple acest template si eventual se 
+foloseste mecanismul CMF de suprascriere a template-urilor folosind skinurile.
+Plone este un exemplu de aplicatie care a folosit acest mecanism cu succes.
+
+Cu Zope 3, avand in vedere multitudinea de alegeri ce pot fi facute, acest
+mecanism nu este foarte clar conturat. In continuare vom analiza cateva dintre 
+aceste optiuni, in contextul unui scenariu ce presupune realizarea unui website
+pentru o companie multinationala.
+
+Inserarea continutului HTML direct
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Aceasta metoda de includere a continutului din alta pagina (sa-i spunem template
+deocamdata) este usor similara cu functia ``include()`` din PHP. In Zope exista
+totusi avantajul ca pagina respectiva este direct legata de tipul obiectului
+asupra caruia ii este aplicata. Exemplu::
+
+    <div tal:replace="structure context/@@footer" />
+
+Simplu, dar cu cateva probleme: pe fiecare pagina a site-ului va trebui copiata
+structura de baza a site-ului si apoi inserate partile specifice ale paginii
+in zone clar demarcate. Pentru orice site cu mai mult de cateva pagini devine
+foarte dificila modificarea structurii de baza a site-ului, pentru ca trebuiesc
+modificate toate paginile din site. 
+
+METAL: Macro-uri si sloturi, la fel ca in Plone-ul clasic
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Metoda clasica de separare a layout-ului site-ului de cel al continutului
+paginii este acela de a folosi extensia METAL, cu macro-uri si slot-uri. Un 
+exemplu:
+
+In primul avem template-ul site-ului, denumit template.pt 
+
+.. code-block:: xml
+
+    <html metal:define-macro="page">
+        <head metal:define-slot="header">
+            <title>Some title</title>
+        </head>
+        <body metal:define-slot="body">
+            Body content comes here
+        </body>
+    </html>
+
+Apoi trebuie sa facem macro-ul disponibil. Vom realiza o pagina cu numele de
+``view_macros`` si o vom adauga la tuple-ul ``page_macros`` al view-ului
+``standard_macros``. Acest view este un browser-view special ce implementeaza
+interfata ``zope.interface.common.mapping.IItemMapping`` (a se vedea, de exemplu,
+``standard_macros.py`` din ``zope.app.basicskin`` si ``zope.app.rotterdam``. 
+Acest view are o lista de nume de pagini care contin macro-uri si o lista de 
+aliasuri dintre macro-uri. In final, macro-ul este inclus in pagina, astfel:
+
+.. code-block:: xml
+
+    <html metal:use-macro="context/@@standard_macros/page">
+        <head metal:fill-slot="header">
+            <title>MyTitle</title>
+        </head>
+        <body metal:fill-slot="body">
+            Content here...
+        </body>
+    </html>
+
+O alta modalitate de "gasire" a macro-urilor in cadrul unui template este acela
+de a pune o referinta catre template-ul cu macro-uri in cadrul clasei ce 
+genereaza pagina::
+
+    class MainPage(BrowserPage):
+        macros = ViewPageTemplate('/path/to/macros.pt')
+
+In cadrul template-ului asociat paginii MainPage, se poate introduce macro-ul 
+cu::
+
+    <div metal:use-macro="view/macros/some_macro">
+
+z3c.macro: inregistrarea simplificata a macro-urilor
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Folosind z3c.macro, registrarea de noi macro-uri devine o sarcina simpla, ce 
+nu mai presupune redefinirea si modificarea unei clase. De exemplu, pentru
+inregistrarea unui nou macro ``page`` din ``template.pt``, trebuie inserat in 
+zcml:
+
+.. code-block:: xml
+
+    <configure xmlns:z3c="http://namespaces.zope.org/z3c">
+        <z3c:macro template="template.pt" name="page" />
+    </configure>
+
+Macro-ul este apoi inserat in pagini cu:
+
+.. code-block:: xml
+
+    <html metal:use-macro="macro:page">
+    ...
+    </html>
+
+Viewlet-uri, content providers
+------------------------------
+Luand ca exemplul site-ul companiei multinationale, sa presupunem ca vom avea
+un menu de navigare pentru site. Daca ar fi sa il dezvoltam site-ul folosind 
+doar macro-uri, am scrie un macro pe care l-am insera in template-ul principal.
+Ce s-ar intampla daca am dor sa modificam acest menu de navigare pentru cateva 
+dintre paginile site-ului? Doua solutii exista:
+
+* sa inseram o gramada de logica in macro, care sa verifice cazurile speciale.
+  Urat, complicat, e de dorit sa se evite acest caz 
+* sa restructuram menu-ul sub forma unui view care sa poata fi redefinit per 
+  tip de context. Aceasta solutie functioneaza in cazul in care dorim sa 
+  redefinim modul in care arata menul in functie context, dar nu si daca dorim 
+  sa modificam menu-l in functie de pagina in care apare.
+
+Solutia oferita de Zope 3 este o varianta a celei de-a doua solutii de mai sus,
+prin introducerea unui tip de view ce tine cont si de view-ul in care este 
+inserat, denumite **content providere**. Gratie interfetelor, este foarte usor
+sa se redefineasca continutul provider-ului in functie de tipul contextului,
+tipul request-ului (skin-ul) si tipul paginii (interfata sau clasa implementata
+de pagina). De exemplu, in site-ul nostru de text am putea defini un menu de 
+navigare ce va fi inserat pe fiecare pagina astfel::
+ 
+    from zope.contentprovider.interfaces import IContentProvider
+    from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+    from zope.publisher.interfaces.browser import IBrowserView
+    
+    class MainSiteNavigation(object):
+        implements(IContentProvider)
+        adapts(Interface, IDefaultBrowserLayer, IBrowserView)
+    
+        def __init__(self, context, request, view):
+            self.context = context
+            self.request = request
+            self.__parent__ = view
+    
+        def update(self):
+            pass
+    
+        render = ViewPageTemplateFile('navigation.pt')
+
+Acest content provider este inregistrat astfel::
+
+    <adapter factory=".browser.MainSiteNavigation" name="main_site_navigation" />
+
+Pentru suprascrierea provider-ului, de exemplu pentru obiectele de tip 
+PressRelease, vom folosi::
+
+    class PressReleasesNavigation(object):
+        adapts(IPressRelease, IDefaultBrowserLayer, IBrowserView)
+        render = ViewPageTemplateFile('press_releases_navigation.pt')
+
+.. code-block:: xml
+
+    <adapter 
+        factory=".browser.PressReleasesNavigation" 
+        name="main_site_navigation" />
+
+
+Astfel, folosirea content provider-ilor permite "componentizarea" paginilor web, prin
+dezvoltarea de componente ce pot fi refolosite in mai multe locatii si tipuri
+de obiecte context. Folosind inregistrarea acestui multiadaptor cu un nume,
+el poate fi inserat in template-uri folosind expresia `provider`::
+
+    <div tal:content="structure provider:lj.MyProvider" />
+
+Pentru a genera continutul content provider-ilor se foloseste un proces numit
+"two phase rendering". Prima data se apeleaza metoda `update` al CP-ului, apoi
+metoda `render` ce genereaza continutul ce va fi inserat in pagina. 
+
+Viewlet-uri si viewlet managere
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Viewlet-urile reprezinta un pas inainte in directia facute de content providere:
+un viewlet manager este un content provider ce agregheaza si insereaza in pagina o serie
+de "mini-view-uri", definite ca multiadaptori pentru context, request, view si 
+manager. Folosind mecanismul de viewlet-uri se poate decupla continutul de 
+template-ul sau contextul in care este inserat: se pot controla ce "box-uri" sa 
+apara in fiecare pagina doar prin adaugarea de inregistrari de viewlet-uri, 
+nemaifiind necesara editarea de macro-uri, templateuri sau prea mult cod. 
+
+Pachetul zope.viewlet ofera doua noi tag-uri ZCML: browser:viewletManager si
+browser:viewlet. Atunci cand se inregistreaza un viewlet manager poate fi 
+specificata atat clasa care il genereaza cat si un template, astfel incat 
+sortarea viewlet-urilor si modul in care sunt ele inserate in pagina pot fi
+modificate dupa necesitati.
+
+Desi poate fi tentanta, ideea de a transforma o intreaga pagina si 
+intreg site-ul intr-o structura bazata pe viewlet-uri este periculoasa: 
+formularele in viewlet-uri sunt destul de greu de implementat, paginile vor fi 
+greu de definit si greu de administrat (deoarece nu exista o imagine clara, 
+in cod, a ceea ce apare pe pagina). E recomandat ca macar partea principala 
+de continut a paginii sa nu fie definita in viewet-uri, ci folosind mecanismul
+de pagelet-uri, descris mai jos. 
+
+Un exemplu practic:
+
+* se defineste o interfata marker pentru viewlet manager:
+
+    .. code-block:: python
+
+        from zope.viewlet.interfaces import IViewletManager
+        class IExtraStuffBox(IViewletManager):
+            '''Viewlets for the extra stuff box'''
+
+* se inregistreaza viewlet manager-ul:
+
+    .. code-block:: xml
+    
+        <browser:viewletManager
+            name='zope3tutorial.ExtraStuffBox'
+            provides='.interfaces.IExtraStuffBox'
+            permission='zope.View'
+            layer='.demoskin.IMySkin'
+            />
+
+* se introduce in template-ul principal al site-ului:
+    
+    .. code-block:: xml
+    
+        <div tal:replace="structure provider:zope3tutorial.ExtraStuffBox">
+            A box for extra stuff
+        </div>
+
+* se scrie un viewlet:
+
+    >>> class SizeViewlet(object):
+    ...
+    ...     def __init__(self, context, request, view, manager):
+    ...         self.__parent__ = view
+    ...         self.context = context
+    ...
+    ...     def update(self):
+    ...         pass
+    ...
+    ...     def render(self):
+    ...         return size.interfaces.ISized(self.context).sizeForDisplay()
+    ...
+    >>> zope.component.provideAdapter(
+    ...     SizeViewlet,
+    ...     (IFile, IDefaultBrowserLayer,
+    ...      zope.interface.Interface, interfaces.IViewletManager),
+    ...     interfaces.IViewlet, name='size')
+
+    In zcml inregistrarea poate fi facuta astfel:
+    
+    .. code-block:: xml 
+    
+        <browser:viewlet
+            name="size"
+            for="IFile"
+            manager="interfaces.IViewletManager"
+            class="SizeViewlet"
+            permission="zope.View"
+            />
+
+* Viewlet-ul poate fi declarat si doar folosind un template
+
+    .. code-block:: xml
+    
+        <browser:viewlet
+            name="fortune"
+            for="*"
+            manager='.interfaces.IExtraStuffBox'
+            template='fortune.pt'
+            layer='.demoskin.IMySkin'
+            permission='zope.View'
+            />
+
+Separarea inregistrarii templat-ului de clasa cu z3c.viewtemplate
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Continuand cu implementarea studiului nostru de caz, sa presupunem ca aceasta
+companie are multiple website-uri, generate de catre aceeasi aplicatie Zope,
+cate unul pentru fiecare tara, continutul este aproximativ identic, dar se
+folosesc layout-uri si template-uri usor diferite. In acest caz, sistemul de 
+skinuri multiple aplicate aplicatiei ar functiona bine, cu singura problema
+fiind data de necesitatea subclasarii, per skin, a fiecare clase de view,
+pentru a putea modifica template-ul folosit.
+
+Una dintre solutiile posibile este data de catre pachetul z3c.viewtemplate,
+ce permite separarea inregistrarii template-ului folosit de inregistrarea 
+paginii, ce permite redefinirea simpla a template-ului folosit.
+
+Ca exemplu, sa presupunem ca dorim sa schimbam prima pagina a unuia dintre
+skinuri, pentru a adauga o noua  coloana. Avem ``MainSitePage`` ca pagina principala,
+cu template-ul folosit ``main_site.pt`` si dorim sa modificam template-ul. Va
+trebui sa schimbam. Pentru a beneficia de ``z3c.viewtemplate``, ``MainSitePage``
+trebuie modificata in genul urmator::
+
+    class MainSitePage(object):
+        template = RegisteredPageTemplate()
+    
+        def __call__(self):
+            return self.template()
+
+sau, pur si simplu, putem mosteni ``BaseView`` din ``z3c.viewtemplate``::
+
+    class MainSitePage(BaseView):
+        ...
+
+Apoi putem inregistra template-ul, per layer:
+
+.. code-block:: xml
+
+    <browser:template 
+        for=".browser.MainSitePage" 
+        template="main_page.pt" 
+        layer=".SkinLayerOne" />
+
+Se pot suprascrie, de asemenea, template-urile si pentru viewlet-uri, daca se
+foloseste un superclass de genul::
+
+    class BaseViewlet(object):
+    
+        template = RegisteredPageTemplate()
+    
+        def render(self):
+            return self.template()
+
+In practica, structura va arata astfel:
+
+* un template principal al site-ul ce va asigura layout-ul si va insera viewlet
+  managerele. Acest layout va fi oferit sub forma unui macro denumit ``page``
+* paginile site-ului vor folosi macro-ul ``page`` si vor insera doar continutul
+  specific al paginii
+
+Folosind un mecanism inteligent de mostenire, este posibil sa se reduca la minim
+necesitatea definirii de template-uri noi.
+
+z3c.template, o versiune imbunatatita a pachetului z3c.viewtemplate
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+z3c.template este un pachet similar cu z3c.viewtemplate (permite separarea codului
+de inregistrarea template-ului), insa are ca scop si separarea definitiei si 
+inregistrarii layout-ului paginii de continutul si template-ul continutului 
+acesteia. 
+
+Sa presupunem ca implementam un site folosind z3c.template si avem pagina de 
+stiri pentru presa. Pentru fiecare pagina vom avea un template pentru layout
+si unul pentru continut, insa putem sari definirea template-ului de layout
+daca mostenim o clasa de baza. Template-ul de layout va contine:
+
+.. code-block:: xml
+
+    <html>
+    <head>
+        <title tal:content="view/title" />
+    <head>
+    <body>
+        <div tal:replace="view/render" />
+    </body>
+    </html>
+
+Acest template va fi inregistrat:
+
+.. code-block:: xml
+
+    <configure xmlns:z3c="http://namespaces.zope.org/z3c">
+        <z3c:layout template="main_template" for=".interfaces.ISitePage" />
+    </configure>
+
+Avem nevoie de un browser view care sa stie cum sa foloseasca template-ul de layout
+si cel de continut::
+
+    class SitePage(BrowserPage):
+        zope.interface.implements(ISitePage)
+    
+        template = None
+        layout = None
+    
+        title = None
+    
+        def update(self):
+            pass
+    
+        def render(self):
+            if self.template is None:
+                template = zope.component.getMultiAdapter(
+                         (self, self.request), IContentTemplate)
+                return template(self)
+            return self.template()
+        
+        def __call__(self):
+            self.update()
+            if self.layout is None:
+                layout = zope.component.getMultiAdapter((self, self.request),
+                              interfaces.ILayoutTemplate)
+                return layout(self)
+            return self.layout()
+
+Clasa noastra pentru stiri de presa va mosteni clasa ``SitePage``::
+
+    class PressReleaseViewPage(SitePage):
+    
+        @property
+        def title(self):
+            return u"Press release: " + self.context.title
+
+Apoi putem sa inregistram pur si simplu template-ul pentru zona de continut a 
+paginii:
+
+.. code-block:: xml
+
+    <configure xmlns:z3c="http://namespaces.zope.org/z3c">
+        <z3c:template template="press_review_view.pt" for="IPressReview" />
+    </configure>
+
+Desi mecanismul este relativ simplu si usor de inteles, presupune o oarecare
+munca pentru a suporta form-uri, si de ce sa scriem clasa SitePage, cand exista
+deja un pachet care o ofera? Acesta este...
+
+z3c.pagelet
+~~~~~~~~~~~
+Acest pachet introduce un nou tip de browser page: pagelet-ul. Un pagelet este o
+pagina cu un template pentru layout: se defineste layout-ul folosind mecanismele
+introduse de ``z3c.template``, dar clasa ``SitePage`` nu mai este necesara 
+deoarece este asigura de pachet. In interiorul template-ului de layout, acolo
+unde urmeaza a fi inserat continutul, se insereaza pagelet-ul, ca si content
+provider::
+
+    <div tal:replace="structure provider: pagelet" />
+
+Alte "bunatati" incluse in pachet sunt: 
+
+* pachetul include integrare cu clase de formulare ale ``zope.formlib``
+* folosind z3c.skin.pagelet se poate porni cu un skin de start care are toate
+  clasele necesare pentru realizarea unui website bazat pe pagelet-uri 
+  (incluzand, de exemplu, pagini de exceptii implementate cu pagelet-uri)
+  
+Pentru inregistrarea unui pagelet se foloseste (se observa similitudinea cu
+inregistrarea unei pagini):
+
+.. code-block:: xml
+
+  <z3c:pagelet
+      name="index.html"
+      for=".interfaces.PressRelease"
+      class=".views.IndexPagelet"
+      layer=".interfaces.ICompanyWebsiteLayer"
+      permission="zope.View"
+      />
+
+Alte pachete folositoare in template-uri
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+* z3c.pt: o implementare a template-urilor ZPT cu mult mai rapida (x10). 
+* z3c.macroviewlet -Permite definirea de macro-uri din template-uri ca
+  viewlet-uri, inlesnind astfel scrierea de site-uri complete in viewlet-uri 
+* z3c.formui: integreaza pagelet-urile cu libraria z3c.form
+
+      
+Sfaturi generale
+----------------
+* codul sursa al Zope-ului este simplu si usor de interpretat. Daca nu exista
+  documentatie, citeste codul sursa, incepand cu interfetele si apoi fisierul
+  configure.zcml, pentru a intelege ce ofera acel pachet. Foloseste 
+  instrumentele APIDOC si Zope Book pentru a citi documentatia. Foloseste 
+  pagina de introspectare a obiectelor pentru a intelege structura obiectelor.
+* Foloseste namespace-urile
+* Separa partea de "backend" de cea de "frontend" in sub-pachete-uri diferite:
+  `app` si una din variantele: `browser`, `skin`, `ui`.
+* Pastreaza o balanta intre necesitatea de a separa in pachete si un numar prea
+  mare de pachete, cu interdependinte ridicate
+* Foloseste pachetele comunitatii Zope (z3c), acestea sunt cel mai adesea mai 
+  noi si mai flexibile decat cele cu care vine zope. Exemplu: z3c.form, 
+  z3c.pagelet, z3c.table, etc.
+* Atunci cand faci design-ul unei librarii sau componente reutilizabile, este
+  foarte usor sa se creeze o infrastructura bazata pe ZCA, cu multe puncte de 
+  insertie. O balanta trebuie mentinuta, pentru a nu face ca folosirea acelui
+  pachet sa impuna necesitati ridicate (gen: implementeaza un adaptor pentru
+  interfata asta, am nevoie de un utility pentru interfata asta, etc). Se poate
+  intampla ca atunci cand dezvoltatorul sa vrea sa foloseasca componenta 
+  respectiva sa ii fie mai usor sa o inlocuiasca cu totul, asa ca fii sigur ca
+  asiguri cel putin un punct unic de "override", care sa faca posibila 
+  inlocuirea intregului mecanism. Cu toate acestea:
+* Incearca sa faci componentele general valabile, pentru a fi reutilizabile.
+  Pe termen lung acesta este unul dintre avantajele folosirii Zope 3: 
+  componentele sunt usor de dezvoltat astfel incat ele sa fie refolosibile
+* Viewlet-urile si pageleturile sunt o idee buna, insa nu trebuiesc abuzate, 
+  pentru ca necesita mai multa munca din partea dezvoltatorului.
+* Nu e nevoie de o integrare foarte mare cu ZMI.   
+* Nu e recomandabil designul unei aplicatii complexe fara experienta prealabila.
+      
