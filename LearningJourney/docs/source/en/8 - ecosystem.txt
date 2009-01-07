@@ -450,7 +450,6 @@ zope.app.zcmlfiles
 
 zope.app.zopeappgenerations
     migrates the database from older versions of Zope
-    migreaza baza de date de la versiuni mai vechi ale zope-ului
 
 zope.app.zopetop
     a Zope skin, not very popular as it is an older version
