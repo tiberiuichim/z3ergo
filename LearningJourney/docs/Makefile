@@ -9,7 +9,7 @@ PAPER         =
 # Internal variables.
 PAPEROPT_a4     = -D latex_paper_size=a4
 PAPEROPT_letter = -D latex_paper_size=letter
-ALLSPHINXOPTS   = -d /home/tibi/workspace_g/LearningJourney/docs/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) /home/tibi/workspace_g/LearningJourney/docs/source
+ALLSPHINXOPTS   = -d /home/tibi/workspace_g/LearningJourney/docs/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) /home/tibi/workspace_g/LearningJourney/parts/sphinx
 
 .PHONY: help clean html web pickle htmlhelp latex changes linkcheck
 

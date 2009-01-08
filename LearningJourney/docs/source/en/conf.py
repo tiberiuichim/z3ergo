@@ -165,7 +165,7 @@ latex_font_size = '11pt'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, document class [howto/manual]).
 latex_documents = [
-  ('index', 'LearningJourney-AZope3Introduction-ro.tex', ur'',
+  ('index', 'LearningJourney-AZope3Introduction-en.tex', ur'',
    ur'', 'manual'),
 ]
 
