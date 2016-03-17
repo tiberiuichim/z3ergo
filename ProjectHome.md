@@ -1,0 +1,1 @@
+This project's intention is to create tutorials and code that will ease the Zope 3 development.

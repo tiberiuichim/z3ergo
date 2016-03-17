@@ -1,0 +1,19 @@
+warning: this is kind of _pseudocodish_, need checks and explanation
+
+
+```
+from z3c.language.switch import I18n, I18nFieldProperty
+
+class IPerson(Interface):
+    title = TextLine(title=u"Name of person")
+
+class PersonInfo(Persistent):
+
+    title = FieldProperty(IPerson['title'])
+
+class Person(I18n):
+    implements(IPerson)
+    
+    title = I18nFieldProperty(IPerson['title'])
+
+```
